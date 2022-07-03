@@ -1,0 +1,31 @@
+@media (max-width: 991px) {
+    .arrows1 {
+        margin-bottom: 20px;
+    }
+    .arrows2 {
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .services-section {
+        background: none;
+    }
+    .partner-map {
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 500px) {
+    .partners-dropdown {
+        width: 100%;
+        flex: none;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 450px) {
+    .services-column {
+        width: 100%;
+    }
+}
