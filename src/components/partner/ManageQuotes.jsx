@@ -27,9 +27,9 @@ const ManageQuotes = () => {
                     <span>5</span>
                 </Link>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe</Link></li>
-                    <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe</Link></li>
-                    <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe</Link></li>
+                    <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
+                                <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
+                                <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
                 </ul>
             </div>
 

@@ -32,16 +32,16 @@ const QuotesReceived = () => {
                         </div>
 
                         <div class="dropdown profile-dropdown">
-                <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                    <AiFillBell />
-                    <span>5</span>
-                </Link>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe</Link></li>
-                    <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe</Link></li>
-                    <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe</Link></li>
-                </ul>
-            </div>
+                            <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <AiFillBell />
+                                <span>5</span>
+                            </Link>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
+                                <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
+                                <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li> 
+                            </ul>
+                        </div>
 
                         <div class="dropdown profile-dropdown">
                         <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
