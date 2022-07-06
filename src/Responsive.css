@@ -168,6 +168,12 @@
     }
 }
 
+@media (max-width: 456px) {
+    .finance-steps {
+        padding: 0;
+    }
+}
+
 @media (max-width: 450px) {
     .services-column {
         width: 100%;

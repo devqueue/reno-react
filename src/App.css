@@ -1145,6 +1145,7 @@ a {
 
 .finance-steps {
     width: 100%;
+    height: 150px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1157,9 +1158,11 @@ a {
 .finance-step {
     display: flex;
     align-items: center;
+    /* justify-content: space-between; */
     flex-direction: column;
     text-align: center;
     width: 25%;
+    height: 100% !important;
 }
 
 .finance-step .step-img {

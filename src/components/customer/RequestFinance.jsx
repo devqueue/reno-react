@@ -24,22 +24,30 @@ const RequestFinance = () => {
           </div>
 
           <div className='d-flex align-items-center panel-right'>
-            <Link to='#' className='notification-btn'>
-              <AiFillBell />
-              <span>5</span>
-            </Link>
 
             <div class="dropdown profile-dropdown">
+                <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <AiFillBell />
+                    <span>5</span>
+                </Link>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><Link class="dropdown-item" to="#">Lorem ipsum dolor sit amet.</Link></li>
+                    <li><Link class="dropdown-item" to="#">Lorem ipsum dolor sit amet.</Link></li>
+                    <li><Link class="dropdown-item" to="#">Lorem ipsum dolor sit amet.</Link></li>
+                </ul>
+            </div>
+            
+            <div class="dropdown profile-dropdown">
               <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                <div className='d-flex align-items-center fs-small me-3'>
-                  <img src={user} alt="" />
-                  Mohammed
-                            </div>
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li><Link class="dropdown-item" to="#">Profile</Link></li>
-                            <li><Link class="dropdown-item" to="#">Logout</Link></li>
-                        </ul>
+                    <div className='d-flex align-items-center fs-small me-3'>
+                    <img src={user} alt="" />
+                    Mohammed
+                    </div>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><Link class="dropdown-item" to="#">Profile</Link></li>
+                    <li><Link class="dropdown-item" to="#">Logout</Link></li>
+                </ul>
             </div>
           </div>
         </div>
