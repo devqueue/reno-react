@@ -11,12 +11,30 @@ const Dashboard = () => {
 
   const [time, setTime] = useState(1)
 
+  const monthly = {
+    labels: ['1 Jun', '3 Jun', '6 jun', '9 jun', '12 jun', '12 jun', '15 jun', '18 jun', '21 jun', '24 jun', '27 jun', '30 jun'],
+    data: [1700, 1500, 1000, 1500, 2200, 1766, 2500, 1200, 1800, 1980, 1509, 1900, 0]
+  }
+  
+  const annual = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    data: [1000, 1500, 2000, 1500, 1800, 1766, 2200, 1600, 2200, 1980, 2400, 1000, 0]
+  }
+  
+  const total = {
+    labels: ['2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'],
+    data: [1500, 1800, 2000, 1200, 1800, 1500, 2500, 2200, 1500, 1980, 2000, 1700, 0]
+  }
+
+  const [axis, setAxis] = useState(monthly)
+
+  // console.log(axis.labels)
 
   const data = () => {
     return {
-        labels: ['1 Jun', '3 Jun', '6 jun', '9 jun', '12 jun', '12 jun', '15 jun', '18 jun', '21 jun', '24 jun', '27 jun', '30 jun'],
+        labels: axis.labels,
         datasets: [{
-          data: [1000, 1500, 2000, 1500, 1800, 1766, 2500, 1600, 2200, 1980, 2400, 1000, 0],
+          data: axis.data,
           borderColor: '#F18056',
           borderWidth: 1.5,
           fill: true,
@@ -48,14 +66,14 @@ const Dashboard = () => {
   return (
     <div className='container-fluid p-4 dashboard-content'>
         <div className="panel-top d-flex align-items-center justify-content-between">
-          <div>
+          <div className='panel-left'>
             <h5 className='mb-0 fw-600'>Dashboard</h5>
             <p className='text-muted mb-0 text-light fs-small'>
               Sunday, 29 May 2022
             </p>
           </div>
 
-          <div className='d-flex align-items-center'>
+          <div className='d-flex align-items-center panel-right'>
             <Link to='#' className='notification-btn'>
               <AiFillBell />
               <span>5</span>
@@ -66,13 +84,12 @@ const Dashboard = () => {
                 <div className='d-flex align-items-center fs-small me-3'>
                   <img src={user} alt="" />
                   Mohammed
-                </div>
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-              </ul>
+                            </div>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><Link class="dropdown-item" to="#">Profile</Link></li>
+                            <li><Link class="dropdown-item" to="#">Logout</Link></li>
+                        </ul>
             </div>
           </div>
         </div>
@@ -114,22 +131,22 @@ const Dashboard = () => {
         <div className="row mt-4">
           <div className="col-12">
             <div className="dashboard-card">
-              <div className='d-flex align-items-center justify-content-between'>
-                <span className='fw-600'>Applications</span>
+              <div className='d-flex align-items-center justify-content-between line-heading'>
+                <span className='fw-600 line-heading-title'>Applications</span>
                 <div className='time-btns'>
-                  <span className={`border-end border-color-darkBlue ${time == 1 ? 'active' : ''}`} onClick={() => setTime(1)}>Monthly</span>
-                  <span className={`border-end border-color-darkBlue ${time == 2 ? 'active' : ''}`} onClick={() => setTime(2)}>Annual</span>
-                  <span className={`${time == 3 ? 'active' : ''}`} onClick={() => setTime(3)}>Total</span>
+                  <span className={`border-end border-color-darkBlue ${time == 1 ? 'active' : ''}`} onClick={() => {setTime(1); setAxis(monthly)}}>Monthly</span>
+                  <span className={`border-end border-color-darkBlue ${time == 2 ? 'active' : ''}`} onClick={() => {setTime(2); setAxis(annual)}}>Annual</span>
+                  <span className={`${time == 3 ? 'active' : ''}`} onClick={() => {setTime(3); setAxis(total)}}>Total</span>
                 </div>
               </div>
 
               <div className="row mt-4">
                 <div className="col-lg-6 mb-4">
                   <div className="donught-card d-flex align-items-center justify-content-between">
-                    <div>
+                    <div className='donught-text'>
                       <h4>04</h4>
                       <p className='mb-0 text-muted'>
-                        Total number of approved <br />
+                        Total number of approved
                         applications in this period
                       </p>
                     </div>
@@ -143,10 +160,10 @@ const Dashboard = () => {
                 </div>
                 <div className="col-lg-6 mb-4">
                   <div className="donught-card d-flex align-items-center justify-content-between">
-                    <div>
+                    <div className='donught-text'>
                       <h4>11,200 SAR</h4>
                       <p className='mb-0 text-muted'>
-                        Total number of approved <br />
+                        Total number of approved 
                         applications in this period
                       </p>
                     </div>

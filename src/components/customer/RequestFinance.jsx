@@ -16,14 +16,14 @@ const RequestFinance = () => {
   return (
     <div className='container-fluid p-4 dashboard-content'>
         <div className="panel-top d-flex align-items-center justify-content-between">
-          <div>
+          <div className='panel-left'>
             <h5 className='mb-0 fw-600'>Request Finance</h5>
             <p className='text-muted mb-0 text-light fs-small'>
               Sunday, 29 May 2022
             </p>
           </div>
 
-          <div className='d-flex align-items-center'>
+          <div className='d-flex align-items-center panel-right'>
             <Link to='#' className='notification-btn'>
               <AiFillBell />
               <span>5</span>
@@ -34,13 +34,12 @@ const RequestFinance = () => {
                 <div className='d-flex align-items-center fs-small me-3'>
                   <img src={user} alt="" />
                   Mohammed
-                </div>
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-              </ul>
+                            </div>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><Link class="dropdown-item" to="#">Profile</Link></li>
+                            <li><Link class="dropdown-item" to="#">Logout</Link></li>
+                        </ul>
             </div>
           </div>
         </div>
@@ -140,7 +139,7 @@ const RequestFinance = () => {
                                 </select>
                             </div>
 
-                            <div className="col-12 mt-4 d-flex justify-content-center">
+                            <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
                                 <Link to='/customer/dashboard/quotesReceived' className="btn finance-form-cancel me-3">Cancel</Link>
                                 <button className="btn bg-darkBlue text-light" onClick={() => setStep(2)}>Save and Continue</button>
                             </div>
@@ -175,7 +174,7 @@ const RequestFinance = () => {
                                 <input type="text" className='form-control' placeholder='Please your other allowance here (SAR)' />
                             </div>
 
-                            <div className="col-12 mt-4 d-flex justify-content-center">
+                            <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
                                 <Link to='/customer/dashboard/quotesReceived' className="btn finance-form-cancel me-3" style={{ flex: '1' }}>Cancel</Link>
                                 <button className="btn bg-darkBlue text-light" style={{ flex: '1' }} onClick={() => setStep(3)}>Save and Continue</button>
                             </div>
@@ -237,7 +236,7 @@ const RequestFinance = () => {
 
                             <div className="col-lg-6 mt-4">
                                 <div className="expense-card">
-                                    <h6 className='text-darkBlue fw-600 mb-4 text-center'>Housing</h6>
+                                    <h6 className='text-darkBlue fw-600 mb-4 text-center'>Homeworkers wage</h6>
 
                                     <input type="range" class="form-range" id="customRange1" />
 
@@ -314,7 +313,7 @@ const RequestFinance = () => {
                                 </div>
                             </div>                           
 
-                            <div className="col-12 mt-4 d-flex justify-content-center">
+                            <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
                                 <Link to='/customer/dashboard/quotesReceived' className="btn finance-form-cancel me-3" style={{ flex: '1' }}>Cancel</Link>
                                 <button className="btn bg-darkBlue text-light" style={{ flex: '1' }} onClick={() => setStep(4)}>Save and Continue</button>
                             </div>
@@ -450,7 +449,7 @@ const RequestFinance = () => {
                                 </div>
                             </div>      
 
-                            <div className="col-12 mt-4 d-flex justify-content-center">
+                            <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
                                 <Link to='/customer/dashboard/quotesReceived' className="btn finance-form-cancel me-3">Cancel</Link>
                                 <button className="btn bg-darkBlue text-light" data-bs-toggle="modal" data-bs-target="#requestModal">Submit Request</button>
                             </div>

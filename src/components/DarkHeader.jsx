@@ -1,15 +1,16 @@
 import React from 'react'
 import logoLight from '../assets/images/logoLight.png'
 import { VscThreeBars } from 'react-icons/vsc'
+import { Link } from 'react-router-dom'
 
 const DarkHeader = () => {
   return (
     <div>
         <nav class="navbar navbar-expand-lg dark-header">
             <div class="container">
-                <a class="navbar-brand" href="#">
+                <Link class="navbar-brand" to="/">
                     <img src={logoLight} className='logo' alt="" />
-                </a>
+                </Link>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#darkNavbarSupportedContent" aria-controls="darkNavbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon text-light fs-3" style={{ height: 'fit-content' }}><VscThreeBars /></span>
                 </button>
@@ -30,12 +31,12 @@ const DarkHeader = () => {
                     </ul>
                 
                     <ul className='navbar-nav'>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
+                        <li class="nav-item px-3 px-lg-0">
+                            <Link class="nav-link" to="/customer/auth/login">
                                 <button className='btn bg-color-primary fs-small text-light px-4'>Login</button>
-                            </a>
+                            </Link>
                         </li>
-                        <li className="nav-item d-flex align-items-center">
+                        <li className="nav-item px-3 px-lg-0 d-flex align-items-center">
                             <select class="form-select shadow-none fs-small language-select" aria-label="Default select example">
                                 <option selected>English</option>
                                 <option>Arabic</option>

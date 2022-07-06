@@ -5,53 +5,53 @@ import { RiHomeLine } from 'react-icons/ri'
 import { IoSettingsOutline } from 'react-icons/io5'
 import { BsClipboardCheck, BsBookmark, BsClipboard, BsPeople, BsQuestionCircle } from 'react-icons/bs'
 
-const Sidebar = () => {
+const Sidebar = ({ isActive }) => {
   return (
-    <div className='customer-sidebar bg-darkBlue text-lightGray'>
+    <div className={`customer-sidebar bg-darkBlue text-lightGray ${isActive ? 'active' : ''}`}>
         
         <Link to='/customer/dashboard/panel'>
             <img src={logoLight} className='logo' alt="" />
         </Link>
 
-        <h6 className='fs-small mb-3'>Main Menu</h6>
+        <h6 className='fs-small mb-3 customer-sidebar-title'>Main Menu</h6>
 
         <ul>
             <li>
                 <NavLink activeClassName='active' className='text-lightGray fs-small' to='/customer/dashboard/panel'>
                     <RiHomeLine />
-                    Dashboard
+                    <span>Dashboard</span>
                 </NavLink>
                 <NavLink activeClassName='active' className='text-lightGray fs-small' to='/customer/dashboard/quotesReceived'>
                     <BsClipboard />
-                    Quotes Received
+                    <span>Quotes Received</span>
                 </NavLink>
                 <NavLink activeClassName='active' className='text-lightGray fs-small' to='/customer/dashboard/financeRequests'>
                     <BsBookmark />
-                    Finance Requests
+                    <span>Finance Requests</span>
                 </NavLink>
                 <NavLink activeClassName='active' className='text-lightGray fs-small' to='/customer/dashboard/paidFinanceQuotes'>
                     <BsClipboardCheck />
-                    Paid Finance Quotes
+                    <span>Paid Finance Quotes</span>
                 </NavLink>
             </li>
         </ul>
         
         
-        <h6 className='fs-small mb-3 mt-5'>SUPPORT</h6>
+        <h6 className='fs-small mb-3 mt-5 customer-sidebar-title'>SUPPORT</h6>
 
         <ul>
             <li>
                 <NavLink activeClassName='active' className='text-lightGray fs-small' to='/community'>
                     <BsPeople />
-                    Community
+                    <span>Community</span>
                 </NavLink>
                 <NavLink activeClassName='active' className='text-lightGray fs-small' to='/help'>
                     <BsQuestionCircle />
-                    Help & Support
+                    <span>Help & Support</span>
                 </NavLink>
                 <NavLink activeClassName='active' className='text-lightGray fs-small' to='/settings'>
                     <IoSettingsOutline />
-                    Settings
+                    <span>Settings</span>
                 </NavLink>
             </li>
         </ul>

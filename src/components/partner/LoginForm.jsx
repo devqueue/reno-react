@@ -8,14 +8,16 @@ const LoginForm = () => {
 
     const [pass1, setPass1] = useState(false)
 
+    document.title = 'Reno | Partner Login'
+
   return (
     <div className='auth-container py-5'>
         <div className="container">
             <div className="col-lg-5 col-md-6 m-auto">
                 <div className="auth-links-container">
                     <div className="auth-links">
-                        <Link to="/partner/login" className='auth-link text-light active'>Login</Link>
-                        <Link to="/partner/signup" className='auth-link text-light'>Sign up</Link>
+                        <Link to="/partner/auth/login" className='auth-link text-light active'>Login</Link>
+                        <Link to="/partner/auth/signup" className='auth-link text-light'>Sign up</Link>
                     </div>
                 </div>
 
@@ -46,10 +48,10 @@ const LoginForm = () => {
                     </label>
                 </div>
                 
-                <Link to='/customer/verification' className='auth-btn text-light'>Log in</Link>
+                <Link to='/partner/dashboard/panel' className='auth-btn text-light'>Log in</Link>
 
                 <h6 className='text-center mb-0 mt-4'>
-                    <Link to='/customer/login' className='text-light fs-small fw-light'>Login as Customer</Link>
+                    <Link to='/customer/auth/login' className='text-light fs-small fw-light'>Login as Customer</Link>
                 </h6>
             </div>
         </div>

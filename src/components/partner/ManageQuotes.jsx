@@ -8,14 +8,14 @@ const ManageQuotes = () => {
   return (
     <div className='container-fluid p-4 dashboard-content'>
         <div className="panel-top d-flex align-items-center justify-content-between mb-4">
-          <div>
+          <div className='panel-left'>
             <h5 className='mb-0 fw-600'>Manage Quotes</h5>
             <p className='text-muted mb-0 text-light fs-small'>
               Sunday, 29 May 2022
             </p>
           </div>
 
-          <div className='d-flex align-items-center'>
+          <div className='d-flex align-items-center panel-right'>
             <div className="quotes-search me-3">
                 <img src={quotesSearch} alt="" />
                 <input type="text" className='text-muted' placeholder='Search' />
@@ -31,13 +31,12 @@ const ManageQuotes = () => {
                 <div className='d-flex align-items-center fs-small me-3'>
                   <img src={user} alt="" />
                   Mohammed
-                </div>
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-              </ul>
+                            </div>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><Link class="dropdown-item" to="#">Profile</Link></li>
+                            <li><Link class="dropdown-item" to="#">Logout</Link></li>
+                        </ul>
             </div>
           </div>
         </div>

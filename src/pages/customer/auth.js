@@ -7,13 +7,14 @@ import Password from '../../components/customer/Password';
 import LoginForm from '../../components/customer/LoginForm';
 
 const CustomerAuth = () => {
+
   return (
     <div>
         <DarkHeader />
           <Routes>
             <Route path="/signup" element={<SignupForm />} />
             <Route path="/login" element={<LoginForm />} />
-            <Route path="/verifiaction" element={<Verification />} />
+            <Route path="/verification" element={<Verification />} />
             <Route path="/password" element={<Password />} />
           </Routes>
     </div>

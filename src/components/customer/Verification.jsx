@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from "react-router-dom";
 
 const Verification = () => {
+
   return (
     <div className='auth-container py-5'>
         <div className="container">
@@ -16,7 +17,7 @@ const Verification = () => {
                     <input type="text" className='form-control px-3 me-3 fs-2 text-center' maxLength={1} />
                     <input type="text" className='form-control px-3 fs-2 text-center' maxLength={1} />
                 </div>
-                <Link to='/customer/password' className='auth-btn text-light mb-4'>Verify</Link>
+                <Link to='/customer/auth/password' className='auth-btn text-light mb-4'>Verify</Link>
                 <div className="auth-links-container mb-3">
                     <div className="auth-links d-flex align-items-center justify-content-center">
                         <p className="mb-0 text-muted">Resend in <span className='text-light ms-2'>04:59</span></p>

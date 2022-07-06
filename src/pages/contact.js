@@ -4,6 +4,9 @@ import Footer from '../components/Footer'
 import Header from '../components/Header'
 
 const Contact = () => {
+
+  document.title = 'Reno | Contact us'
+
   return (
     <div>
         <Header />

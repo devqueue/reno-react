@@ -21,14 +21,14 @@ const PaidFinanceQuotes = () => {
         quotes ? (
             <div className='container-fluid p-4 dashboard-content' style={{ display: 'flex', flexDirection: 'column' }}>
                 <div className="panel-top d-flex align-items-center justify-content-between">
-                    <div>
+                    <div className='panel-left'>
                         <h5 className='mb-0 fw-600'>Paid Finance Quotes</h5>
                         <p className='text-muted mb-0 text-light fs-small'>
                         Sunday, 29 May 2022
                         </p>
                     </div>
 
-                    <div className='d-flex align-items-center'>
+                    <div className='d-flex align-items-center panel-right'>
 
                         <div className="quotes-search me-3">
                             <img src={quotesSearch} alt="" />
@@ -48,9 +48,8 @@ const PaidFinanceQuotes = () => {
                             </div>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li><Link class="dropdown-item" to="#">Action</Link></li>
-                            <li><Link class="dropdown-item" to="#">Another action</Link></li>
-                            <li><Link class="dropdown-item" to="#">Something else here</Link></li>
+                            <li><Link class="dropdown-item" to="#">Profile</Link></li>
+                            <li><Link class="dropdown-item" to="#">Logout</Link></li>
                         </ul>
                         </div>
                     </div>
@@ -60,7 +59,7 @@ const PaidFinanceQuotes = () => {
                     <div className="col-12 mt-3">
                         <div className="request-card quote-card">
                             
-                            <div className='d-flex justify-content-between fs-small'>
+                            <div className='d-flex justify-content-between fs-small quote-card-container'>
                                 <ul>
                                     <li className='mb-3'>
                                         <span className='text-muted'>Company</span>
@@ -101,14 +100,14 @@ const PaidFinanceQuotes = () => {
                                     <img src={success} alt="" />
                                 </div>
                             </div>
-                            <button className='btn text-darkBlue border border-color-darkBlue finance-btn' data-bs-toggle="modal" data-bs-target="#paidModal">I confirm that I’ve received products and services from the merchant</button>
+                            <button className='btn text-darkBlue border border-color-darkBlue finance-btn hover-bg' data-bs-toggle="modal" data-bs-target="#paidModal">I confirm that I’ve received products and services from the merchant</button>
                         </div>
                     </div>
                     
                     <div className="col-12 mt-3">
                         <div className="request-card quote-card">
                             
-                            <div className='d-flex justify-content-between fs-small'>
+                            <div className='d-flex justify-content-between fs-small quote-card-container'>
                                 <ul>
                                     <li className='mb-3'>
                                         <span className='text-muted'>Company</span>

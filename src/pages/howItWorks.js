@@ -7,6 +7,9 @@ import Merchants from '../components/howItWorks/Merchants'
 import Steps from '../components/howItWorks/Steps'
 
 const HowItWorks = () => {
+
+  document.title = 'Reno | How it Works'
+
   return (
     <div>
         <Header />

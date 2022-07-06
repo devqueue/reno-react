@@ -5,6 +5,91 @@
     .arrows2 {
         margin-top: 20px;
     }
+    .home-banner {
+        background-color: #000000d0 !important;
+        background-blend-mode: darken;
+    }
+    .banner-img {
+        filter: brightness(.7);
+    }
+    .banner-title {
+        color: #e8fcff;
+    }
+    .banner-list {
+        color: #fff;
+    }
+    .banner-text p {
+        color: #fff;
+    }
+}
+
+@media (max-width: 968px) {
+    .menu-toggle-btn {
+        display: flex;
+    }
+    .customer-sidebar, .partner-sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 9;
+        transform: translateX(-100%);
+        transition: .5s;
+    }
+    .customer-sidebar.active, .partner-sidebar.active {
+        transform: translateX(0);
+    }
+}
+
+@media (max-width: 850px) {
+    .finance-step {
+        /* width: 50%;
+        margin: 10px 0; */
+    }
+}
+
+@media (max-width: 800px) {
+    .panel-top {
+        flex-direction: column;
+    }
+    .panel-left {
+        width: 100%;
+    }
+    .panel-right {
+        width: 100%;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+    .quote-card {
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+    .quote-card img {
+        display: none;
+    }
+    .quote-card ul {
+        width: 100%;
+        margin-bottom: 30px;
+    }
+    .quote-card li {
+        display: flex;
+        justify-content: space-between;
+    }
+    .quote-card li span {
+        min-width: fit-content;
+    }
+    .quote-card a, .quote-card button {
+        width: 100%;
+    }
+    .request-card ul:first-child {
+        margin-top: 40px;
+    }
+    .quote-card-container {
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+    .request-status-container {
+        display: flex;
+    }
 }
 
 @media (max-width: 768px) {
@@ -14,6 +99,43 @@
     .partner-map {
         margin-top: 20px;
     }
+    .bar-chart {
+        height: 300px !important;
+    }
+}
+
+@media (max-width: 700px) {
+    .bar-chart {
+        height: 300px !important;
+    }
+}
+
+@media (max-width: 650px) {
+    .quotes-search {
+        width: 100%;
+        margin-top: 10px;
+        order: 2;
+    }
+    .table-paginations {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 530px) {
+    .step-btns-container button {
+        width: 100% !important;
+        flex: none !important;
+    }
+    .step-btns-container a {
+        width: 100% !important;
+        flex: none !important;
+        margin-right: 0 !important;
+        margin-bottom: 10px;
+    }
+    .finance-step {
+        transform: scale(.8);
+    }
 }
 
 @media (max-width: 500px) {
@@ -22,10 +144,38 @@
         flex: none;
         margin-bottom: 10px;
     }
+    .donught-text {
+        width: 100%;
+        flex: none;
+        margin-bottom: 15px;
+    }
+    .donught-container {
+        margin: auto;
+    }
+    .line-heading-title {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .request-status-container {
+        width: 100%;
+        border-radius: 10px 10px 0 0 !important;
+    }
+    .request-status-container div {
+        flex: 1;
+    }
+    .bar-chart {
+        height: 200px !important;
+    }
 }
 
 @media (max-width: 450px) {
     .services-column {
         width: 100%;
+    }
+}
+
+@media (max-width: 430px) {
+    .finance-step {
+        transform: scale(.7);
     }
 }

@@ -11,20 +11,22 @@ import tick from '../../assets/images/tick.png'
 
 const NewApllication = () => {
 
+    document.title = 'Reno | Partner Portal'
+
     const [step, setStep] = useState(1)
     const [choice, setChoice] = useState(true)
 
   return (
     <div className='container-fluid p-4 dashboard-content'>
         <div className="panel-top d-flex align-items-center justify-content-between">
-          <div>
+          <div className='panel-left'>
             <h5 className='mb-0 fw-600'>New Application</h5>
             <p className='text-muted mb-0 text-light fs-small'>
               Sunday, 29 May 2022
             </p>
           </div>
 
-          <div className='d-flex align-items-center'>
+          <div className='d-flex align-items-center panel-right'>
             <Link to='#' className='notification-btn'>
               <AiFillBell />
               <span>5</span>
@@ -35,13 +37,12 @@ const NewApllication = () => {
                 <div className='d-flex align-items-center fs-small me-3'>
                   <img src={user} alt="" />
                   Mohammed
-                </div>
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-              </ul>
+                            </div>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><Link class="dropdown-item" to="#">Profile</Link></li>
+                            <li><Link class="dropdown-item" to="#">Logout</Link></li>
+                        </ul>
             </div>
           </div>
         </div>
@@ -90,25 +91,34 @@ const NewApllication = () => {
 
                             <div className="col-12 form-group mb-4">
                                 <label className='form-label text-muted fs-small'>Purchase Total</label>
-                                <input type="text" className='form-control' value={'1200'} />
+                                <div className="sar-container">
+                                    <input type="text" className='form-control' value={'1200'} />
+                                    <h5 className='fs-small text-darkBlue'>SAR</h5>
+                                </div>
                             </div>
                             <div className="col-12 form-group mb-4">
                                 <label className='form-label text-muted fs-small'>Deposit Amount</label>
-                                <input type="text" className='form-control' value={'0'} />
+                                <div className="sar-container">
+                                    <input type="text" className='form-control' value={'0'} />
+                                    <h5 className='fs-small text-darkBlue'>SAR</h5>
+                                </div>
                             </div>
                             <div className="col-12 form-group mb-4">
                                 <label className='form-label text-muted fs-small'>Balance owning</label>
-                                <input type="text" className='form-control' value={'1200'} />
+                                <div className="sar-container">
+                                    <input type="text" className='form-control' value={'1200'} />
+                                    <h5 className='fs-small text-darkBlue'>SAR</h5>
+                                </div>
                             </div>
                             <div className="col-12 mb-4">
                                 <label className='form-label text-muted fs-small'>Is Customer using reno for the first time</label>
                                 <div className="yes-no-container">
                                     <button className={`btn ${choice ? 'active' : ''}`} onClick={() => setChoice(true)}>Yes</button>
-                                    <button className={`btn ${!choice ? 'active' : ''}`} onClick={() => setChoice(false)}>no</button>
+                                    <button className={`btn ${!choice ? 'active' : ''}`} onClick={() => setChoice(false)}>No</button>
                                 </div>
                             </div>
 
-                            <div className="col-12 mt-4 d-flex justify-content-center">
+                            <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
                                 <Link to='/partner/dashboard/panel' className="btn finance-form-cancel me-3" style={{ flex: '1' }}>Cancel</Link>
                                 <button className="btn bg-darkBlue text-light" style={{ flex: '1' }} onClick={() => setStep(2)}>Save and Continue</button>
                             </div>
@@ -146,7 +156,7 @@ const NewApllication = () => {
                                 </div>
                             </div>
 
-                            <div className="col-12 mt-4 d-flex justify-content-center">
+                            <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
                                 <Link to='/partner/dashboard/panel' className="btn finance-form-cancel me-3" style={{ flex: '1' }}>Cancel</Link>
                                 <button className="btn bg-darkBlue text-light" style={{ flex: '1' }} onClick={() => setStep(3)}>Save and Continue</button>
                             </div>
@@ -202,7 +212,7 @@ const NewApllication = () => {
                                 </select>
                             </div>
 
-                            <div className="col-12 mt-4 d-flex justify-content-center">
+                            <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
                                 <Link to='/partner/dashboard/panel' className="btn finance-form-cancel me-3" style={{ flex: '1' }}>Cancel</Link>
                                 <button className="btn bg-darkBlue text-light" style={{ flex: '1' }} onClick={() => setStep(4)}>Save and Continue</button>
                             </div>
@@ -297,7 +307,7 @@ const NewApllication = () => {
                                 </div>
                             </div>      
 
-                            <div className="col-12 mt-4 d-flex justify-content-center">
+                            <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
                                 <Link to='/partner/dashboard/panel' className="btn finance-form-cancel me-3">Cancel</Link>
                                 <button className="btn bg-darkBlue text-light" data-bs-toggle="modal" data-bs-target="#requestModal">Send Quote</button>
                             </div>

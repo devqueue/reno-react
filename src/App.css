@@ -7,7 +7,7 @@
     font-family: 'Inter', sans-serif;
 }
 
-html {
+html, body {
     overflow-x: hidden;
 }
 
@@ -287,6 +287,22 @@ a {
 
 .footer-list a {
     color: #4A525A;
+    width: fit-content;
+    position: relative;
+}
+
+.footer-list a::after {
+    position: absolute;
+    content: '';
+    width: 0%;
+    height: 1.5px;
+    background-color: gray;
+    display: block;
+    transition: .5s;
+}
+
+.footer-list a:hover::after {
+    width: 100%;
 }
 
 .footer-social-media {
@@ -306,7 +322,14 @@ a {
     align-items: center;
     justify-content: center;
     background-color: #0B0A31;
+    border: 1.5px solid #0B0A31;
     border-radius: 50%;
+    transition: .5s;
+}
+
+.footer-social-media a:hover {
+    background: none;
+    color: #0B0A31;
 }
 /* 
 .title-bg {
@@ -787,6 +810,7 @@ a {
     width: 100%;
     height: 100vh;
     display: flex;
+    position: relative;
 }
 
 .text-lightGray {
@@ -892,6 +916,11 @@ a {
     align-items: center;
     border-radius: 10px;
     padding: 10px;
+    transition: .5s;
+}
+
+.widget:hover {
+    box-shadow: 0 0 30px #dedede;
 }
 
 .widget-text {
@@ -922,6 +951,7 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .bar-chart-heading select {
@@ -1040,6 +1070,11 @@ a {
     background-color: #fff;
     border-radius: 10px;
     padding: 20px;
+    transition: .5s;
+}
+
+.quote-card:hover {
+    box-shadow: 0 0 30px #dedede;
 }
 
 .quote-card li {
@@ -1113,9 +1148,10 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
     background-color: #fff;
     border-radius: 10px;
-    padding: 20px 40px;
+    padding: 20px;
 }
 
 .finance-step {
@@ -1123,6 +1159,7 @@ a {
     align-items: center;
     flex-direction: column;
     text-align: center;
+    width: 25%;
 }
 
 .finance-step .step-img {
@@ -1320,6 +1357,7 @@ a {
     border-width: 1.6px !important;
     font-size: 16px;
     margin-top: 25px;
+    height: fit-content !important;
 }
 
 
@@ -1368,6 +1406,11 @@ a {
     background-color: #fff;
     border-radius: 10px;
     padding: 20px;
+    transition: .5s;
+}
+
+.panel-card:hover {
+    box-shadow: 0 0 30px #dedede;
 }
 
 .panel-card button, .panel-card a {
@@ -1442,6 +1485,10 @@ a {
     padding: 20px;
 }
 
+.line-heading {
+    flex-wrap: wrap;
+}
+
 .time-btns {
     width: 210px;
     height: 34px;
@@ -1477,6 +1524,12 @@ a {
     background-color: #0B0A3105;
     border: 1px solid #CDCDCD;
     padding: 10px;
+    flex-wrap: wrap;
+}
+
+.donught-text {
+    flex: 1;
+    margin-right: 20px;
 }
 
 .donught-container {
@@ -1527,6 +1580,7 @@ a {
     height: 100%;
     padding: 10px 0;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .applications-table th .th-content img {
@@ -1536,6 +1590,10 @@ a {
 
 .applications-table td {
     border-color: lightgray;
+}
+
+.table-paginations-container {
+    flex-wrap: wrap;
 }
 
 .table-paginations {
@@ -1586,4 +1644,79 @@ a {
     height: 100%;
     opacity: 0;
     cursor: pointer;
+}
+
+.sar-container{
+    position: relative;
+}
+
+.sar-container h5 {
+    width: fit-content;
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+}
+
+.language-select {
+    width: fit-content;
+}
+
+.step-btns-container {
+    flex-wrap: wrap;
+}
+
+.bar-chart {
+    height: 500px !important;
+}
+
+.hover-border, .hover-bg {
+    transition: .5s;
+}
+
+.hover-border:hover {
+    background: none;
+    border: 1.5px solid #0B0A31;
+    color: #0B0A31 !important;
+}
+
+.hover-bg:hover {
+    background-color: #0B0A31;
+    color: #fff !important;
+}
+
+.login-link {
+    transition: .5s;
+}
+
+.login-link:hover {
+    background: none !important;
+    color: #FF6D00 !important;
+    border: 1px solid #FF6D00;
+}
+
+.get-started-link {
+    transition: .5s;
+}
+
+.get-started-link:hover {
+    background: none !important;
+    color: #FF6D00 !important;
+    border: 1px solid #FF6D00;
+}
+
+.menu-toggle-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    background-color: #0B0A31;
+    color: #fff;
+    border-radius: 0 0 0 5px;
+    display: none;
 }

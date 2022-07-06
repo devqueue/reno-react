@@ -29,7 +29,7 @@ const Password = () => {
                         <img src={eye} onClick={() => setPass2(!pass2)} className='reveal-btn' alt="" />
                     </div>
                 </div>
-                <Link to='/customer/password' className='auth-btn text-light'>Register</Link>
+                <Link to='/customer/dashboard/panel' className='auth-btn text-light'>Register</Link>
             </div>
         </div>
     </div>

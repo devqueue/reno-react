@@ -11,14 +11,14 @@ const Applications = () => {
   return (
     <div className='container-fluid p-4 dashboard-content'>
         <div className="panel-top d-flex align-items-center justify-content-between">
-          <div>
+          <div className='panel-left'>
             <h5 className='mb-0 fw-600'>Applications</h5>
             <p className='text-muted mb-0 text-light fs-small'>
               Sunday, 29 May 2022
             </p>
           </div>
 
-          <div className='d-flex align-items-center'>
+          <div className='d-flex align-items-center panel-right'>
             <Link to='#' className='notification-btn'>
               <AiFillBell />
               <span>5</span>
@@ -29,13 +29,12 @@ const Applications = () => {
                 <div className='d-flex align-items-center fs-small me-3'>
                   <img src={user} alt="" />
                   Mohammed
-                </div>
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-              </ul>
+                            </div>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><Link class="dropdown-item" to="#">Profile</Link></li>
+                            <li><Link class="dropdown-item" to="#">Logout</Link></li>
+                        </ul>
             </div>
           </div>
         </div>
@@ -300,7 +299,7 @@ const Applications = () => {
                 </tbody>
             </table>
 
-            <div className="d-flex align-items-center justify-content-between">
+            <div className="d-flex align-items-center justify-content-between table-paginations-container">
                 <h6 className='fs-small mb-0'>Showing 10 of 100 entries</h6>
                 <div className="table-paginations">
                     <span className='me-2'><BsChevronLeft /></span>

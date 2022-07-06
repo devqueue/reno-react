@@ -1,13 +1,13 @@
 import React from 'react'
 import logoDark from '../assets/images/logoDark.png'
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 
 const Header = () => {
   return (
     <div>
         <nav class="navbar navbar-expand-lg navbar-light">
             <div class="container">
-                <a class="navbar-brand" href="#">
+                <a class="navbar-brand" href="/">
                     <img src={logoDark} className='logo' alt="" />
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,12 +30,12 @@ const Header = () => {
                     </ul>
                 
                     <ul className='navbar-nav'>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <button className='btn bg-color-primary fs-small text-light px-4'>Login</button>
-                            </a>
+                        <li class="nav-item px-3 px-lg-0">
+                            <Link class="nav-link" to="/customer/auth/login">
+                                <button className='btn bg-color-primary fs-small text-light px-4 login-link'>Login</button>
+                            </Link>
                         </li>
-                        <li className="nav-item d-flex align-items-center">
+                        <li className="nav-item px-3 px-lg-0 d-flex align-items-center">
                             <select class="form-select shadow-none fs-small language-select" aria-label="Default select example">
                                 <option selected>English</option>
                                 <option>Arabic</option>

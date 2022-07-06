@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AiFillBell } from 'react-icons/ai'
 import { IoMdClose } from 'react-icons/io'
@@ -13,6 +13,10 @@ import logoDark from '../../assets/images/logoDark.png'
 import qr from '../../assets/images/qr.png'
 
 const Panel = () => {
+
+  const options = {
+    maintainAspectRatio: false
+  }
 
   const data = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
@@ -39,17 +43,19 @@ const Panel = () => {
     }]
   }
 
+  const [tab, setTab] = useState(1)
+
   return (
     <div className='container-fluid p-4 dashboard-content'>
         <div className="panel-top d-flex align-items-center justify-content-between">
-          <div>
+          <div className='panel-left'>
             <h5 className='mb-0 fw-600'>Customer Portal</h5>
             <p className='text-muted mb-0 text-light fs-small'>
               Sunday, 29 May 2022
             </p>
           </div>
 
-          <div className='d-flex align-items-center'>
+          <div className='d-flex align-items-center panel-right'>
             <Link to='#' className='notification-btn'>
               <AiFillBell />
               <span>5</span>
@@ -60,13 +66,12 @@ const Panel = () => {
                 <div className='d-flex align-items-center fs-small me-3'>
                   <img src={user} alt="" />
                   Mohammed
-                </div>
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><a class="dropdown-item" href="#">Something else here</a></li>
-              </ul>
+                            </div>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <li><Link class="dropdown-item" to="#">Profile</Link></li>
+                            <li><Link class="dropdown-item" to="#">Logout</Link></li>
+                        </ul>
             </div>
           </div>
         </div>
@@ -134,7 +139,7 @@ const Panel = () => {
                 </select>
               </div>
               
-              <Bar data={data} />
+                <Bar data={data} className='bar-chart' options={options} />
             </div>
           </div>
         </div>
@@ -148,62 +153,117 @@ const Panel = () => {
                   <h5 className="fw-600">Quotes Status</h5>
                 </div>
                 <div className="col-lg-4 text-center">
-                  <button className="btn bg-darkBlue text-light fs-small me-3">Current</button>
-                  <button className="btn fs-small text-muted">Past</button>
+                  <button className={`btn fs-small ${tab == 1 ? 'bg-darkBlue text-light' : 'text-muted'} me-3`} onClick={() => setTab(1)}>Current</button>
+                  <button className={`btn fs-small ${tab == 2 ? 'bg-darkBlue text-light' : 'text-muted'}`} onClick={() => setTab(2)}>Past</button>
                 </div>
               </div>
 
               <div className="table-responsive mt-3">
-              <table class="table border-top">
-                <thead>
-                  <tr className='text-muted'>
-                    <th scope="col">Reference Number</th>
-                    <th scope="col">Finance Product</th>
-                    <th scope="col">Purchase Total</th>
-                    <th scope="col">Deposit Amount</th>
-                    <th scope="col">Monthly Payment</th>
-                    <th scope="col">Payment Period</th>
-                    <th scope="col">Product Category</th>
-                    <th scope="col">Product Detail</th>
-                    <th scope="col">Quote Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>XXXXX</td>
-                    <td>0% interest payment plan</td>
-                    <td>000</td>
-                    <td>0000</td>
-                    <td>000</td>
-                    <td>000</td>
-                    <td>000</td>
-                    <td>000</td>
-                    <td>000</td>
-                  </tr>
-                  <tr>
-                    <td>XXXXX</td>
-                    <td>0% interest payment plan</td>
-                    <td>000</td>
-                    <td>0000</td>
-                    <td>000</td>
-                    <td>000</td>
-                    <td>000</td>
-                    <td>000</td>
-                    <td>000</td>
-                  </tr>
-                  <tr>
-                    <td>XXXXX</td>
-                    <td>0% interest payment plan</td>
-                    <td>000</td>
-                    <td>0000</td>
-                    <td>000</td>
-                    <td>000</td>
-                    <td>000</td>
-                    <td>000</td>
-                    <td>000</td>
-                  </tr>
-                </tbody>
-              </table>
+                {
+                  tab == 1 ? (
+                    <table class="table border-top">
+                      <thead>
+                        <tr className='text-muted'>
+                          <th scope="col">Reference Number</th>
+                          <th scope="col">Finance Product</th>
+                          <th scope="col">Purchase Total</th>
+                          <th scope="col">Deposit Amount</th>
+                          <th scope="col">Monthly Payment</th>
+                          <th scope="col">Payment Period</th>
+                          <th scope="col">Product Category</th>
+                          <th scope="col">Product Detail</th>
+                          <th scope="col">Quote Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>XXXXX</td>
+                          <td>0% interest payment plan</td>
+                          <td>000</td>
+                          <td>0000</td>
+                          <td>000</td>
+                          <td>000</td>
+                          <td>000</td>
+                          <td>000</td>
+                          <td>000</td>
+                        </tr>
+                        <tr>
+                          <td>XXXXX</td>
+                          <td>0% interest payment plan</td>
+                          <td>000</td>
+                          <td>0000</td>
+                          <td>000</td>
+                          <td>000</td>
+                          <td>000</td>
+                          <td>000</td>
+                          <td>000</td>
+                        </tr>
+                        <tr>
+                          <td>XXXXX</td>
+                          <td>0% interest payment plan</td>
+                          <td>000</td>
+                          <td>0000</td>
+                          <td>000</td>
+                          <td>000</td>
+                          <td>000</td>
+                          <td>000</td>
+                          <td>000</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  ) : (
+                    <table class="table border-top">
+                      <thead>
+                        <tr className='text-muted'>
+                          <th scope="col">Reference Number</th>
+                          <th scope="col">Finance Product</th>
+                          <th scope="col">Purchase Total</th>
+                          <th scope="col">Deposit Amount</th>
+                          <th scope="col">Monthly Payment</th>
+                          <th scope="col">Payment Period</th>
+                          <th scope="col">Product Category</th>
+                          <th scope="col">Product Detail</th>
+                          <th scope="col">Quote Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>134123</td>
+                          <td>0% interest payment plan</td>
+                          <td>123</td>
+                          <td>868</td>
+                          <td>86786</td>
+                          <td>3536</td>
+                          <td>35345</td>
+                          <td>7657</td>
+                          <td>4654</td>
+                        </tr>
+                        <tr>
+                          <td>1342134</td>
+                          <td>0% interest payment plan</td>
+                          <td>4324</td>
+                          <td>8678</td>
+                          <td>867868</td>
+                          <td>678</td>
+                          <td>67868</td>
+                          <td>678678</td>
+                          <td>678</td>
+                        </tr>
+                        <tr>
+                          <td>131324</td>
+                          <td>0% interest payment plan</td>
+                          <td>3255</td>
+                          <td>2345</td>
+                          <td>000</td>
+                          <td>546365</td>
+                          <td>74</td>
+                          <td>6788</td>
+                          <td>678768</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  )
+                }
               </div>
             </div>
 

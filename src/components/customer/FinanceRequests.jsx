@@ -21,14 +21,14 @@ const FinanceRequests = () => {
         quotes ? (
             <div className='container-fluid p-4 dashboard-content' style={{ display: 'flex', flexDirection: 'column' }}>
                 <div className="panel-top d-flex align-items-center justify-content-between">
-                    <div>
+                    <div className='panel-left'>
                         <h5 className='mb-0 fw-600'>Finance Requests </h5>
                         <p className='text-muted mb-0 text-light fs-small'>
                         Sunday, 29 May 2022
                         </p>
                     </div>
 
-                    <div className='d-flex align-items-center'>
+                    <div className='d-flex align-items-center panel-right'>
 
                         <div className="quotes-search me-3">
                             <img src={quotesSearch} alt="" />
@@ -48,9 +48,8 @@ const FinanceRequests = () => {
                             </div>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li><Link class="dropdown-item" to="#">Action</Link></li>
-                            <li><Link class="dropdown-item" to="#">Another action</Link></li>
-                            <li><Link class="dropdown-item" to="#">Something else here</Link></li>
+                            <li><Link class="dropdown-item" to="#">Profile</Link></li>
+                            <li><Link class="dropdown-item" to="#">Logout</Link></li>
                         </ul>
                         </div>
                     </div>
@@ -93,7 +92,7 @@ const FinanceRequests = () => {
                             </ul>
                             <div>
                                 <br /><br />
-                                <button className='btn text-light bg-darkBlue fs-small' data-bs-toggle="modal" data-bs-target="#payModal">Request Finance</button>
+                                <button className='btn text-light bg-darkBlue fs-small' data-bs-toggle="modal" data-bs-target="#payModal">Make First Payment</button>
                                 {/* <button className='btn close-btn fs-small' data-bs-toggle="modal" data-bs-target="#denyModal">Deny </button> */}
                             </div>
                             <div className="request-status-container">
@@ -228,7 +227,7 @@ const FinanceRequests = () => {
                             </ul>
                             <div>
                                 <br /><br />
-                                <button className='btn text-light bg-darkBlue fs-small' data-bs-toggle="modal" data-bs-target="#payModal">Request Finance</button>
+                                <button className='btn text-light bg-darkBlue fs-small' data-bs-toggle="modal" data-bs-target="#payModal">Make First Payment</button>
                                 {/* <button className='btn close-btn fs-small' data-bs-toggle="modal" data-bs-target="#denyModal">Deny </button> */}
                             </div>
                             <div className="request-status-container">

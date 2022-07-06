@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Panel from '../../components/partner/Panel'
 import Sidebar from '../../components/partner/Sidebar'
 import { Routes, Route } from 'react-router-dom'
@@ -6,11 +6,20 @@ import NewApllication from './NewApplication'
 import Dashboard from '../../components/partner/Dashboard'
 import ManageQuotes from '../../components/partner/ManageQuotes'
 import Applications from '../../components/partner/Applications'
+import { HiOutlineMenu } from 'react-icons/hi'
 
 const PartnerDashboard = () => {
+
+  const [active, setActive] = useState(false)
+
+  document.title = 'Reno | Partner Portal'
+
   return (
     <div className='admin-panel-container'>
-        <Sidebar />
+        <div className='menu-toggle-btn' onClick={() => {setActive(!active)}}>
+          <HiOutlineMenu />
+        </div>
+        <Sidebar isActive={active} />
         <Routes>
             <Route path='/panel' element={<Panel />} />
             <Route path='/panel/newApplication' element={<NewApllication />} />

@@ -19,7 +19,7 @@ const LocationContent = () => {
                 <div className="col-12 partners-filters mb-4">
                     <div class="dropdown me-2 partners-dropdown">
                         <button class="btn btn-secondary dropdown-toggle input-field dropdown-btn text-muted" type="button" id="inquiryType" data-bs-toggle="dropdown" aria-expanded="false">
-                            Inquiry Type
+                            Select City
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="inquiryType">
                             <li><Link class="dropdown-item" to="#">Type 1</Link></li>
@@ -29,7 +29,7 @@ const LocationContent = () => {
                     </div>
                     <div class="dropdown me-2 partners-dropdown">
                         <button class="btn btn-secondary dropdown-toggle input-field dropdown-btn text-muted" type="button" id="inquiryType" data-bs-toggle="dropdown" aria-expanded="false">
-                            Inquiry Type
+                            Select Category
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="inquiryType">
                             <li><Link class="dropdown-item" to="#">Type 1</Link></li>

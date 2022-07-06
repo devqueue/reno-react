@@ -4,6 +4,9 @@ import Header from '../components/Header'
 import LocationContent from '../components/location/LocationContent'
 
 const Location = () => {
+
+  document.title = 'Reno | Partners Location'
+
   return (
     <div>
         <Header />

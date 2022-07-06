@@ -6,6 +6,9 @@ import Features from '../components/home/Features'
 import Services from '../components/home/Services'
 
 const Home = () => {
+
+  document.title = 'Reno'
+
   return (
     <div>
         <Header />
