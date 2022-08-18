@@ -19,21 +19,21 @@ const Sidebar = ({ isActive }) => {
 
             <h6 className='fs-small mb-3 partner-sidebar-title'>Main Menu</h6>
 
-            <ul>
+            <ul style={{marginLeft : '-30px'}}>
                 <li>
-                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/partner/dashboard/panel'>
+                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/partner/dashboard/panel' style={{textDecoration: 'none'}} >
                         <RiHomeLine />
                         <span>Merchant Portal</span>
                     </NavLink>
-                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/partner/dashboard/dashboard'>
+                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/partner/dashboard/dashboard' style={{textDecoration: 'none'}}>
                         <AiOutlineAppstore />
                         <span>Dashboard</span>
                     </NavLink>
-                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/partner/dashboard/applications'>
+                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/partner/dashboard/applications' style={{textDecoration: 'none'}}>
                         <AiOutlineSend />
                         <span>Applications</span>
                     </NavLink>
-                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/partner/dashboard/manageQuotes'>
+                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/partner/dashboard/manageQuotes' style={{textDecoration: 'none'}}>
                         <BsChatLeftQuote />
                         <span>Manage Quotes</span>
                     </NavLink>
@@ -41,23 +41,22 @@ const Sidebar = ({ isActive }) => {
             </ul>
 
         </div>
-        
-        
+
         <div>
 
             <h6 className='fs-small mb-3 mt-5 partner-sidebar-title'>SUPPORT</h6>
 
-            <ul>
+            <ul style={{marginLeft : '-30px'}}>
                 <li>
-                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/community'>
+                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/community' style={{textDecoration: 'none'}}>
                         <BsPeople />
                         <span>Community</span>
                     </NavLink>
-                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/help'>
+                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/help' style={{textDecoration: 'none'}}>
                         <BsQuestionCircle />
                         <span>Help & Support</span>
                     </NavLink>
-                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/settings'>
+                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/settings' style={{textDecoration: 'none'}}>
                         <IoSettingsOutline />
                         <span>Settings</span>
                     </NavLink>

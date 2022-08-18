@@ -18,19 +18,19 @@ const Footer = () => {
                 <div className="col-lg-2 col-md-6 mb-3">
                     <h5 className='text-darkBlue mb-3'>Homeowners</h5>
                     <ul className='footer-list'>
-                        <li><a href='/partner/auth/signup'>Sign up</a></li>
-                        <li><a href='/partner/auth/login'>Log in</a></li>
-                        <li><a href='/howItWorks'>How it works</a></li>
-                        <li><a href='/support'>Support</a></li>
+                        <li><a href='/partner/auth/signup' style={{textDecoration: 'none'}}>Sign up</a></li>
+                        <li><a href='/partner/auth/login' style={{textDecoration: 'none'}}>Log in</a></li>
+                        <li><a href='/howItWorks' style={{textDecoration: 'none'}}>How it works</a></li>
+                        <li><a href='/support' style={{textDecoration: 'none'}}>Support</a></li>
                     </ul>
                 </div>
                 <div className="col-lg-2 col-md-6 mb-3">
                     <h5 className='text-darkBlue mb-3'>Business</h5>
                     <ul className='footer-list'>
-                        <li><a href='/customer/auth/signup'>Sign up</a></li>
-                        <li><a href='/customer/auth/login'>Log in</a></li>
-                        <li><a href='/howItWorks'>How it works</a></li>
-                        <li><a href='/support'>Support</a></li>
+                        <li><a href='/customer/auth/signup' style={{textDecoration: 'none'}}>Sign up</a></li>
+                        <li><a href='/customer/auth/login' style={{textDecoration: 'none'}}>Log in</a></li>
+                        <li><a href='/howItWorks' style={{textDecoration: 'none'}}>How it works</a></li>
+                        <li><a href='/support' style={{textDecoration: 'none'}}>Support</a></li>
                     </ul>
                 </div>
                 <div className="col-lg-4 col-md-6 mb-3">

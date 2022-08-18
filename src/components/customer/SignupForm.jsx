@@ -11,8 +11,8 @@ const SignupForm = () => {
             <div className="col-lg-5 col-md-6 m-auto">
                 <div className="auth-links-container">
                     <div className="auth-links">
-                        <Link to="/customer/auth/login" className='auth-link text-light'>Login</Link>
-                        <Link to="/customer/auth/signup" className='auth-link text-light active'>Sign up</Link>
+                        <Link to="/customer/auth/login" className='auth-link text-light' style={{textDecoration: 'none'}}>Login</Link>
+                        <Link to="/customer/auth/signup" className='auth-link text-light active' style={{textDecoration: 'none'}}>Sign up</Link>
                     </div>
                 </div>
 
@@ -60,9 +60,9 @@ const SignupForm = () => {
                         I agree to <Link className='text-light text-decoration-underline' to='/privacyPolicy'>Privacy Policy</Link>.
                     </label>
                 </div>
-                <Link to='/customer/auth/verification' className='auth-btn text-light'>Continue</Link>
+                <Link to='/customer/auth/verification' className='auth-btn text-light' style={{textDecoration: 'none'}}>Continue</Link>
                 <h6 className='text-center mb-0 mt-4'>
-                    <Link to='/partner/auth/signup' className='text-light fs-small fw-light'>Sign up as Merchant</Link>
+                    <Link to='/partner/auth/signup' className='text-light fs-small fw-light' style={{textDecoration: 'none'}}>Sign up as Merchant</Link>
                 </h6>
             </div>
         </div>

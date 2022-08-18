@@ -1,6 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
+import { ToastContainer } from 'react-toastify';
 import './Responsive.css';
+import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from './components/Header';
 import Home from './pages/home';
@@ -11,11 +13,16 @@ import Location from './pages/location';
 import PartnerAuth from './pages/partner/auth';
 import CustomerDashboard from './pages/customer/dashboard';
 import PartnerDashboard from './pages/partner/dashboard';
+import AllMerchantData from './pages/admin/MerchantsData'
+import AdminLogin from './components/adminComponents/AdminLogin'
+import AllMerchants from './components/adminComponents/MainPage'
+import AllQuotes from './pages/admin/QuotesData'
 
 function App() {
   return (
     <div className="App">
-      <Router>
+      <ToastContainer autoClose={2000} />
+      <Router >
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/howItWorks" element={<HowItWorks />} />
@@ -25,6 +32,10 @@ function App() {
           <Route path="/partner/auth/*" element={<PartnerAuth />} />
           <Route path="/customer/dashboard/*" element={<CustomerDashboard />} />
           <Route path="/partner/dashboard/*" element={<PartnerDashboard />} />
+          <Route path="/admin/*" element={<AllMerchantData />} />
+          <Route exact path='/admin/login' element={<AdminLogin />} />
+          <Route exact path='/admin/merchantsData' element={<AllMerchants />} />
+          <Route exact path='/admin/quotesData' element={<AllQuotes />} />
         </Routes>
       </Router>
     </div>

@@ -51,7 +51,7 @@ const Panel = () => {
                         <img src={partner1} alt="" />
                     </div>
                     <p className='my-4 fs-small m-auto text-muted text-center'>Create a new application to send quotes to your customers.</p>
-                    <Link className="btn text-light bg-darkBlue hover-border" to='/partner/dashboard/panel/newApplication'>New Application</Link>
+                    <Link className="btn text-dark bg-darkBlue border" to='/partner/dashboard/panel/newApplication' >New Application</Link>
                 </div>
             </div>
             <div className="col-lg-4 col-md-6 mb-3">
@@ -60,7 +60,7 @@ const Panel = () => {
                         <img src={partner2} alt="" />
                     </div>
                     <p className='my-4 fs-small m-auto text-muted text-center'>Create a new application to send quotes to your customers.</p>
-                    <button className="btn text-darkBlue border border-color-darkBlue hover-bg">Application Status</button>
+                    <button className="btn text-darkBlue border border-color-darkBlue ">Application Status</button>
                 </div>
             </div>
         </div>

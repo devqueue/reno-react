@@ -1,0 +1,38 @@
+const axios = require('axios');
+
+const API = axios.create({
+    baseURL: process.env.REACT_APP_API_URL
+    //baseURL: process.env.REACT_APP_API_SERVER_URL
+});
+
+const adminToken = JSON.parse(localStorage.getItem('reno-merchant-token'))
+
+
+// this is for using local storage in headers, otherwise it will not work
+API.interceptors.request.use((req) => {
+    if (localStorage.getItem('reno-merchant-token')) {
+        req.headers = {
+                'authorization' : `Bearer ${adminToken}`,
+                'reno-app-merchant-auth-token': JSON.parse(localStorage.getItem('reno-merchant-token')),
+                'Accept' : 'application/json',
+                'Content-Type': 'application/json'
+            }
+    }
+    return req;
+});
+
+
+// Merchant Routes
+const signUpMerchant = (data) => API.post(`/api/v1/merchants/register`, data);
+const signInMerchant = (data) => API.post(`/api/v1/merchants/signin`, data);
+const sendNewQuoteRequest = (data) => API.post(`/api/v1/quotes/postNew`, data);
+const getAllRecentSentQuotes = () => API.get(`/api/v1/quotes/getAllQuotesOfAMerchant`);
+
+
+
+module.exports = {
+    signUpMerchant,
+    signInMerchant,
+    sendNewQuoteRequest,
+    getAllRecentSentQuotes
+}

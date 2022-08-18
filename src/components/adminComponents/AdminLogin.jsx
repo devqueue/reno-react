@@ -1,59 +1,118 @@
-import React, { useState } from 'react'
-import { Link } from "react-router-dom";
+import React, { useState , useEffect } from 'react'
+import Header from '../../components/Header'
+import { toast } from 'react-toastify';
+import { Link , useNavigate } from "react-router-dom";
+import {signInAdmin} from '../../api/AdminApi'
+import { ThreeDots } from  'react-loader-spinner'
 import eye from '../../assets/icons/eye.png'
 import lock from '../../assets/images/lock.png'
 import tick from '../../assets/images/tick.png'
 
-const LoginForm = () => {
 
-    document.title = 'Reno | Customer Login'
+const LoginForm = () => {
+    document.title = 'Reno | Admin Login'
     const [pass1, setPass1] = useState(false)
 
+    const navigate = useNavigate();
+    const [ isFetching , setIsFetching ] = useState(false)
+    const [ isRemember , setRemember ] = useState(false)
+    const [ userData , setUserDate ] = useState({
+        email : '',
+        password : '',
+    })
+
+    // sending data
+    const sendData = async () => {
+        setIsFetching(true)
+        const {data} = await signInAdmin(userData);
+        if(data?.success === true){
+            toast.success("Admin Signed SuccessFully");
+            setUserDate({
+                email : '',
+                password : '',
+            })
+            if(isRemember === true){
+                localStorage.setItem("reno-admin-token", JSON.stringify(data?.Token));
+            }else{
+                sessionStorage.setItem("reno-admin-token", JSON.stringify(data?.Token));
+            }
+            await delay(1500)
+            setIsFetching(false)
+            navigate('/admin');
+        }else{
+            await delay(1500)
+            setIsFetching(false)
+            toast.error(data?.message);
+        }
+    }
+
+    // sleeping
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+
+    // checking if user is signed in or not
+    useEffect(() =>{
+        const adminToken = JSON.parse(localStorage.getItem('reno-admin-token'))
+        const isSessionFound = sessionStorage.getItem("reno-admin-token");
+        if(adminToken || isSessionFound){
+            navigate("/admin");
+        }
+    },[])
+
   return (
+    <>
+    <Header />
     <div className='auth-container py-5'>
         <div className="container">
             <div className="col-lg-5 col-md-6 m-auto">
-                <div className="auth-links-container">
-                    <div className="auth-links">
-                        <Link to="/customer/auth/login" className='auth-link text-light active' style={{textDecoration: 'none'}}>Login</Link>
-                        <Link to="/customer/auth/signup" className='auth-link text-light' style={{textDecoration: 'none'}}>Sign up</Link>
-                    </div>
-                </div>
-
-                <h3 className='my-3'>Customer Sign in</h3>
+                <h3 className='my-3'>Admin Sign in</h3>
 
                 <div className="form-group mb-4">
-                    <label className='form-label'>National ID/Iqama Number</label>
+                    <label className='form-label'>Email</label>
                     <div className="auth-input-container">
-                        <input type="text" className='form-control px-3' placeholder='Enter Your National ID or Iqama Number' />
+                        <input type="email" className='form-control px-3' placeholder='Enter Your Email' value={userData?.email} onChange={(e) => setUserDate({...userData , email : e.target.value})} required  />
                     </div>
                 </div>
                 <div className="form-group mb-2">
                     <label className='form-label'>Password</label>
                     <div className='pass-container'>
                         <div className="auth-input-container">
-                            <input type={`${pass1 ? 'text' : 'password'}`} className='form-control px-3' placeholder='Password' />
+                            <input type={`${pass1 ? 'text' : 'password'}`} className='form-control px-3' placeholder='Password' value={userData?.password} onChange={(e) => setUserDate({...userData , password : e.target.value})} required />
                         </div>
                         <img src={eye} onClick={() => setPass1(!pass1)} className='reveal-btn' alt="" />
                     </div>
                 </div>
                 <h6 className='text-end mb-4'>
-                    <Link to='#' className='text-light fw-light' data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password?</Link>
                 </h6>
                 <div class="form-check d-flex align-items-center mb-4">
-                    <input class="form-check-input auth-check me-3" type="checkbox" value="" id="remember" />
+                    <input class="form-check-input auth-check me-3" type="checkbox" value="" id="remember" onClick={() => setRemember(!isRemember)} />
                     <label class="form-check-label fs-small" for="remember">
                         Remember me
                     </label>
                 </div>
-                
-                <Link to='/customer/dashboard/panel' className='auth-btn text-light'>Log in</Link>
+
+                {
+                    isFetching === true ? (
+                        <div style={{display : 'flex' , justifyContent: 'center'}}>
+                            <ThreeDots
+                                height = "60"
+                                width = "60"
+                                radius = "9"
+                                color = 'green'
+                                ariaLabel = 'three-dots-loading'
+                                wrapperStyle
+                                wrapperClass
+                            />
+                        </div>
+                    ) : (
+                            <Link to='' className='auth-btn text-light' style={{textDecoration: 'none'}} onClick={sendData}>Log in</Link>
+                    )
+                }
 
                 <h6 className='text-center mb-0 mt-4'>
                     <Link to='/partner/auth/login' className='text-light fs-small fw-light' style={{textDecoration: 'none'}}>Login as Merchant</Link>
                 </h6>
                 <h6 className='text-center mb-0 mt-4'>
-                    <Link to='/admin/login' className='text-light fs-small fw-light' style={{textDecoration: 'none'}}>Login as Reno Admin</Link>
+                    <Link to='/customer/auth/login' className='text-light fs-small fw-light' style={{textDecoration: 'none'}}>Login as Customer</Link>
                 </h6>
             </div>
         </div>
@@ -78,7 +137,7 @@ const LoginForm = () => {
                 </div>
             </div>
         </div>
-        
+
         <div class="modal fade reset-modal" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content p-3">
@@ -101,6 +160,7 @@ const LoginForm = () => {
         {/* Modals */}
 
     </div>
+    </>
   )
 }
 
