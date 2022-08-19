@@ -5,14 +5,14 @@ const API = axios.create({
     //baseURL: process.env.REACT_APP_API_SERVER_URL
 });
 
-const adminToken = JSON.parse(localStorage.getItem('reno-merchant-token'))
+const customerToken = JSON.parse(localStorage.getItem('reno-merchant-token'))
 
 
 // this is for using local storage in headers, otherwise it will not work
 API.interceptors.request.use((req) => {
     if (localStorage.getItem('reno-merchant-token')) {
         req.headers = {
-                'authorization' : `Bearer ${adminToken}`,
+                'authorization' : `Bearer ${customerToken}`,
                 'reno-app-merchant-auth-token': JSON.parse(localStorage.getItem('reno-merchant-token')),
                 'Accept' : 'application/json',
                 'Content-Type': 'application/json'

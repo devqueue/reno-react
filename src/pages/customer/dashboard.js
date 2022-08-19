@@ -24,7 +24,7 @@ const CustomerDashboard = () => {
         <Routes>
             <Route path='/panel' element={<Panel />} />
             <Route path='/quotesReceived' element={<QuotesReceived />} />
-            <Route path='/quotesReceived/requestFinance' element={<RequestFinance />} />
+            <Route path='/quotesReceived/requestFinance/:id' element={<RequestFinance />} />
             <Route path='/financeRequests' element={<FinanceRequests />} />
             <Route path='/paidFinanceQuotes' element={<PaidFinanceQuotes />} />
         </Routes>

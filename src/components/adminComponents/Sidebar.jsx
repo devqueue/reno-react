@@ -19,13 +19,13 @@ const Sidebar = ({ isActive }) => {
                         <RiHomeLine />
                         <span> Merchant</span>
                     </NavLink>
-                    <NavLink activeClassName='active' className='text-lightGray fs-small' style={{textDecoration: 'none'}} to='/partner/dashboard/dashboard'>
+                    <NavLink activeClassName='active' className='text-lightGray fs-small' style={{textDecoration: 'none'}} to='/admin/quotesData'>
                         <AiOutlineAppstore />
-                        <span> Customers</span>
+                        <span> All Quotes</span>
                     </NavLink>
-                    <NavLink activeClassName='active' className='text-lightGray fs-small' style={{textDecoration: 'none'}} to='/partner/dashboard/applications'>
+                    <NavLink activeClassName='active' className='text-lightGray fs-small' style={{textDecoration: 'none'}} to='/admin/financialRequestsData'>
                         <AiOutlineSend />
-                        <span> Quotes</span>
+                        <span> Financial Requests</span>
                     </NavLink>
                 </li>
             </ul>

@@ -44,7 +44,8 @@ const SignupForm = () => {
     // checking if user is signed in or not
     useEffect(() =>{
         const merchantToken = JSON.parse(localStorage.getItem('reno-merchant-token'))
-        if(merchantToken){
+        const isSessionFound = sessionStorage.getItem("reno-merchant-token");
+        if(merchantToken || isSessionFound){
             navigate("/partner/dashboard/panel");
         }
     },[])

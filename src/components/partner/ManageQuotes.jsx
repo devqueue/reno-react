@@ -1,8 +1,7 @@
 import React , {useState , useEffect} from 'react'
 import { AiFillBell } from 'react-icons/ai'
 import { toast } from 'react-toastify';
-import { Link , useNavigate } from "react-router-dom";
-import {signInMerchant} from '../../api/MerchentApi'
+import { Link } from "react-router-dom";
 import { ThreeDots } from  'react-loader-spinner'
 import user from '../../assets/images/user.jpg'
 import quotesSearch from '../../assets/icons/quotesSearch.png'
@@ -10,7 +9,6 @@ import {getAllRecentSentQuotes} from '../../api/MerchentApi'
 import moment from 'moment'
 
 const ManageQuotes = () => {
-    const navigate = useNavigate();
     const [ isFetching , setIsFetching ] = useState(false)
     const [ allData , setAllData ] = useState([]);
 
@@ -29,6 +27,32 @@ const ManageQuotes = () => {
         }
         getAllRecord();
     },[])
+
+    // return header of table
+    const returnHeader = (length) => {
+      let pp = []
+      for(let p = 0; p !== length; p++){
+              <td>{p + 1}</td>
+            pp.push(
+                <td>{p + 1}</td>
+            );
+        }
+        return pp;
+    }
+
+    // return Body of table
+    const returnBody = (length , value) => {
+      let pp = [
+        <td></td>
+      ]
+      for(let p = 0; p !== length; p++){
+              <td>{p + 1}</td>
+            pp.push(
+                <td>{value}</td>
+            );
+        }
+        return pp;
+    }
 
   return (
     <>
@@ -97,47 +121,36 @@ const ManageQuotes = () => {
         
                               <div className="col-lg-3">
                                 <h6 className='text-muted fs-small mb-1'>Customer Name</h6>
-                                <h6 className='text-darkBlue'>{  item?.customerAndProductDetails?.IDCardNo}</h6>
+                                <h6 className='text-darkBlue'>{item?.CustomerIDCardNo}</h6>
                               </div>
                               <div className="col-lg-3">
                                 <h6 className='text-muted fs-small mb-1'>Date</h6>
-                                <h6 className='text-darkBlue'>{ moment(item?.createdAt).format('MMM Do YY')}</h6>
+                                <h6 className='text-darkBlue'>{ moment(item?.CreatedAt).format('MMM Do YY')}</h6>
                               </div>
                               <div className="col-lg-3">
                                 <h6 className='text-muted fs-small mb-1'>Time</h6>
-                                <h6 className='text-darkBlue'>{ moment(item?.createdAt).format('h:mm:ss a')}</h6>
+                                <h6 className='text-darkBlue'>{ moment(item?.CreatedAt).format('h:mm:ss a')}</h6>
                               </div>
                               <div className="col-lg-3"></div>
         
                             </div>
-        
                             <div className="row mt-3">
                               <div className="col-12 table-responsive">
-                                {/* <table class="table table-bordered fs-small quotes-table mb-0">
+                                <table class="table table-bordered fs-small quotes-table mb-0">
                                   <tbody>
                                     <tr>
                                       <td className='text-muted'>Months</td>
-                                      
-                                      {
-                                        item?.RepaymentAmount?.totalMonths?.map((item , index) => (
-                                            <td>{index + 1}</td>
-                                        ))
-                                      }
+                                      {returnHeader(item?.RepaymentAmount?.totalMonths)}
                                     </tr>
                                     <tr>
-                                      <td className='text-muted'>Monthly Payments</td>
-                                      {
-                                        item?.RepaymentAmount?.totalMonths?.map((item ) => (
-                                            <td>{item?.RepaymentAmount?.amountPerMonth}</td>
-                                        ))
-                                      }
+                                      {returnBody(item?.RepaymentAmount?.totalMonths , item?.RepaymentAmount?.amountPerMonth )}
                                     </tr>
                                   </tbody>
-                                </table> */}
+                                </table>
                               </div>
                             </div>
                               {
-                                item?.isAdminMerchantApproved === false ? (
+                                item?.isAdminMerchantApproved === true ? (
                                   <>
                                     <div className="quote-status text-color-primary bg-soft-orange">Sent</div>
                                   </>

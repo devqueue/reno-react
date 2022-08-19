@@ -29,6 +29,8 @@ const disApproveAnyMerchant = (merchantId) => API.put(`/api/v1/admins/DisApprove
 const ApproveAnyMerchant = (merchantId) => API.put(`/api/v1/admins/ApproveNewMerchant/${merchantId}`);
 const getAllQuotes = () => API.get(`/api/v1/admins/getAllQuotes`);
 const approveMerchantQuote = (quoteId) => API.put(`/api/v1/quotes/sendAdminMerchantResponse/${quoteId}`);
+const getRecentFinancialRequests = () => API.get(`/api/v1/admins/getAllRecentFinancialRequests`);
+const approveAnyFinancialRequest = (quoteId) => API.put(`/api/v1/quotes/sendAdminResponse/${quoteId}`);
 
 
 
@@ -38,5 +40,7 @@ module.exports = {
     disApproveAnyMerchant,
     ApproveAnyMerchant,
     getAllQuotes,
-    approveMerchantQuote
+    approveMerchantQuote,
+    getRecentFinancialRequests,
+    approveAnyFinancialRequest
 }

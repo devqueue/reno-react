@@ -15,7 +15,8 @@ import CustomerDashboard from './pages/customer/dashboard';
 import PartnerDashboard from './pages/partner/dashboard';
 import AllMerchantData from './pages/admin/MerchantsData'
 import AdminLogin from './components/adminComponents/AdminLogin'
-import AllMerchants from './components/adminComponents/MainPage'
+import AllMerchants from './pages/admin/MerchantsData'
+import AllFinancialRequests from './pages/admin/FinancialRequests'
 import AllQuotes from './pages/admin/QuotesData'
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
           <Route exact path='/admin/login' element={<AdminLogin />} />
           <Route exact path='/admin/merchantsData' element={<AllMerchants />} />
           <Route exact path='/admin/quotesData' element={<AllQuotes />} />
+          <Route exact path='/admin/financialRequestsData' element={<AllFinancialRequests />} />
         </Routes>
       </Router>
     </div>

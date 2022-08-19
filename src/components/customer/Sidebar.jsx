@@ -15,41 +15,40 @@ const Sidebar = ({ isActive }) => {
 
         <h6 className='fs-small mb-3 customer-sidebar-title'>Main Menu</h6>
 
-        <ul>
+        <ul style={{marginLeft : '-30px'}}>
             <li>
-                <NavLink activeClassName='active' className='text-lightGray fs-small' to='/customer/dashboard/panel'>
+                <NavLink activeClassName='active' className='text-lightGray fs-small' to='/customer/dashboard/panel' style={{textDecoration : "none"}} >
                     <RiHomeLine />
                     <span>Dashboard</span>
                 </NavLink>
-                <NavLink activeClassName='active' className='text-lightGray fs-small' to='/customer/dashboard/quotesReceived'>
+                <NavLink activeClassName='active' className='text-lightGray fs-small' to='/customer/dashboard/quotesReceived' style={{textDecoration : "none"}}>
                     <BsClipboard />
                     <span>Quotes Received</span>
                 </NavLink>
-                <NavLink activeClassName='active' className='text-lightGray fs-small' to='/customer/dashboard/financeRequests'>
+                <NavLink activeClassName='active' className='text-lightGray fs-small' to='/customer/dashboard/financeRequests' style={{textDecoration : "none"}}>
                     <BsBookmark />
                     <span>Finance Requests</span>
                 </NavLink>
-                <NavLink activeClassName='active' className='text-lightGray fs-small' to='/customer/dashboard/paidFinanceQuotes'>
+                <NavLink activeClassName='active' className='text-lightGray fs-small' to='/customer/dashboard/paidFinanceQuotes' style={{textDecoration : "none"}}>
                     <BsClipboardCheck />
                     <span>Paid Finance Quotes</span>
                 </NavLink>
             </li>
         </ul>
-        
-        
+
         <h6 className='fs-small mb-3 mt-5 customer-sidebar-title'>SUPPORT</h6>
 
-        <ul>
+        <ul style={{marginLeft : '-30px'}}>
             <li>
-                <NavLink activeClassName='active' className='text-lightGray fs-small' to='/community'>
+                <NavLink activeClassName='active' className='text-lightGray fs-small' to='/community' style={{textDecoration : "none"}}>
                     <BsPeople />
                     <span>Community</span>
                 </NavLink>
-                <NavLink activeClassName='active' className='text-lightGray fs-small' to='/help'>
+                <NavLink activeClassName='active' className='text-lightGray fs-small' to='/help ' style={{textDecoration : "none"}}>
                     <BsQuestionCircle />
                     <span>Help & Support</span>
                 </NavLink>
-                <NavLink activeClassName='active' className='text-lightGray fs-small' to='/settings'>
+                <NavLink activeClassName='active' className='text-lightGray fs-small' to='/settings' style={{textDecoration : "none"}}>
                     <IoSettingsOutline />
                     <span>Settings</span>
                 </NavLink>
