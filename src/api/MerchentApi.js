@@ -27,6 +27,7 @@ const signUpMerchant = (data) => API.post(`/api/v1/merchants/register`, data);
 const signInMerchant = (data) => API.post(`/api/v1/merchants/signin`, data);
 const sendNewQuoteRequest = (data) => API.post(`/api/v1/quotes/postNew`, data);
 const getAllRecentSentQuotes = () => API.get(`/api/v1/quotes/getAllQuotesOfAMerchant`);
+const getAllQuotesToBeDelivered = () => API.get(`/api/v1/quotes/getAllQuotesToBeDelivered`);
 
 
 
@@ -34,5 +35,6 @@ module.exports = {
     signUpMerchant,
     signInMerchant,
     sendNewQuoteRequest,
-    getAllRecentSentQuotes
+    getAllRecentSentQuotes,
+    getAllQuotesToBeDelivered
 }
