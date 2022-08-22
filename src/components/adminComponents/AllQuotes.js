@@ -106,8 +106,6 @@ const MainPage = () => {
                     allDataArr.push(newArr)
                 }
                 setData(allDataArr)
-            }else{
-                toast.error("Some Error Occurred while fetching Records");
             }
             setIsFetching(false)
         }

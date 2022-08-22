@@ -17,7 +17,7 @@ const HomePage = () => {
     useEffect(() =>{
         const adminToken = JSON.parse(localStorage.getItem('reno-admin-token'))
         const isSessionFound = sessionStorage.getItem("reno-admin-token");
-        if(adminToken || isSessionFound){
+        if(!adminToken && !isSessionFound){
             navigate("/admin/login");
         }
     },[])

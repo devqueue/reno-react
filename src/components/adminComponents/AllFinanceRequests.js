@@ -105,8 +105,6 @@ const MainPage = () => {
                     allDataArr.push(newArr)
                 }
                 setData(allDataArr)
-            }else{
-                toast.error(data?.message);
             }
             setIsFetching(false)
         }

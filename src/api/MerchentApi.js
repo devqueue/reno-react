@@ -8,7 +8,7 @@ const API = axios.create({
 const customerToken = JSON.parse(localStorage.getItem('reno-merchant-token'))
 
 
-// this is for using local storage in headers, otherwise it will not work
+// this is for using local storage incls headers, otherwise it will not work
 API.interceptors.request.use((req) => {
     if (localStorage.getItem('reno-merchant-token')) {
         req.headers = {
