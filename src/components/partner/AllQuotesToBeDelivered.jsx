@@ -13,7 +13,7 @@ import {
 } from "react-bs-datatable";
 import { toast } from 'react-toastify';
 import { ThreeDots } from  'react-loader-spinner'
-import {getAllQuotesToBeDelivered } from '../../api/MerchentApi'
+import {getAllQuotesToBeDelivered ,changeStatusOfQuote } from '../../api/MerchentApi'
 import moment from 'moment'
 
 
@@ -23,22 +23,19 @@ const MainPage = () => {
     const [ isFetching , setIsFetching ] = useState(false)
 
     // approving merchant request for quote
-    const changeStatus = async (id) => {
+    const changeStatus = async (id , status) => {
         let isFound = allData.find(item => item.Id === id);
         if(isFound){
-            if(isFound.Status === false){
-                isFound.status = true
-                isFound.quoteStatus = "Quote Approved By Reno"
-                // const {data} = await approveAnyFinancialRequest(id);
-                // if(data?.success === true){
-                //     let newData = allData;
-                //     let finalData = newData.filter(item => item.Id === id ? isFound : item );
-                //     toast.success("Quote Approved By Reno and Notification Sent to Partner for Delivery Successfully");
-                //     setData(finalData)
-                // }else{
-                //     toast.success(data?.message);
-                // }
-            }
+                isFound.quoteStatus = status
+                const {data} = await changeStatusOfQuote(id , status);
+                if(data?.success === true){
+                    let newData = allData;
+                    let finalData = newData.filter(item => item.Id === id ? isFound : item );
+                    toast.success(`Quote Status Changed to ${status}`);
+                    setData(finalData)
+                }else{
+                    toast.success(data?.message);
+                }
         }
     }
 
@@ -71,8 +68,8 @@ const MainPage = () => {
                 return (
                     <Dropdown as={ButtonGroup}>
                         {
-                            (prop?.quoteStatus !== "Traveling" && prop?.quoteStatus !== "Cancelled" && prop?.quoteStatus !== "Delivered") && (
-                                <Button size="sm" variant="primary" style={{fontSize : '11px' , fontWeight : 600}} >{prop?.quoteStatus}</Button>
+                            (prop?.quoteStatus !== "Traveling" && prop?.quoteStatus !== "Cancelled By Partner" && prop?.quoteStatus !== "Delivered By Partner") && (
+                                <Button size="sm"  style={{fontSize : '11px' , fontWeight : 600 , backgroundColor : '#40407a' , color : 'white'}} >Pending</Button>
                             )
                         }
                         {
@@ -81,20 +78,20 @@ const MainPage = () => {
                             )
                         }
                         {
-                            prop?.quoteStatus === "Cancelled" && (
+                            prop?.quoteStatus === "Cancelled By Partner" && (
                                 <Button size="sm" variant="danger" style={{fontSize : '11px' , fontWeight : 600}} >Cancelled</Button>
                             )
                         }
                         {
-                            prop?.quoteStatus === "Delivered" && (
+                            prop?.quoteStatus === "Delivered By Partner" && (
                                 <Button size="sm" variant="success" style={{fontSize : '11px' , fontWeight : 600}} >Delivered</Button>
                             )
                         }
                         <Dropdown.Toggle split size="sm" variant="primary" id="dropdown-split-basic" />
                         <Dropdown.Menu style={{backgroundColor : 'transparent'}} >
                             <Dropdown.Item onClick={() => changeStatus(prop?.Id , "Traveling")} style={{backgroundColor : '#192a56', color : 'white'}} >Traveling</Dropdown.Item>
-                            <Dropdown.Item onClick={() => changeStatus(prop?.Id , "Cancelled")} style={{backgroundColor : '#c23616', color : 'white'}} >Cancelled</Dropdown.Item>
-                            <Dropdown.Item onClick={() => changeStatus(prop?.Id , "Delivered")} style={{backgroundColor : '#10ac84', color : 'white'}} >Delivered</Dropdown.Item>
+                            <Dropdown.Item onClick={() => changeStatus(prop?.Id , "Cancelled By Partner")} style={{backgroundColor : '#c23616', color : 'white'}} >Cancelled</Dropdown.Item>
+                            <Dropdown.Item onClick={() => changeStatus(prop?.Id , "Delivered By Partner")} style={{backgroundColor : '#10ac84', color : 'white'}} >Delivered</Dropdown.Item>
                         </Dropdown.Menu>
                     </Dropdown>
                 )
