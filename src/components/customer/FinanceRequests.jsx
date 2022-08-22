@@ -1,7 +1,8 @@
 import React, { useState , useEffect } from 'react'
 import { AiFillBell } from 'react-icons/ai'
 import { IoMdClose } from 'react-icons/io'
-import { Link } from 'react-router-dom'
+import { toast } from 'react-toastify';
+import { Link , useNavigate } from 'react-router-dom'
 import user from '../../assets/images/user.jpg'
 import {Button} from 'react-bootstrap'
 import deny from '../../assets/images/deny.png'
@@ -15,7 +16,7 @@ import { ThreeDots } from  'react-loader-spinner'
 import {getAllTodayFinancialRequestSent , getAllFinancialRequestSent} from '../../api/CustomerApi'
 
 const FinanceRequests = () => {
-
+    const navigate = useNavigate();
     const [ isFetching , setIsFetching ] = useState(false)
     const [ allData , setAllData ] = useState([]);
     const [ allPreviousData , setAllPreviousData ] = useState([]);
@@ -39,6 +40,17 @@ const FinanceRequests = () => {
         }
         getAllRecord();
     },[])
+
+    // logging out
+    const logout = async () => {
+        localStorage.removeItem("reno-customer-token")
+        sessionStorage.removeItem('reno-customer-token');
+        toast.success("Signed Out SuccessFully");
+        await delay(2000);
+        navigate('/');
+    }
+    // sleeping
+    const delay = ms => new Promise(res => setTimeout(res, ms));
 
     return (
         <>
@@ -94,7 +106,7 @@ const FinanceRequests = () => {
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                     <li><Link class="dropdown-item" to="#">Profile</Link></li>
-                                    <li><Link class="dropdown-item" to="#">Logout</Link></li>
+                                    <li><Link class="dropdown-item" to="" onClick={logout}>Logout</Link></li>
                                 </ul>
                                 </div>
                             </div>

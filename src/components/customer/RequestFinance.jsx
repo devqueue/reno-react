@@ -119,6 +119,15 @@ const RequestFinance = () => {
         })
     }
 
+    // logging out
+    const logout = async () => {
+        localStorage.removeItem("reno-customer-token")
+        sessionStorage.removeItem('reno-customer-token');
+        toast.success("Signed Out SuccessFully");
+        await delay(2000);
+        navigate('/');
+    }
+
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -155,7 +164,7 @@ const RequestFinance = () => {
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                         <li><Link class="dropdown-item" to="#">Profile</Link></li>
-                        <li><Link class="dropdown-item" to="#">Logout</Link></li>
+                        <li><Link class="dropdown-item" to="" onClick={logout}>Logout</Link></li>
                     </ul>
                 </div>
                 </div>

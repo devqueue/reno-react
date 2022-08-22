@@ -1,14 +1,26 @@
-import React , {useState} from 'react';
+import React , {useState , useEffect } from 'react';
 import AllMerchantsData from '../../components/adminComponents/MainPage'
 import Sidebar from '../../components/adminComponents/Sidebar'
 import { Routes, Route } from 'react-router-dom'
 import { HiOutlineMenu } from 'react-icons/hi'
+import { useNavigate } from "react-router-dom";
+
 
 
 const HomePage = () => {
     const [active, setActive] = useState(false)
+    const navigate = useNavigate();
 
     document.title = 'Reno | Admin Portal'
+
+    // checking if user is signed in or not
+    useEffect(() =>{
+        const adminToken = JSON.parse(localStorage.getItem('reno-admin-token'))
+        const isSessionFound = sessionStorage.getItem("reno-admin-token");
+        if(adminToken || isSessionFound){
+            navigate("/admin/login");
+        }
+    },[])
 
     return (
         <div className='admin-panel-container'>

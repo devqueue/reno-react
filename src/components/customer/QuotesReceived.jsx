@@ -1,7 +1,6 @@
 import React, { useState , useEffect } from 'react'
 import { AiFillBell } from 'react-icons/ai'
 import {Button} from 'react-bootstrap'
-import { Link } from 'react-router-dom'
 import user from '../../assets/images/user.jpg'
 import deny from '../../assets/images/deny.png'
 import quotesNull from '../../assets/images/quotesNull.png'
@@ -10,10 +9,12 @@ import line from '../../assets/icons/line.png'
 import { toast } from 'react-toastify';
 import { ThreeDots } from  'react-loader-spinner'
 import {getTodayReceivedQuotes , getReceivedQuotesPrevious , denyAnyQuote} from '../../api/CustomerApi'
+import { Link , useNavigate } from 'react-router-dom'
 
 
 const QuotesReceived = () => {
     const [ isFetching , setIsFetching ] = useState(false)
+    const navigate = useNavigate();
     const [ allData , setAllData ] = useState([]);
     const [ allPreviousData , setAllPreviousData ] = useState([]);
     const [ selectedId , setSelectedId ] = useState("");
@@ -62,6 +63,17 @@ const QuotesReceived = () => {
         }
         setSelectedId("")
     }
+
+    // logging out
+    const logout = async () => {
+        localStorage.removeItem("reno-customer-token")
+        sessionStorage.removeItem('reno-customer-token');
+        toast.success("Signed Out SuccessFully");
+        await delay(2000);
+        navigate('/');
+    }
+    // sleeping
+    const delay = ms => new Promise(res => setTimeout(res, ms));
 
     return (
         <>
@@ -117,7 +129,7 @@ const QuotesReceived = () => {
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                     <li><Link class="dropdown-item" to="#">Profile</Link></li>
-                                    <li><Link class="dropdown-item" to="#">Logout</Link></li>
+                                    <li><Link class="dropdown-item" to="" onClick={logout}>Logout</Link></li>
                                 </ul>
                                 </div>
                             </div>
