@@ -1,8 +1,8 @@
 const axios = require('axios');
 
 const API = axios.create({
-    //baseURL: process.env.REACT_APP_API_URL
-    baseURL: process.env.REACT_APP_API_SERVER_URL
+    baseURL: process.env.REACT_APP_API_URL
+    //baseURL: process.env.REACT_APP_API_SERVER_URL
 });
 
 const customerToken = JSON.parse(localStorage.getItem('reno-merchant-token'))
@@ -30,6 +30,8 @@ const getAllRecentSentQuotes = () => API.get(`/api/v1/quotes/getAllQuotesOfAMerc
 const getAllQuotesToBeDelivered = () => API.get(`/api/v1/quotes/getAllQuotesToBeDelivered`);
 const changeStatusOfQuote = (quoteId, status) => API.put(`/api/v1/quotes/sendMerchantDeliveryResponse/${quoteId}/${status}`);
 const getQuotesForHomeScreen = () => API.get(`/api/v1/quotes/getAllQuotesCountOfMerchant`);
+const getAllNotificationsOfMerchant = () => API.get(`/api/v1/notifications/getAllOfAMerchant`);
+const markNotificationsOfMerchantRead = (notificationId) => API.put(`/api/v1/notifications/markNotificationOfMerchantAsRead/${notificationId}`);
 
 
 
@@ -40,5 +42,7 @@ module.exports = {
     getAllRecentSentQuotes,
     getAllQuotesToBeDelivered,
     changeStatusOfQuote,
-    getQuotesForHomeScreen
+    getQuotesForHomeScreen,
+    getAllNotificationsOfMerchant,
+    markNotificationsOfMerchantRead
 }

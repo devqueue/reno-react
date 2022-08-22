@@ -16,7 +16,7 @@ const Footer = () => {
                     </p>
                 </div>
                 <div className="col-lg-2 col-md-6 mb-3">
-                    <h5 className='text-darkBlue mb-3'>Homeowners</h5>
+                    <h5 className='text-darkBlue mb-3'>Business</h5>
                     <ul className='footer-list'>
                         <li><a href='/partner/auth/signup' style={{textDecoration: 'none'}}>Sign up</a></li>
                         <li><a href='/partner/auth/login' style={{textDecoration: 'none'}}>Log in</a></li>
@@ -25,7 +25,7 @@ const Footer = () => {
                     </ul>
                 </div>
                 <div className="col-lg-2 col-md-6 mb-3">
-                    <h5 className='text-darkBlue mb-3'>Business</h5>
+                    <h5 className='text-darkBlue mb-3'>Homeowners</h5>
                     <ul className='footer-list'>
                         <li><a href='/customer/auth/signup' style={{textDecoration: 'none'}}>Sign up</a></li>
                         <li><a href='/customer/auth/login' style={{textDecoration: 'none'}}>Log in</a></li>

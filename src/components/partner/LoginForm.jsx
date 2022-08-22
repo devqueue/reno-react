@@ -21,8 +21,10 @@ const LoginForm = () => {
 
     // sending data
     const sendData = async () => {
+        console.log("userData: ", userData)
         setIsFetching(true)
         const {data} = await signInMerchant(userData);
+        console.log("data of response : ", data);
         if(data?.success === true){
             toast.success("Signed In SuccessFully");
             setUserDate({

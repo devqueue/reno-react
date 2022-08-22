@@ -1,14 +1,17 @@
-import React , {useEffect} from 'react'
+import React , {useEffect , useState} from 'react'
 import { AiFillBell } from 'react-icons/ai'
 import user from '../../assets/images/user.jpg'
 import partner1 from '../../assets/images/partner1.png'
 import partner2 from '../../assets/images/partner2.png'
 import { Link ,useNavigate , useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify';
-import moment from 'moment' 
+import moment from 'moment'
+import {getAllNotificationsOfMerchant ,markNotificationsOfMerchantRead} from '../../api/MerchentApi'
 
 const Panel = () => {
   const navigate = useNavigate()
+    const [ allNotifications , setAllNotifications ] = useState([])
+    const [ allNotificationsCount , setAllNotificationsCount ] = useState([])
 
     // logging out
     const logout = async () => {
@@ -31,6 +34,40 @@ const Panel = () => {
             navigate("/partner/auth/login");
         }
     },[location])
+
+    // getting all notifications
+    useEffect(() =>{
+      const getAllNotifications = async () => {
+          const {data} = await getAllNotificationsOfMerchant()
+          if(data?.success === true){
+            setAllNotifications(data?.Notifications)
+            let count = 0;
+            data?.Notifications?.map((item) => (
+              item?.isRead === false && (
+                count += 1
+              )
+            ))
+            setAllNotificationsCount(count)
+          }
+        }
+        getAllNotifications();
+    },[])
+
+    // marking notification as read
+    const readNotification = async (id) => {
+      const {data} = await markNotificationsOfMerchantRead(id);
+      if(data?.success === true){
+          let newArr = allNotifications;
+          let isFound = newArr.find(item => item._id == id);
+          if(isFound){
+            isFound.isRead = true
+            newArr.filter(item => item._id == id ? isFound : item)
+            setAllNotifications(newArr)
+            setAllNotificationsCount(prev => prev - 1)
+          }
+        }
+    }
+
   return (
     <div className='container-fluid p-4 dashboard-content'>
         <div className="panel-top d-flex align-items-center justify-content-between">
@@ -45,12 +82,32 @@ const Panel = () => {
             <div class="dropdown profile-dropdown">
                 <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                     <AiFillBell />
-                    <span>5</span>
+                    <span>{allNotificationsCount}</span>
                 </Link>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
-                                <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
-                                <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
+                    {
+                      allNotifications?.length > 0 ? (
+                          allNotifications?.map((item) => (
+                              item?.isRead === false ? (
+                                  <li style={{backgroundColor : '#ecf0f1'}} onClick={() => readNotification(item?._id)}>
+                                    <Link class="dropdown-item" to={item?.redirectId}>
+                                          <strong>{item?.message} </strong> <br />
+                                          <span style={{ fontSize: '12px' , color : '#34495e' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                    </Link>
+                                  </li>
+                              ) : (
+                                <li style={{backgroundColor : 'transparent'}} >
+                                  <Link class="dropdown-item" to={item?.redirectId}>
+                                        <strong>{item?.message} </strong> <br />
+                                        <span className='text-muted' style={{ fontSize: '12px' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                  </Link>
+                                </li>
+                              )
+                          ))
+                      ) : (
+                          <li>No Notifications Found</li>
+                      )
+                    }
                 </ul>
             </div>
 
