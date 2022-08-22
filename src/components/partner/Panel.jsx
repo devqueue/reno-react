@@ -1,11 +1,24 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import { AiFillBell } from 'react-icons/ai'
 import user from '../../assets/images/user.jpg'
 import partner1 from '../../assets/images/partner1.png'
 import partner2 from '../../assets/images/partner2.png'
+import { Link ,useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify';
 
 const Panel = () => {
+  const navigate = useNavigate()
+
+    // logging out
+    const logout = async () => {
+        localStorage.removeItem("reno-merchant-token")
+        sessionStorage.removeItem('reno-merchant-token');
+        toast.success("Signed Out SuccessFully");
+        await delay(2000);
+        navigate('/');
+    }
+    // sleeping
+    const delay = ms => new Promise(res => setTimeout(res, ms));
   return (
     <div className='container-fluid p-4 dashboard-content'>
         <div className="panel-top d-flex align-items-center justify-content-between">
@@ -38,7 +51,7 @@ const Panel = () => {
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                             <li><Link class="dropdown-item" to="#">Profile</Link></li>
-                            <li><Link class="dropdown-item" to="#">Logout</Link></li>
+                            <li><Link class="dropdown-item" to="" onClick={logout}>Logout</Link></li>
                         </ul>
             </div>
           </div>

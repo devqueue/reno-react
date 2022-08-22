@@ -1,12 +1,12 @@
 import React , {useState , useEffect} from 'react'
 import { AiFillBell } from 'react-icons/ai'
-import { toast } from 'react-toastify';
-import { Link } from "react-router-dom";
 import { ThreeDots } from  'react-loader-spinner'
 import user from '../../assets/images/user.jpg'
 import quotesSearch from '../../assets/icons/quotesSearch.png'
 import {getAllRecentSentQuotes} from '../../api/MerchentApi'
 import moment from 'moment'
+import { Link ,useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify';
 
 const ManageQuotes = () => {
     const [ isFetching , setIsFetching ] = useState(false)
@@ -53,6 +53,19 @@ const ManageQuotes = () => {
         }
         return pp;
     }
+
+    const navigate = useNavigate()
+
+    // logging out
+    const logout = async () => {
+        localStorage.removeItem("reno-merchant-token")
+        sessionStorage.removeItem('reno-merchant-token');
+        toast.success("Signed Out SuccessFully");
+        await delay(2000);
+        navigate('/');
+    }
+    // sleeping
+    const delay = ms => new Promise(res => setTimeout(res, ms));
 
   return (
     <>

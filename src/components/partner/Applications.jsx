@@ -1,13 +1,27 @@
 import React from 'react'
 import { AiFillBell } from 'react-icons/ai'
-import { Link } from 'react-router-dom'
 import user from '../../assets/images/user.jpg'
 import filter from '../../assets/icons/filter.png'
 import upload from '../../assets/icons/upload.png'
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs'
+import { Link ,useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify';
 import { IoMdClose } from 'react-icons/io'
 
 const Applications = () => {
+    const navigate = useNavigate()
+
+    // logging out
+    const logout = async () => {
+        localStorage.removeItem("reno-merchant-token")
+        sessionStorage.removeItem('reno-merchant-token');
+        toast.success("Signed Out SuccessFully");
+        await delay(2000);
+        navigate('/');
+    }
+    // sleeping
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+
   return (
     <div className='container-fluid p-4 dashboard-content'>
         <div className="panel-top d-flex align-items-center justify-content-between">
@@ -40,7 +54,7 @@ const Applications = () => {
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                             <li><Link class="dropdown-item" to="#">Profile</Link></li>
-                            <li><Link class="dropdown-item" to="#">Logout</Link></li>
+                            <li><Link class="dropdown-item" to="" onClick={logout}>Logout</Link></li>
                         </ul>
             </div>
           </div>
