@@ -12,6 +12,7 @@ import appStep4 from '../../assets/icons/appStep4.png'
 import tick from '../../assets/images/tick.png'
 import {sendNewQuoteRequest} from '../../api/MerchentApi'
 import { ThreeDots } from  'react-loader-spinner'
+import moment from 'moment'
 
 
 const NewApllication = () => {
@@ -113,7 +114,7 @@ const NewApllication = () => {
                 <div className='panel-left'>
                     <h5 className='mb-0 fw-600'>New Application</h5>
                     <p className='text-muted mb-0 text-dark fs-small'>
-                    Sunday, 29 May 2022
+                    {moment().format('MMMM Do YYYY')}
                     </p>
                 </div>
 

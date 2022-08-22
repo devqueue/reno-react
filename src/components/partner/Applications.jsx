@@ -1,12 +1,13 @@
-import React from 'react'
+import React , {useEffect} from 'react'
 import { AiFillBell } from 'react-icons/ai'
 import user from '../../assets/images/user.jpg'
 import filter from '../../assets/icons/filter.png'
 import upload from '../../assets/icons/upload.png'
 import { BsChevronLeft, BsChevronRight } from 'react-icons/bs'
-import { Link ,useNavigate } from 'react-router-dom'
+import { Link ,useNavigate , useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify';
 import { IoMdClose } from 'react-icons/io'
+import moment from 'moment'
 
 const Applications = () => {
     const navigate = useNavigate()
@@ -22,13 +23,23 @@ const Applications = () => {
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
+    const location = useLocation();
+    // checking if user is signed in or not
+    useEffect(() =>{
+        const customerToken = JSON.parse(localStorage.getItem('reno-merchant-token'))
+        const isSessionFound = sessionStorage.getItem("reno-merchant-token");
+        if(!customerToken && !isSessionFound){
+            navigate("/partner/auth/login");
+        }
+    },[location])
+
   return (
     <div className='container-fluid p-4 dashboard-content'>
         <div className="panel-top d-flex align-items-center justify-content-between">
           <div className='panel-left'>
             <h5 className='mb-0 fw-600'>Applications</h5>
             <p className='text-muted mb-0 text-light fs-small'>
-              Sunday, 29 May 2022
+              {moment().format('MMMM Do YYYY')}
             </p>
           </div>
 

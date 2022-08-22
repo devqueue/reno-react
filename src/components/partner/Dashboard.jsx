@@ -1,16 +1,22 @@
-import React, { useState } from 'react'
+import React, { useState , useEffect } from 'react'
 import { AiFillBell } from 'react-icons/ai'
 import user from '../../assets/images/user.jpg'
 import horizontalLine from '../../assets/images/horizontalLine.png'
 import { Bar } from 'react-chartjs-2';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS } from 'chart.js/auto'
-import { Link ,useNavigate } from 'react-router-dom'
+import { Link ,useNavigate , useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify';
+import moment from 'moment'
+import {getQuotesForHomeScreen} from '../../api/MerchentApi'
 
 const Dashboard = () => {
 
   const navigate = useNavigate()
+  const [ allSent , setSentCount ] = useState(0);
+  const [ allPending , setPendingCount ] = useState(0);
+  const [ allApproved , setApprovedCount ] = useState(0);
+  
 
     // logging out
     const logout = async () => {
@@ -23,7 +29,31 @@ const Dashboard = () => {
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
+
+    const location = useLocation();
+    // checking if user is signed in or not
+    useEffect(() =>{
+        const customerToken = JSON.parse(localStorage.getItem('reno-merchant-token'))
+        const isSessionFound = sessionStorage.getItem("reno-merchant-token");
+        if(!customerToken && !isSessionFound){
+            navigate("/partner/auth/login");
+        }
+    },[location])
+
   const [time, setTime] = useState(1)
+
+  // getting all count
+  useEffect(() => {
+      const getAllRecord = async () => {
+        const {data} = await getQuotesForHomeScreen();
+        if(data?.success === true){
+            setSentCount(data?.TotalSent)
+            setPendingCount(data?.TotalPending)
+            setApprovedCount(data?.TotalApproved)
+        }
+      }
+      getAllRecord()
+  },[])
 
   const monthly = {
     labels: ['1 Jun', '3 Jun', '6 jun', '9 jun', '12 jun', '12 jun', '15 jun', '18 jun', '21 jun', '24 jun', '27 jun', '30 jun'],
@@ -83,7 +113,7 @@ const Dashboard = () => {
           <div className='panel-left'>
             <h5 className='mb-0 fw-600'>Dashboard</h5>
             <p className='text-muted mb-0 text-light fs-small'>
-              Sunday, 29 May 2022
+              {moment().format('MMMM Do YYYY')}
             </p>
           </div>
 
@@ -122,13 +152,13 @@ const Dashboard = () => {
               <img src={horizontalLine} className='w-100' alt="" />
               <ul className='mb-0'>
                 <li className='d-flex align-items-center justify-content-between py-2 border-bottom fw-600'>
-                  <span className='text-muted fw-normal'>Sent</span>8
+                  <span className='text-muted fw-normal'>Pending</span>{allPending}
                 </li>
                 <li className='d-flex align-items-center justify-content-between py-2 border-bottom text-success fw-600'>
-                  <span className='text-muted fw-normal'>Approved</span>4
+                  <span className='text-muted fw-normal'>Approved</span>{allApproved}
                 </li>
                 <li className='d-flex align-items-center justify-content-between py-2 fw-600'>
-                  <span className='text-muted fw-normal'>Total</span>12
+                  <span className='text-muted fw-normal'>Total</span>{allSent}
                 </li>
               </ul>
             </div>
@@ -139,10 +169,10 @@ const Dashboard = () => {
               <img src={horizontalLine} className='w-100' alt="" />
               <ul className='mb-0'>
                 <li className='d-flex align-items-center justify-content-between py-3 border-bottom fw-600'>
-                  <span className='text-muted fw-normal'>Paid</span><span><span className='text-muted fw-normal'>SAR</span> 10,080</span>
+                  <span className='text-muted fw-normal'>Paid</span><span><span className='text-muted fw-normal'>SAR</span>00</span>
                 </li>
                 <li className='d-flex align-items-center justify-content-between py-3 fw-600'>
-                  <span className='text-muted fw-normal'>Total</span><span><span className='text-muted fw-normal'>SAR</span> 10,080</span>
+                  <span className='text-muted fw-normal'>Total</span><span><span className='text-muted fw-normal'>SAR</span> 00</span>
                 </li>
               </ul>
             </div>
@@ -165,7 +195,7 @@ const Dashboard = () => {
                 <div className="col-lg-6 mb-4">
                   <div className="donught-card d-flex align-items-center justify-content-between">
                     <div className='donught-text'>
-                      <h4>04</h4>
+                      <h4>{allApproved}</h4>
                       <p className='mb-0 text-muted'>
                         Total number of approved
                         applications in this period
@@ -174,7 +204,7 @@ const Dashboard = () => {
 
                     <div className='donught-container' style={{ backgroundImage: 'conic-gradient(#FF6F39 0deg, #FF6F39 45deg, #CFD8DC 45deg)' }}>
                       <div className="donught-content text-muted text-center">
-                        4/10
+                        {allApproved}/{allSent}
                       </div>
                     </div>
                   </div>
@@ -191,8 +221,8 @@ const Dashboard = () => {
 
                     <div className='donught-container' style={{ backgroundImage: 'conic-gradient(#FF6F39 0deg, #FF6F39 180deg, #CFD8DC 180deg)' }}>
                       <div className="donught-content text-muted text-center fs-small">
-                        11,200/ <br />
-                        21,000
+                        00/ <br />
+                        00
                       </div>
                     </div>
                   </div>

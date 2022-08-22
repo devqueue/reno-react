@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState , useEffect } from 'react'
 import { AiFillBell } from 'react-icons/ai'
+import {Row , Col } from 'react-bootstrap'
 import { IoMdClose } from 'react-icons/io'
 import user from '../../assets/images/user.jpg'
 import widget1 from '../../assets/icons/widget1.png'
@@ -11,10 +12,47 @@ import { Chart as ChartJS } from 'chart.js/auto'
 import logoDark from '../../assets/images/logoDark.png'
 import qr from '../../assets/images/qr.png'
 import { toast } from 'react-toastify';
-import { Link , useNavigate } from 'react-router-dom'
+import { Link , useNavigate , useLocation } from 'react-router-dom'
+import { ThreeDots } from  'react-loader-spinner'
+import moment from 'moment'
+import {getAllRecentQuotesForHomeScreen , getUpcomingPaymentsOfQuotes} from '../../api/CustomerApi'
 
 const Panel = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const [ allRecords , setAllRecords] = useState([]);
+  const [ isFetching , setIsFetching ] = useState(false)
+  const [ allDuePayments , setAllDuePayments ] =  useState([])
+
+  useEffect(() => {
+      const getData = async () => {
+        setIsFetching(true)
+        const {data} = await getAllRecentQuotesForHomeScreen();
+        if(data?.success === true){
+          setAllRecords(data?.AllQuotes);
+        }
+
+        // getting all due payments
+        const res = await getUpcomingPaymentsOfQuotes();
+        if(data?.success === true){
+          setAllDuePayments(res?.data?.allRecords);
+        }
+
+        setIsFetching(false)
+
+      }
+      getData();
+    }, [location])
+
+
+    // checking if user is signed in or not
+    useEffect(() =>{
+        const customerToken = JSON.parse(localStorage.getItem('reno-customer-token'))
+        const isSessionFound = sessionStorage.getItem("reno-customer-token");
+        if(!customerToken && !isSessionFound){
+            navigate("/customer/auth/login");
+        }
+    },[location])
 
   const options = {
     maintainAspectRatio: false
@@ -64,7 +102,7 @@ const Panel = () => {
           <div className='panel-left'>
             <h5 className='mb-0 fw-600'>Customer Portal</h5>
             <p className='text-muted mb-0 text-light fs-small'>
-              Sunday, 29 May 2022
+              {moment().format('MMMM Do YYYY')}
             </p>
           </div>
 
@@ -96,13 +134,12 @@ const Panel = () => {
           </div>
         </div>
 
-
         <div className="row mt-4">
           <div className="col-lg-3 col-md-6 mb-3">
             <div className="widget">
               <div className='widget-text'>
                 <p className="text-gray fs-small mb-0">Quotes received</p>
-                <h3 className='mb-0 fw-600'>01</h3>
+                <h3 className='mb-0 fw-600'>{allRecords?.length}</h3>
               </div>
               <div className="widget-icon bg-soft-warning">
                 <img src={widget1} alt="" />
@@ -113,7 +150,7 @@ const Panel = () => {
             <div className="widget">
               <div className='widget-text'>
                 <p className="text-gray mb-1 fs-small">financed amount <span className='text-muted'>(SAR)</span></p>
-                <h3 className='mb-0 fw-600'>1456</h3>
+                <h3 className='mb-0 fw-600'>00</h3>
               </div>
               <div className="widget-icon bg-soft-danger">
                 <img src={widget2} alt="" />
@@ -124,7 +161,7 @@ const Panel = () => {
             <div className="widget">
               <div className='widget-text'>
                 <p className="text-gray mb-1 fs-small">Paid amount <span className='text-muted'>(SAR)</span></p>
-                <h3 className='mb-0 fw-600'>856</h3>
+                <h3 className='mb-0 fw-600'>00</h3>
               </div>
               <div className="widget-icon bg-soft-success">
                 <img src={widget3} alt="" />
@@ -135,7 +172,7 @@ const Panel = () => {
             <div className="widget">
               <div className='widget-text'>
                 <p className="text-gray mb-1 fs-small">Remaining amount <span className='text-muted'>(SAR)</span></p>
-                <h3 className='mb-0 fw-600'>600</h3>
+                <h3 className='mb-0 fw-600'>00</h3>
               </div>
               <div className="widget-icon bg-soft-purple">
                 <img src={widget4} alt="" />
@@ -158,7 +195,6 @@ const Panel = () => {
                   <option>6 Months</option>
                 </select>
               </div>
-              
                 <Bar data={data} className='bar-chart' options={options} />
             </div>
           </div>
@@ -172,10 +208,10 @@ const Panel = () => {
                 <div className="col-lg-4">
                   <h5 className="fw-600">Quotes Status</h5>
                 </div>
-                <div className="col-lg-4 text-center">
+                {/* <div className="col-lg-4 text-center">
                   <button className={`btn fs-small ${tab == 1 ? 'bg-darkBlue text-light' : 'text-muted'} me-3`} onClick={() => setTab(1)}>Current</button>
                   <button className={`btn fs-small ${tab == 2 ? 'bg-darkBlue text-light' : 'text-muted'}`} onClick={() => setTab(2)}>Past</button>
-                </div>
+                </div> */}
               </div>
 
               <div className="table-responsive mt-3">
@@ -191,45 +227,43 @@ const Panel = () => {
                           <th scope="col">Monthly Payment</th>
                           <th scope="col">Payment Period</th>
                           <th scope="col">Product Category</th>
-                          <th scope="col">Product Detail</th>
                           <th scope="col">Quote Status</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <tr>
-                          <td>XXXXX</td>
-                          <td>0% interest payment plan</td>
-                          <td>000</td>
-                          <td>0000</td>
-                          <td>000</td>
-                          <td>000</td>
-                          <td>000</td>
-                          <td>000</td>
-                          <td>000</td>
-                        </tr>
-                        <tr>
-                          <td>XXXXX</td>
-                          <td>0% interest payment plan</td>
-                          <td>000</td>
-                          <td>0000</td>
-                          <td>000</td>
-                          <td>000</td>
-                          <td>000</td>
-                          <td>000</td>
-                          <td>000</td>
-                        </tr>
-                        <tr>
-                          <td>XXXXX</td>
-                          <td>0% interest payment plan</td>
-                          <td>000</td>
-                          <td>0000</td>
-                          <td>000</td>
-                          <td>000</td>
-                          <td>000</td>
-                          <td>000</td>
-                          <td>000</td>
-                        </tr>
-                      </tbody>
+                      {
+                        isFetching === true ? (
+                            <ThreeDots
+                                  height = "20"
+                                  width = "320"
+                                  radius = "9"
+                                  color = 'green'
+                                  ariaLabel = 'three-dots-loading'
+                                  wrapperStyle={{display : 'flex' , marginTop : '15px', border: 'none', justifyContent: 'center' , minWidth : '100%' , marginLeft : '60%'}}
+                                  wrapperClassName="flex justify-content-center"
+                              />
+                        ) : (
+                          <tbody>
+                          {
+                            allRecords?.length > 0 ? (
+                                allRecords?.map((item , index) => (
+                                  <tr key={item?._id}>
+                                    <td>{874557 + index}</td>
+                                    <td>0% interest payment plan</td>
+                                    <td>{item?.FinancedAmount?.totalPurchaseAmt}</td>
+                                    <td>{item?.FinancedAmount?.depositAmt}</td>
+                                    <td>{item?.FinancedAmount?.depositAmt}</td>
+                                    <td>{item?.RepaymentAmount?.totalMonths}</td>
+                                    <td>{item?.ProductCategory?.productCategory}</td>
+                                    <td>{item?.quoteStatus}</td>
+                                  </tr>
+                                ))
+                            ) : (
+                              <p>No Recent Quotes Found</p>
+                            )
+                          }
+                          </tbody>
+                        )
+                      }
                     </table>
                   ) : (
                     <table class="table border-top">
@@ -289,13 +323,11 @@ const Panel = () => {
 
           </div>
         </div>
-        
-        
+
         <div className="row mt-4">
           <div className="col-12">
 
             <div className="table-container bg-color-light">
-                
               <h5 className="fw-600">Payment Due Date</h5>
 
               <div className="table-responsive mt-3">
@@ -311,35 +343,39 @@ const Panel = () => {
                       <th scope="col">Pay Bill</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <td>XXXXX</td>
-                      <td>20-05-2022</td>
-                      <td>584</td>
-                      <td>256</td>
-                      <td className='text-color-primary'>Pending</td>
-                      <td><span className='text-decoration-underline table-modal-btn' data-bs-toggle="modal" data-bs-target="#invoiceModal">Show</span></td>
-                      <td><span className='text-decoration-underline table-modal-btn' data-bs-toggle="modal" data-bs-target="#payModal">Pay Now</span></td>
-                    </tr>
-                    <tr>
-                      <td>XXXXX</td>
-                      <td>20-05-2022</td>
-                      <td>584</td>
-                      <td>256</td>
-                      <td className='text-success'>Paid</td>
-                      <td><span className='text-decoration-underline table-modal-btn' data-bs-toggle="modal" data-bs-target="#invoiceModal">Show</span></td>
-                      <td><span className='text-decoration-underline table-modal-btn' data-bs-toggle="modal" data-bs-target="#payModal">Pay Now</span></td>
-                    </tr>
-                    <tr>
-                      <td>XXXXX</td>
-                      <td>20-05-2022</td>
-                      <td>584</td>
-                      <td>256</td>
-                      <td className='text-color-primary'>Pending</td>
-                      <td><span className='text-decoration-underline table-modal-btn' data-bs-toggle="modal" data-bs-target="#invoiceModal">Show</span></td>
-                      <td><span className='text-decoration-underline table-modal-btn' data-bs-toggle="modal" data-bs-target="#payModal">Pay Now</span></td>
-                    </tr>
-                  </tbody>
+                  {
+                    isFetching === true ? (
+                              <ThreeDots
+                                  height = "20"
+                                  width = "320"
+                                  radius = "9"
+                                  color = 'green'
+                                  ariaLabel = 'three-dots-loading'
+                                  wrapperStyle={{display : 'flex' , marginTop : '15px', border: 'none', justifyContent: 'center' , minWidth : '100%' , marginLeft : '60%'}}
+                                  wrapperClassName="flex justify-content-center"
+                              />
+                        ) : (
+                          <tbody>
+                          {
+                            allDuePayments?.length > 0 ? (
+                              allDuePayments?.map((item, index) => (
+                                <tr key={item?._id}>
+                                  <td>{87422 + index}</td>
+                                  <td>{moment(item?.startingMonth).format("MMM Do YYYY")}</td>
+                                  <td>{item?.remainingAmount}</td>
+                                  <td>{item?.perMonthAmount}</td>
+                                  <td className='text-color-primary'>Pending</td>
+                                  <td><span className='text-decoration-underline table-modal-btn' data-bs-toggle="modal" data-bs-target="#invoiceModal">Show</span></td>
+                                  <td><span className='text-decoration-underline table-modal-btn' data-bs-toggle="modal" data-bs-target="#payModal">Pay Now</span></td>
+                                </tr>
+                              ))
+                            ) : (
+                              <p>No Due Payments</p>
+                            )
+                          }
+                          </tbody>
+                        )
+                  }
                 </table>
               </div>
             </div>
@@ -436,8 +472,7 @@ const Panel = () => {
             </div>
           </div>
         </div>
-        
-        
+
         <div class="modal fade" id="payModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">

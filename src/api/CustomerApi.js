@@ -33,6 +33,8 @@ const getAllTodayFinancialRequestSent = () => API.get(`/api/v1/quotes/getAllFina
 const getAllFinancialRequestSent = () => API.get(`/api/v1/quotes/getAllFinancingOfQuotesOfACustomer`);
 const getRecentQuotesDeliveredToACustomer = () => API.get(`/api/v1/quotes/getAllRecentQuotesDeliveredToACustomer`);
 const deliveryConfirmationOfAQuote = (quoteId) => API.put(`/api/v1/quotes/sendCustomerDeliveryResponse/${quoteId}`);
+const getAllRecentQuotesForHomeScreen = () => API.get(`/api/v1/quotes/getAllQuotesOfCustomerRecent`);
+const getUpcomingPaymentsOfQuotes = () => API.get(`/api/v1/quotes/getAllNearDuePaymentsofACustomer`);
 
 
 
@@ -46,5 +48,7 @@ module.exports = {
     getAllTodayFinancialRequestSent,
     getAllFinancialRequestSent,
     getRecentQuotesDeliveredToACustomer,
-    deliveryConfirmationOfAQuote
+    deliveryConfirmationOfAQuote,
+    getAllRecentQuotesForHomeScreen,
+    getUpcomingPaymentsOfQuotes
 }

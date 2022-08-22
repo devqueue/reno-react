@@ -15,20 +15,21 @@ import { toast } from 'react-toastify';
 import { ThreeDots } from  'react-loader-spinner'
 import {getAllQuotesToBeDelivered ,changeStatusOfQuote } from '../../api/MerchentApi'
 import moment from 'moment'
+import {useLocation , useNavigate } from 'react-router-dom'
 
 
 
 const MainPage = () => {
     const [ allData , setData ] = useState([]);
     const [ isFetching , setIsFetching ] = useState(false)
-
+    
     // approving merchant request for quote
     const changeStatus = async (id , status) => {
         let isFound = allData.find(item => item.Id === id);
         if(isFound){
-                isFound.quoteStatus = status
-                const {data} = await changeStatusOfQuote(id , status);
-                if(data?.success === true){
+            isFound.quoteStatus = status
+            const {data} = await changeStatusOfQuote(id , status);
+            if(data?.success === true){
                     let newData = allData;
                     let finalData = newData.filter(item => item.Id === id ? isFound : item );
                     toast.success(`Quote Status Changed to ${status}`);
@@ -39,6 +40,7 @@ const MainPage = () => {
         }
     }
 
+    
     const TABLE_HEADERS = [
         {
             prop: "customer",
@@ -130,6 +132,17 @@ const MainPage = () => {
         }
         getAllRecords();
     },[])
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    // checking if user is signed in or not
+    useEffect(() =>{
+        const customerToken = JSON.parse(localStorage.getItem('reno-merchant-token'))
+        const isSessionFound = sessionStorage.getItem("reno-merchant-token");
+        if(!customerToken && !isSessionFound){
+            navigate("/partner/auth/login");
+        }
+    },[location])
 
     return (
         <>

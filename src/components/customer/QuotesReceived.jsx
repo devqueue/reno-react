@@ -9,7 +9,8 @@ import line from '../../assets/icons/line.png'
 import { toast } from 'react-toastify';
 import { ThreeDots } from  'react-loader-spinner'
 import {getTodayReceivedQuotes , getReceivedQuotesPrevious , denyAnyQuote} from '../../api/CustomerApi'
-import { Link , useNavigate } from 'react-router-dom'
+import { Link , useNavigate , useLocation } from 'react-router-dom'
+import moment from 'moment'
 
 
 const QuotesReceived = () => {
@@ -75,6 +76,16 @@ const QuotesReceived = () => {
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
+    const location = useLocation();
+    // checking if user is signed in or not
+    useEffect(() =>{
+        const customerToken = JSON.parse(localStorage.getItem('reno-customer-token'))
+        const isSessionFound = sessionStorage.getItem("reno-customer-token");
+        if(!customerToken && !isSessionFound){
+            navigate("/customer/auth/login");
+        }
+    },[location])
+
     return (
         <>
         {
@@ -97,7 +108,7 @@ const QuotesReceived = () => {
                             <div className='panel-left'>
                                 <h5 className='mb-0 fw-600'>Quotes Received</h5>
                                 <p className='text-muted mb-0 text-light fs-small'>
-                                Sunday, 29 May 2022
+                                {moment().format('MMMM Do YYYY')}
                                 </p>
                             </div>
 

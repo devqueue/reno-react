@@ -5,8 +5,9 @@ import user from '../../assets/images/user.jpg'
 import quotesSearch from '../../assets/icons/quotesSearch.png'
 import {getAllRecentSentQuotes} from '../../api/MerchentApi'
 import moment from 'moment'
-import { Link ,useNavigate } from 'react-router-dom'
+import { Link ,useNavigate , useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify';
+import monet from 'moment'
 
 const ManageQuotes = () => {
     const [ isFetching , setIsFetching ] = useState(false)
@@ -67,6 +68,16 @@ const ManageQuotes = () => {
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
+    const location = useLocation();
+    // checking if user is signed in or not
+    useEffect(() =>{
+        const customerToken = JSON.parse(localStorage.getItem('reno-merchant-token'))
+        const isSessionFound = sessionStorage.getItem("reno-merchant-token");
+        if(!customerToken && !isSessionFound){
+            navigate("/partner/auth/login");
+        }
+    },[location])
+
   return (
     <>
         {
@@ -89,7 +100,7 @@ const ManageQuotes = () => {
                   <div className='panel-left'>
                     <h5 className='mb-0 fw-600'>Manage Quotes</h5>
                     <p className='text-muted mb-0 text-light fs-small'>
-                      Sunday, 29 May 2022
+                      {moment().format('MMMM Do YYYY')}
                     </p>
                   </div>
 

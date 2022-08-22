@@ -2,7 +2,7 @@ import React, { useState , useEffect } from 'react'
 import { AiFillBell } from 'react-icons/ai'
 import { IoMdClose } from 'react-icons/io'
 import { toast } from 'react-toastify';
-import { Link , useNavigate } from 'react-router-dom'
+import { Link , useNavigate , useLocation } from 'react-router-dom'
 import user from '../../assets/images/user.jpg'
 import deny from '../../assets/images/deny.png'
 import financeNull from '../../assets/images/financeNull.png'
@@ -15,6 +15,7 @@ import paid from '../../assets/images/paid.png'
 import { ThreeDots } from  'react-loader-spinner'
 import {getRecentQuotesDeliveredToACustomer , deliveryConfirmationOfAQuote} from '../../api/CustomerApi'
 import {Button} from 'react-bootstrap'
+import moment from 'moment'
 
 
 const PaidFinanceQuotes = () => {
@@ -63,6 +64,16 @@ const PaidFinanceQuotes = () => {
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
+    const location = useLocation();
+    // checking if user is signed in or not
+    useEffect(() =>{
+        const customerToken = JSON.parse(localStorage.getItem('reno-customer-token'))
+        const isSessionFound = sessionStorage.getItem("reno-customer-token");
+        if(!customerToken && !isSessionFound){
+            navigate("/customer/auth/login");
+        }
+    },[location])
+
     return (
         <>
         {
@@ -85,7 +96,7 @@ const PaidFinanceQuotes = () => {
                             <div className='panel-left'>
                                 <h5 className='mb-0 fw-600'>Paid Finance Quotes</h5>
                                 <p className='text-muted mb-0 text-light fs-small'>
-                                    Sunday, 29 May 2022
+                                    {moment().format('MMMM Do YYYY')}
                                 </p>
                             </div>
 

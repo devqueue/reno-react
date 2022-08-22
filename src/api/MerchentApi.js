@@ -29,6 +29,7 @@ const sendNewQuoteRequest = (data) => API.post(`/api/v1/quotes/postNew`, data);
 const getAllRecentSentQuotes = () => API.get(`/api/v1/quotes/getAllQuotesOfAMerchant`);
 const getAllQuotesToBeDelivered = () => API.get(`/api/v1/quotes/getAllQuotesToBeDelivered`);
 const changeStatusOfQuote = (quoteId, status) => API.put(`/api/v1/quotes/sendMerchantDeliveryResponse/${quoteId}/${status}`);
+const getQuotesForHomeScreen = () => API.get(`/api/v1/quotes/getAllQuotesCountOfMerchant`);
 
 
 
@@ -38,5 +39,6 @@ module.exports = {
     sendNewQuoteRequest,
     getAllRecentSentQuotes,
     getAllQuotesToBeDelivered,
-    changeStatusOfQuote
+    changeStatusOfQuote,
+    getQuotesForHomeScreen
 }

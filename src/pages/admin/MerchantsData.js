@@ -10,10 +10,10 @@ import { useNavigate , useLocation } from "react-router-dom";
 const HomePage = () => {
     const [active, setActive] = useState(false)
     const navigate = useNavigate();
-    const location = useLocation();
-
+    
     document.title = 'Reno | Admin Portal'
-
+    
+    const location = useLocation();
     // checking if user is signed in or not
     useEffect(() =>{
         const adminToken = JSON.parse(localStorage.getItem('reno-admin-token'))

@@ -1,5 +1,5 @@
 import React, { useState , useEffect } from 'react'
-import { Link , useNavigate , useParams } from 'react-router-dom'
+import { Link , useNavigate , useParams , useLocation } from 'react-router-dom'
 import { AiFillBell } from 'react-icons/ai'
 import { toast } from 'react-toastify';
 import user from '../../assets/images/user.jpg'
@@ -11,6 +11,7 @@ import quoteStep4 from '../../assets/images/quoteStep4.png'
 import tick from '../../assets/images/tick.png'
 import {sendResponseOnQuote} from '../../api/CustomerApi'
 import { ThreeDots } from  'react-loader-spinner'
+import moment from 'moment'
 
 
 const RequestFinance = () => {
@@ -131,13 +132,24 @@ const RequestFinance = () => {
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
+
+    const location = useLocation();
+    // checking if user is signed in or not
+    useEffect(() =>{
+        const customerToken = JSON.parse(localStorage.getItem('reno-customer-token'))
+        const isSessionFound = sessionStorage.getItem("reno-customer-token");
+        if(!customerToken && !isSessionFound){
+            navigate("/customer/auth/login");
+        }
+    },[location])
+
     return (
         <div className='container-fluid p-4 dashboard-content'>
             <div className="panel-top d-flex align-items-center justify-content-between">
                 <div className='panel-left'>
                     <h5 className='mb-0 fw-600'>Request Finance</h5>
                     <p className='text-muted mb-0 text-light fs-small'>
-                    Sunday, 29 May 2022
+                    {moment().format('MMMM Do YYYY')}
                     </p>
                 </div>
 

@@ -2,7 +2,7 @@ import React, { useState , useEffect } from 'react'
 import { AiFillBell } from 'react-icons/ai'
 import { IoMdClose } from 'react-icons/io'
 import { toast } from 'react-toastify';
-import { Link , useNavigate } from 'react-router-dom'
+import { Link , useNavigate , useLocation } from 'react-router-dom'
 import user from '../../assets/images/user.jpg'
 import {Button} from 'react-bootstrap'
 import deny from '../../assets/images/deny.png'
@@ -14,12 +14,24 @@ import danger from '../../assets/icons/danger.png'
 import paid from '../../assets/images/paid.png'
 import { ThreeDots } from  'react-loader-spinner'
 import {getAllTodayFinancialRequestSent , getAllFinancialRequestSent} from '../../api/CustomerApi'
+import moment from 'moment'
 
 const FinanceRequests = () => {
     const navigate = useNavigate();
     const [ isFetching , setIsFetching ] = useState(false)
     const [ allData , setAllData ] = useState([]);
     const [ allPreviousData , setAllPreviousData ] = useState([]);
+
+    
+    const location = useLocation();
+    // checking if user is signed in or not
+    useEffect(() =>{
+        const customerToken = JSON.parse(localStorage.getItem('reno-customer-token'))
+        const isSessionFound = sessionStorage.getItem("reno-customer-token");
+        if(!customerToken && !isSessionFound){
+            navigate("/customer/auth/login");
+        }
+    },[location])
 
     //getting all data
     useEffect(() => {
@@ -52,6 +64,8 @@ const FinanceRequests = () => {
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
+
+
     return (
         <>
         {
@@ -74,7 +88,7 @@ const FinanceRequests = () => {
                             <div className='panel-left'>
                                 <h5 className='mb-0 fw-600'>Finance  Requests</h5>
                                 <p className='text-muted mb-0 text-light fs-small'>
-                                    Sunday, 29 May 2022
+                                    {moment().format('MMMM Do YYYY')}
                                 </p>
                             </div>
 
