@@ -31,11 +31,12 @@ const LoginForm = () => {
                 email : '',
                 password : '',
             })
-            if(isRemember === true){
+            //if(isRemember === true){
                 localStorage.setItem("reno-admin-token", JSON.stringify(data?.Token));
-            }else{
-                sessionStorage.setItem("reno-admin-token", JSON.stringify(data?.Token));
-            }
+            //}
+            // else{
+            //     sessionStorage.setItem("reno-admin-token", JSON.stringify(data?.Token));
+            // }
             await delay(1500)
             setIsFetching(false)
             navigate('/admin');
@@ -83,12 +84,12 @@ const LoginForm = () => {
                 </div>
                 <h6 className='text-end mb-4'>
                 </h6>
-                <div class="form-check d-flex align-items-center mb-4">
-                    <input class="form-check-input auth-check me-3" type="checkbox" value="" id="remember" onClick={() => setRemember(!isRemember)} />
+                {/* <div class="form-check d-flex align-items-center mb-4">
+                    <input class="form-check-input auth-check me-3" type="checkbox" checked={true}  value="" id="remember" onClick={() => setRemember(!isRemember)} />
                     <label class="form-check-label fs-small" for="remember">
                         Remember me
                     </label>
-                </div>
+                </div> */}
 
                 {
                     isFetching === true ? (

@@ -1,8 +1,8 @@
 const axios = require('axios');
 
 const API = axios.create({
-    //baseURL: process.env.REACT_APP_API_URL
-    baseURL: process.env.REACT_APP_API_SERVER_URL
+    baseURL: process.env.REACT_APP_API_URL
+    //baseURL: process.env.REACT_APP_API_SERVER_URL
 });
 
 const customerToken = JSON.parse(localStorage.getItem('reno-merchant-token'))
