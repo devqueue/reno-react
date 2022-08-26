@@ -24,7 +24,6 @@ const LoginForm = () => {
         console.log("userData: ", userData)
         setIsFetching(true)
         const {data} = await signInMerchant(userData);
-        console.log("data of response : ", data);
         if(data?.success === true){
             toast.success("Signed In SuccessFully");
             setUserDate({
@@ -89,9 +88,9 @@ const LoginForm = () => {
                     <h6 className='text-end mb-4'>
                         <Link to='#' className='text-light fw-light' data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password?</Link>
                     </h6>
-                    <div class="form-check d-flex align-items-center mb-4">
-                        <input class="form-check-input auth-check me-3" type="checkbox" value="" id="remember" onClick={() => setRemember(!isRemember)} />
-                        <label class="form-check-label fs-small" for="remember">
+                    <div className="form-check d-flex align-items-center mb-2">
+                        <input className="form-check-input auth-check me-3" type="checkbox"  value="" id="remember" onClick={() => setRemember(!isRemember)} />
+                        <label className="form-check-label fs-small" for="remember">
                             Remember me
                         </label>
                     </div>

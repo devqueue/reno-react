@@ -501,7 +501,11 @@ a {
 }
 
 .auth-container * {
-    color: #fff;
+    color: white;
+}
+
+.auth-container input{
+    color : white !important
 }
 
 .auth-container input, .auth-container select {
@@ -513,13 +517,17 @@ a {
 
 .auth-container input:focus {
     background-color: #201c3c;
-    color: #fff;
+    color: white;
     box-shadow: none;
 }
 
 .auth-container .number-select {
     width: fit-content;
     border: 1.4px solid #ffffff80 !important;
+}
+
+.auth-input-container:focus{
+    color : white
 }
 
 .auth-links-container {
@@ -738,10 +746,11 @@ a {
     flex: 1;
     height: 60px;
     display: flex;
+    color : white;
     align-items: center;
     justify-content: center;
     border-radius: 8px;
-    background-color: #ffffff80;
+    background-color: white;
 }
 
 .auth-input-container:focus-within {
@@ -749,15 +758,14 @@ a {
 }
 
 .auth-check {
-    width: 32px;
+    width: 32px !important;
     height: 32px !important;
+    background-color: transparent;
     border-radius: 30% !important;
     border: 1.4px solid #ffffff80 !important;
 }
 
-.auth-check:checked {
-    background: #201c3c;
-}
+
 
 .form-check label {
     cursor: pointer;
@@ -776,7 +784,7 @@ a {
 }
 
 .modal-cancel {
-    color: #0B0A31;
+    color: white;
     border-width: 1.4px !important;
 }
 

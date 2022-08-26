@@ -112,18 +112,32 @@ const SignupForm = () => {
                         <div className="form-group col-lg-6 mb-4">
                             <label className='form-label'>City</label>
                             <select class="form-select shadow-none fs-small text-muted number-select w-100 me-2" aria-label="Default select example" onChange={(e) => setUserDate({...userData , city : e.target.value})}>
-                                <option>New York</option>
-                                <option>London</option>
-                                <option>Paris</option>
+                                <option>Riyadh</option>
+                                <option>Jaddah</option>
+                                <option>Dammam</option>
+                                <option>Madina</option>
+                                <option>Makkah</option>
+                                <option>Taif</option>
+                                <option>Tabuk</option>
+                                <option>Al Qatif</option>
+                                <option>Al Kharj</option>
+                                <option>Al Badah</option>
+                                <option>Al Ula</option>
                             </select>
                         </div>
                     </div>
                     <div className="form-group mb-4">
                         <label className='form-label'> Select your Category</label>
                         <select class="form-select shadow-none fs-small text-muted number-select w-100 me-2" aria-label="Default select example" onChange={(e) => setUserDate({...userData , category : e.target.value})}>
-                            <option>Air Conditioner</option>
-                            <option >Room Cooler</option>
-                            <option >Refrigerator</option>
+                            <option>Lighting</option>
+                            <option >Cooling/Heating</option>
+                            <option >Smart Home technology System</option>
+                            <option >Solar & Battery System</option>
+                            <option >Plumbing</option>
+                            <option >Electrical </option>
+                            <option >Blinds, curtains & Shutters</option>
+                            <option >Flooring & Wallpaper</option>
+                            <option >Garage Doors</option>
                         </select>
                     </div>
 

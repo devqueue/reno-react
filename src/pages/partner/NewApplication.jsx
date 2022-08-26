@@ -304,9 +304,16 @@ const NewApllication = () => {
                                 <div className="col-12 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Product Category</label>
                                     <select class="form-select text-muted" aria-label="Default select example" onChange={(e) => setQuoteData({...quoteDate , productCategory : e.target.value}) }>
-                                        <option>Air Conditioner</option>
-                                        <option>Regrigrator</option>
-                                        <option>Washing Machine</option>
+                                        <option selected></option>
+                                        <option>Lighting</option>
+                                        <option >Cooling/Heating</option>
+                                        <option >Smart Home technology System</option>
+                                        <option >Solar & Battery System</option>
+                                        <option >Plumbing</option>
+                                        <option >Electrical </option>
+                                        <option >Blinds, curtains & Shutters</option>
+                                        <option >Flooring & Wallpaper</option>
+                                        <option >Garage Doors</option>
                                     </select>
                                 </div>
 
