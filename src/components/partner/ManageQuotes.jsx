@@ -20,7 +20,7 @@ const ManageQuotes = () => {
           const {data} = await getAllRecentSentQuotes();
           console.log("all quotes : ", data);
           if(data?.success === true){
-              setAllData(data?.AllQuotes);
+              setAllData(data?.AllQuotes.reverse());
           }else{
               toast.error(data?.message);
           }

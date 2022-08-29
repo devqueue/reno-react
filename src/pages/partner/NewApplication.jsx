@@ -13,6 +13,8 @@ import tick from '../../assets/images/tick.png'
 import {sendNewQuoteRequest} from '../../api/MerchentApi'
 import { ThreeDots } from  'react-loader-spinner'
 import moment from 'moment'
+import Modal from 'react-bootstrap/Modal';
+
 
 
 const NewApllication = () => {
@@ -21,6 +23,7 @@ const NewApllication = () => {
 
     const [step, setStep] = useState(1)
     const [ isFetching , setIsFetching ] = useState(false)
+    const [ updateData , setUpdateData ] = useState(null)
     const [choice, setChoice] = useState(true)
     const [ quoteDate , setQuoteData ] = useState({
         totalPurchaseAmount : 0,
@@ -107,6 +110,31 @@ const NewApllication = () => {
 
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
+
+    const [financial, setFinancial] = useState(false);
+    const handleFinancialClose = () => {
+        setFinancial(false);
+    }
+    const handleFinancialShow = () => {
+        setUpdateData(quoteDate)
+        setFinancial(true);
+    }
+
+    const [customer, setCustomer] = useState(false);
+    const handleCustomerClose = () => {
+        setCustomer(false);
+    }
+    const handleCustomerShow = () => {
+        setUpdateData(quoteDate)
+        setCustomer(true);
+    }
+
+    // updating data
+    const saveChanges = () => {
+        setQuoteData(updateData)
+        handleFinancialClose()
+        handleCustomerClose()
+    }
 
     return (
         <div className='container-fluid p-4 dashboard-content'>
@@ -347,7 +375,7 @@ const NewApllication = () => {
                                     <div className="review-card">
                                         <div className="review-heading d-flex justify-content-between align-items-center p-3">
                                             <h6 className='mb-0'>Finance Details</h6>
-                                            <img src={pen} alt="" />
+                                            <img src={pen} alt="" onClick={handleFinancialShow} />
                                         </div>
                                         <ul className='fs-small mb-0 p-3'>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
@@ -380,7 +408,7 @@ const NewApllication = () => {
                                     <div className="review-card">
                                         <div className="review-heading d-flex justify-content-between align-items-center p-3">
                                             <h6 className='mb-0'>Repayment Amount</h6>
-                                            <img src={pen} alt="" />
+                                            {/* <img src={pen} alt="" /> */}
                                         </div>
                                         <ul className='fs-small mb-0 p-3'>
                                             <li className='d-flex py-2 align-items-center justify-content-between'>
@@ -395,7 +423,7 @@ const NewApllication = () => {
                                     <div className="review-card">
                                         <div className="review-heading d-flex justify-content-between align-items-center p-3">
                                             <h6 className='mb-0'>Customer & Product Details </h6>
-                                            <img src={pen} alt="" />
+                                            <img src={pen} alt="" onClick={handleCustomerShow} />
                                         </div>
                                         <ul className='fs-small mb-0 p-3'>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
@@ -468,6 +496,105 @@ const NewApllication = () => {
                 </div>
             </div>
             {/* Modal */}
+
+            {/* update personal info */}
+            <Modal show={financial} onHide={handleFinancialClose} animation={false}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Update Finance Details</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="col-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Purchase Total</label>
+                        <div className="sar-container">
+                            <input type="number" className='form-control' value={updateData?.totalPurchaseAmount} onChange={(e) => setUpdateData({...updateData , totalPurchaseAmount : e.target.value})} required/>
+                            <h5 className='fs-small text-darkBlue'>SAR</h5>
+                        </div>
+                    </div>
+                    <div className="col-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Deposit Amount</label>
+                        <div className="sar-container">
+                            <input type="number" className='form-control' value={updateData?.depositAmount} onChange={(e) => setUpdateData({...updateData , depositAmount : e.target.value})}  required/>
+                            <h5 className='fs-small text-darkBlue'>SAR</h5>
+                        </div>
+                    </div>
+                    <div className="col-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Balance owning</label>
+                        <div className="sar-container">
+                            <input type="number" className='form-control' value={updateData?.balanceOwning} disabled />
+                            <h5 className='fs-small text-darkBlue'>SAR</h5>
+                        </div>
+                    </div>
+                    <div className="col-12 mb-4">
+                        <label className='form-label text-muted fs-small'>Is Customer using reno for the first time</label>
+                        <div className="yes-no-container">
+                            <button className={`btn ${choice ? 'active' : ''}`} onClick={() => {setChoice(true); setUpdateData({...updateData , isCustomerUsingRenoFirstTime : true }) }}>Yes</button>
+                            <button className={`btn ${!choice ? 'active' : ''}`} onClick={() => {setChoice(false);  setUpdateData({...updateData , isCustomerUsingRenoFirstTime : false }) }}>No</button>
+                        </div>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleFinancialClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={saveChanges}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/* update personal info */}
+
+            {/* update customer info */}
+            <Modal show={customer} onHide={handleCustomerClose} animation={false}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Update Customer Details</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="col-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Customer ID Card/Iqama Number</label>
+                        <input type="text" className='form-control' placeholder='Enter your ID Card/Iqama Number' value={updateData?.IDCardNo} onChange={(e) => setUpdateData({...updateData , IDCardNo : e.target.value})}  required />
+                    </div>
+                    <div className="col-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Phone Number</label>
+                        <div className='d-flex'>
+                            <select class="form-select me-3 text-muted" style={{ width: 'fit-content' }} aria-label="Default select example">
+                                <option selected>+966</option>
+                                <option>+966</option>
+                                <option>+966</option>
+                                <option>+966</option>
+                            </select>
+                            <input type="number" className='form-control' placeholder='Enter your customer’s phone number'  value={updateData?.phoneNo} onChange={(e) => setUpdateData({...updateData , phoneNo : e.target.value})}  required  />
+                        </div>
+                    </div>
+                    <div className="col-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Email</label>
+                        <input type="email" className='form-control' placeholder='Enter your customer’s email address' value={updateData?.email} onChange={(e) => setUpdateData({...updateData , email : e.target.value})}  required />
+                    </div>
+                    <div className="col-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Product Category</label>
+                        <select class="form-select text-muted" aria-label="Default select example" onChange={(e) => setUpdateData({...updateData , productCategory : e.target.value}) }>
+                            <option selected></option>
+                            <option>Lighting</option>
+                            <option >Cooling/Heating</option>
+                            <option >Smart Home technology System</option>
+                            <option >Solar & Battery System</option>
+                            <option >Plumbing</option>
+                            <option >Electrical </option>
+                            <option >Blinds, curtains & Shutters</option>
+                            <option >Flooring & Wallpaper</option>
+                            <option >Garage Doors</option>
+                        </select>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCustomerClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={saveChanges}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/* update personal info */}
 
         </div>
     )

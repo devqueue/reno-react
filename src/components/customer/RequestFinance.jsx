@@ -12,6 +12,8 @@ import tick from '../../assets/images/tick.png'
 import {sendResponseOnQuote} from '../../api/CustomerApi'
 import { ThreeDots } from  'react-loader-spinner'
 import moment from 'moment'
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 
 const RequestFinance = () => {
@@ -21,6 +23,7 @@ const RequestFinance = () => {
     const navigate = useNavigate()
 
     const [ isFetching , setIsFetching ] = useState(false)
+    const [ updateData , setUpdateData ] = useState(null)
     const [ quoteDate , setQuoteData ] = useState({
         isOwned : false,
         homeType : "",
@@ -41,6 +44,36 @@ const RequestFinance = () => {
         transportationExpense : 0,
         additionalLoansExpense : 0,
     })
+
+    const [personalInfo, setPersonalInfo] = useState(false);
+    const handlePersonalInfoClose = () => {
+        setPersonalInfo(false);
+        //setUpdateData(null)
+    }
+    const handlePersonalInfoShow = () => {
+        setPersonalInfo(true);
+        setUpdateData(quoteDate)
+    }
+
+    const [monthlyIncome, setMonthlyIncome] = useState(false);
+    const handleMonthlyIncomeClose = () => {
+        setMonthlyIncome(false);
+        //setUpdateData(null)
+    }
+    const handleMonthlyIncomeShow = () => {
+        setUpdateData(quoteDate)
+        setMonthlyIncome(true);
+    }
+
+    const [expense, setExpense] = useState(false);
+    const handleExpenseClose = () => {
+        setExpense(false);
+        //setUpdateData(null)
+    }
+    const handleExpenseShow = () => {
+        setUpdateData(quoteDate)
+        setExpense(true);
+    }
 
     // checking if partner is signed in or not
     useEffect(() => {
@@ -98,7 +131,7 @@ const RequestFinance = () => {
 
     // empty quote data
     const emptyQuoteData = () => {
-        setQuoteData({
+        setUpdateData({
             isOwned : false,
             homeType : "",
             martialStatus: "",
@@ -132,7 +165,6 @@ const RequestFinance = () => {
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
-
     const location = useLocation();
     // checking if user is signed in or not
     useEffect(() =>{
@@ -143,6 +175,13 @@ const RequestFinance = () => {
         }
     },[location])
 
+    // updating data
+    const saveChanges = () => {
+        setQuoteData(updateData)
+        handlePersonalInfoClose()
+        handleMonthlyIncomeClose()
+        handleExpenseClose()
+    }
     return (
         <div className='container-fluid p-4 dashboard-content'>
             <div className="panel-top d-flex align-items-center justify-content-between">
@@ -166,7 +205,7 @@ const RequestFinance = () => {
                                     <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
                     </ul>
                 </div>
-                
+
                 <div class="dropdown profile-dropdown">
                 <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                         <div className='d-flex align-items-center fs-small me-3'>
@@ -489,7 +528,7 @@ const RequestFinance = () => {
                                     <div className="review-card">
                                         <div className="review-heading d-flex justify-content-between align-items-center p-3">
                                             <h6 className='mb-0'>Personal Information</h6>
-                                            <img src={pen} alt="" />
+                                            <img src={pen} alt="" onClick={handlePersonalInfoShow} />
                                         </div>
                                         <ul className='fs-small mb-0 p-3'>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
@@ -532,7 +571,7 @@ const RequestFinance = () => {
                                     <div className="review-card">
                                         <div className="review-heading d-flex justify-content-between align-items-center p-3">
                                             <h6 className='mb-0'>Monthly Income</h6>
-                                            <img src={pen} alt="" />
+                                            <img src={pen} alt="" onClick={handleMonthlyIncomeShow} />
                                         </div>
                                         <ul className='fs-small mb-0 p-3'>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
@@ -555,7 +594,7 @@ const RequestFinance = () => {
                                     <div className="review-card">
                                         <div className="review-heading d-flex justify-content-between align-items-center p-3">
                                             <h6 className='mb-0'>Expenses and obligations </h6>
-                                            <img src={pen} alt="" />
+                                            <img src={pen} alt="" onClick={handleExpenseShow} />
                                         </div>
                                         <ul className='fs-small mb-0 p-3'>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
@@ -656,6 +695,245 @@ const RequestFinance = () => {
                 </div>
             </div>
             {/* Modal */}
+
+            {/* update personal info */}
+            <Modal show={personalInfo} onHide={handlePersonalInfoClose} animation={false}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Update Personal Information</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="col-lg-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Owned/Rented</label>
+                        <select class="form-select text-muted" aria-label="Default select example" onChange={(e) => setUpdateData({...updateData , isOwned : e.target.value}) }>
+                            <option value={true}>Yes</option>
+                            <option value={false}>No</option>
+                        </select>
+                    </div>
+                    <div className="col-lg-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Home Type</label>
+                        <select class="form-select text-muted" aria-label="Default select example" onChange={(e) => setUpdateData({...updateData , homeType : e.target.value}) }>
+                            <option selected>Apartment / Villa / Duplex / Floor</option>
+                            <option>Apartment</option>
+                            <option>Villa</option>
+                            <option>Duplex</option>
+                            <option>Floor</option>
+                        </select>
+                    </div>
+                    <div className="col-lg-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Home Location</label>
+                        <input type="text" className='form-control' placeholder='Enter your home location here' value={updateData?.homeLocation} onChange={(e) => setUpdateData({...updateData , homeLocation : e.target.value})} required />
+                    </div>
+                    <div className="col-lg-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Home Size (sqr meter)</label>
+                        <input type="text" className='form-control' placeholder='Enter your home size' value={updateData?.homeSize} onChange={(e) => setUpdateData({...updateData , homeSize : e.target.value})} required />
+                    </div>
+                    <div className="col-lg-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Marital status</label>
+                        <input type="text" className='form-control' placeholder='Select your marital status' value={updateData?.martialStatus} onChange={(e) => setUpdateData({...updateData , martialStatus : e.target.value})} required />
+                    </div>
+                    <div className="col-lg-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Number of family Members</label>
+                        <select class="form-select text-muted" aria-label="Default select example"  onChange={(e) => setUpdateData({...updateData , familyMembersCount : e.target.value}) }>
+                            <option selected>Select Number of family Members</option>
+                            <option>3</option>
+                            <option>5</option>
+                            <option>10</option>
+                        </select>
+                    </div>
+                    <div className="col-lg-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Family member education fees (SAR)</label>
+                        <input type="text" className='form-control' placeholder='Enter your family member education fees' value={updateData?.familyMembersFees} onChange={(e) => setUpdateData({...updateData , familyMembersFees : e.target.value})} required />
+                    </div>
+                    <div className="col-lg-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Working status</label>
+                        <select class="form-select text-muted" aria-label="Default select example" onChange={(e) => setUpdateData({...updateData , workingStatus : e.target.value}) }>
+                            <option selected>Select your working status</option>
+                            <option value={true}>Yes</option>
+                            <option value={false}>No</option>
+                        </select>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handlePersonalInfoClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={saveChanges}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/* update personal info */}
+
+            {/* update monthly income info */}
+            <Modal show={monthlyIncome} onHide={handleMonthlyIncomeClose} animation={false}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Update Monthly Income Details</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="col-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Basic Salary</label>
+                        <input type="text" className='form-control' placeholder='Please your basic salary here (SAR)' value={updateData?.basicSalary} onChange={(e) => setUpdateData({...updateData , basicSalary : e.target.value})}  />
+                    </div>
+                    <div className="col-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Housing Allowance</label>
+                        <input type="text" className='form-control' placeholder='Please your housing allowance here (SAR)' value={updateData?.housingAllowance} onChange={(e) => setUpdateData({...updateData , housingAllowance : e.target.value})}   />
+                    </div>
+                    <div className="col-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Other Allowance(Optional)</label>
+                        <input type="text" className='form-control' placeholder='Please your other allowance here (SAR)' value={updateData?.otherAllowance} onChange={(e) => setUpdateData({...updateData , otherAllowance : e.target.value})} />
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleMonthlyIncomeClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={saveChanges}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/* update monthly income info */}
+
+            {/* update expenses info */}
+            <Modal show={expense} onHide={handleExpenseClose} animation={false}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Update Monthly Expenses Details</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="col-12">
+                        <div className="progress-container">
+                            <h6 className='text-light text-center mb-4'>Current Monthly Expenses</h6>
+                            <div className="progress-bar-container"><div className="progress-bar"></div></div>
+                            <div className="d-flex justify-content-between">
+                                <div className='text-light fs-small'>
+                                    {
+                                        Number(quoteDate?.housingExpense) +
+                                        Number(quoteDate?.housingAllowance) +
+                                        Number(quoteDate?.otherAllowance) +
+                                        Number(quoteDate?.homeWorkerWageExpense) +
+                                        Number(quoteDate?.healthCareExpense) +
+                                        Number(quoteDate?.foodBeverageExpense) +
+                                        Number(quoteDate?.additionalMonthlyExpense) +
+                                        Number(quoteDate?.transportationExpense) +
+                                        Number(quoteDate?.additionalLoansExpense)
+                                    }.00
+                                    <span className='text-muted'> SAR/month</span>
+                                </div>
+                                <div className="text-light fs-small">
+                                    <span className='text-color-primary me-2'>Total income</span>
+                                    {updateData?.basicSalary}.00
+                                    <span className="text-muted"> SAR/month</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col-lg-12 mt-4">
+                        <div className="expense-card">
+                            <h6 className='text-darkBlue fw-600 mb-4 text-center'>Housing</h6>
+
+                            <input type="range" class="form-range" id="customRange1" value={updateData?.housingExpense} onChange={(e) => setQuoteData({...updateData , housingExpense : e.target.value})} required />
+
+                            <div className="d-flex fw-600 justify-content-between">
+                                <div className='text-darkBlue fs-small'>
+                                    {updateData?.housingExpense}.00 <span className='text-muted fw-normal'> SAR/month</span>
+                                </div>
+                                <div className='text-darkBlue fs-small'>
+                                    0.00 <span className='text-muted fw-normal'> SAR/month</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col-lg-12 mt-4">
+                        <div className="expense-card">
+                            <h6 className='text-darkBlue fw-600 mb-4 text-center'>Homeworkers wage</h6>
+
+                            <input type="range" class="form-range" id="customRange1" value={updateData?.homeWorkerWageExpense} onChange={(e) => setUpdateData({...updateData , homeWorkerWageExpense : e.target.value})} required />
+
+                            <div className="d-flex fw-600 justify-content-between">
+                                <div className='text-darkBlue fs-small'>
+                                    {updateData?.homeWorkerWageExpense}.00 <span className='text-muted fw-normal'> SAR/month</span>
+                                </div>
+                                <div className='text-darkBlue fs-small'>
+                                    0.00<span className='text-muted fw-normal'> SAR/month</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col-lg-12 mt-4">
+                        <div className="expense-card">
+                            <h6 className='text-darkBlue fw-600 mb-4 text-center'>Food & beverage expenses</h6>
+
+                            <input type="range" class="form-range" id="customRange1" value={updateData?.foodBeverageExpense} onChange={(e) => setUpdateData({...updateData , foodBeverageExpense : e.target.value})} required />
+
+                            <div className="d-flex fw-600 justify-content-between">
+                                <div className='text-darkBlue fs-small'>
+                                    {updateData?.foodBeverageExpense}.00 <span className='text-muted fw-normal'> SAR/month</span>
+                                </div>
+                                <div className='text-darkBlue fs-small'>
+                                    0.00 <span className='text-muted fw-normal'> SAR/month</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col-lg-12 mt-4">
+                        <div className="expense-card">
+                            <h6 className='text-darkBlue fw-600 mb-4 text-center'>Health Care & Insurance</h6>
+
+                            <input type="range" class="form-range" id="customRange1" value={updateData?.healthCareExpense} onChange={(e) => setUpdateData({...updateData , healthCareExpense : e.target.value})} required />
+
+                            <div className="d-flex fw-600 justify-content-between">
+                                <div className='text-darkBlue fs-small'>
+                                    {updateData?.healthCareExpense}.00 <span className='text-muted fw-normal'> SAR/month</span>
+                                </div>
+                                <div className='text-darkBlue fs-small'>
+                                    8,000 <span className='text-muted fw-normal'> SAR/month</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col-lg-12 mt-4">
+                        <div className="expense-card">
+                            <h6 className='text-darkBlue fw-600 mb-4 text-center'>Transportation & Communication</h6>
+
+                            <input type="range" class="form-range" id="customRange1" value={updateData?.transportationExpense} onChange={(e) => setUpdateData({...updateData , transportationExpense : e.target.value})} required />
+
+                            <div className="d-flex fw-600 justify-content-between">
+                                <div className='text-darkBlue fs-small'>
+                                    {updateData?.transportationExpense}.00 <span className='text-muted fw-normal'> SAR/month</span>
+                                </div>
+                                <div className='text-darkBlue fs-small'>
+                                    0.00 <span className='text-muted fw-normal'> SAR/month</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col-lg-12 mt-4">
+                        <div className="expense-card mb-4 p-3 d-flex align-items-center justify-content-between">
+                            <p className='mb-0 text-darkBlue fs-small'>Any addition monthly expense</p>
+                            <input type="checkbox" className='form-check-input'  />
+                        </div>
+                        <div className="expense-card py-3 px-3 d-flex align-items-center justify-content-between">
+                            <p className='mb-0 text-darkBlue fs-small'>Any additional loans</p>
+                            <input type="checkbox" className='form-check-input' />
+                        </div>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleExpenseClose}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={saveChanges}>
+                        Save Changes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            {/* update expenses info */}
 
         </div>
     )
