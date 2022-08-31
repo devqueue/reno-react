@@ -32,6 +32,7 @@ const changeStatusOfQuote = (quoteId, status) => API.put(`/api/v1/quotes/sendMer
 const getQuotesForHomeScreen = () => API.get(`/api/v1/quotes/getAllQuotesCountOfMerchant`);
 const getAllNotificationsOfMerchant = () => API.get(`/api/v1/notifications/getAllOfAMerchant`);
 const markNotificationsOfMerchantRead = (notificationId) => API.put(`/api/v1/notifications/markNotificationOfMerchantAsRead/${notificationId}`);
+const getSearchedRecords = (filters) => API.get(`/api/v1/quotes/getAllFilteredRecords/${filters}`);
 
 
 
@@ -44,5 +45,6 @@ module.exports = {
     changeStatusOfQuote,
     getQuotesForHomeScreen,
     getAllNotificationsOfMerchant,
-    markNotificationsOfMerchantRead
+    markNotificationsOfMerchantRead,
+    getSearchedRecords
 }

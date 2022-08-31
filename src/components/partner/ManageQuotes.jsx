@@ -131,7 +131,7 @@ const ManageQuotes = () => {
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                     <li><Link class="dropdown-item" to="#">Profile</Link></li>
-                                    <li><Link class="dropdown-item" to="#">Logout</Link></li>
+                                    <li><Link class="dropdown-item" to="" onClick={logout} >Logout</Link></li>
                                 </ul>
                     </div>
                   </div>

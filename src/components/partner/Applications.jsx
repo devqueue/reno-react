@@ -1,25 +1,107 @@
-import React , {useEffect} from 'react'
+import React , {useEffect , useState ,useMemo } from 'react'
 import { AiFillBell } from 'react-icons/ai'
 import user from '../../assets/images/user.jpg'
+import { ThreeDots } from  'react-loader-spinner'
 import filter from '../../assets/icons/filter.png'
 import upload from '../../assets/icons/upload.png'
 import { Link ,useNavigate , useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify';
+import {getAllRecentSentQuotes , getSearchedRecords} from '../../api/MerchentApi'
 import { IoMdClose } from 'react-icons/io'
 import moment from 'moment'
 import { Grid, _ } from "gridjs-react";
 import "gridjs/dist/theme/mermaid.css";
 import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import axios from 'axios'
 
 
 const Applications = () => {
     const navigate = useNavigate()
+    const [ filterData , setFilterData ] = useState({
+        customerId : "",
+        category : "",
+        totalAmount : "",
+        terms: "",
+        date : ""
+    })
+
+    const [ merchantId , setMerchantId ] = useState("")
+
+    // getting searched data
+    const getFilteredResults = async () => {
+        await axios.get(process.env.REACT_APP_API_URL + `/api/v1/quotes/getAllFilteredRecords/${merchantId}?customerId=${filterData?.customerId}&category=${filterData?.category}&totalAmount=${filterData?.totalAmount}&terms=${filterData?.terms}&date=${filterData?.date}`)
+        .then(function (response) {
+            console.log("response : ",response);
+            if(response?.data?.success === true){
+                let newArr = response?.data?.AllQuotes.reverse()
+                let newarray = [];
+                newArr?.map((event, idx) => {
+                    return newarray.push([
+                        event[0].CustomerAndProductDetails.IDCardNo,
+                        event[0].CustomerAndProductDetails.productCategory,
+                        event[0].FinanceDetails.totalPurchaseAmt,
+                        event[0].RepaymentAmount.totalMonths,
+                        moment(event[0].CreatedAt).format("MMM Do YY"),
+                        event[0].quoteStatus,
+                        event[0]._id,
+                        event[0]._id,
+                    ]);
+                });
+                setAllData(newarray);
+            }else{
+                setAllData([])
+            }
+        })
+        .catch(function (error) {
+            console.log("error : ", error);
+        })
+        .then(function () {
+            // always executed
+        });
+        //console.log("data : ", data);
+    }
+
+    // clearing filter
+    const clearFilters = async () => {
+        setFilterData({
+            customerId : "",
+            category : "",
+            totalAmount : "",
+            terms: "",
+            date : ""
+        })
+        setIsFetching(true)
+        const {data} = await getAllRecentSentQuotes();
+        if(data?.success === true){
+            let newArr = data?.AllQuotes.reverse()
+            let newarray = [];
+            newArr?.map((event, idx) => {
+                return newarray.push([
+                    event.CustomerAndProductDetails.IDCardNo,
+                    event.CustomerAndProductDetails.productCategory,
+                    event.FinanceDetails.totalPurchaseAmt,
+                    event.RepaymentAmount.totalMonths,
+                    moment(event.CreatedAt).format("MMM Do YY"),
+                    event.quoteStatus,
+                    event._id,
+                    event._id,
+                ]);
+            });
+            setAllData(newarray);
+        }else{
+            toast.error(data?.message);
+        }
+        setIsFetching(false)
+    }
 
     // logging out
     const logout = async () => {
         localStorage.removeItem("reno-merchant-token")
         sessionStorage.removeItem('reno-merchant-token');
+        localStorage.removeItem("reno-merchantId")
+        sessionStorage.removeItem('reno-merchantId');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
         navigate('/');
@@ -35,14 +117,48 @@ const Applications = () => {
         if(!customerToken && !isSessionFound){
             navigate("/partner/auth/login");
         }
+        setMerchantId(JSON.parse(localStorage.getItem('reno-merchantId')) || sessionStorage.getItem("reno-merchantId"))
     },[location])
 
-    const users = [
-        ["78445", "Air Conditioner" , "8000" , "4" , "17/08/22" , "Pending" ],
-        ["88458", "Washing Machine" , "5000", "7" , "17/08/22" , "Rejected" , ],
-        ["88458", "Room Conditioner" , "1000", "3" , "17/08/22" , "Paid" , ],
-        ["88458", "Refrigerator" , "25000", "9" , "17/08/22" , "Processing" , ]
-    ]
+    const [ isFetching , setIsFetching ] = useState(false)
+    const [ allData , setAllData ] = useState([]);
+
+    const [invoice, setInvoice] = useState(false);
+    const handleInvoiceClose = () => setInvoice(false);
+    const handleInvoiceInvoice = () => setInvoice(true);
+
+    const [refund, setRefund] = useState(false);
+    const handleRefundClose = () => setRefund(false);
+    const handleRefund = () => setRefund(true);
+
+    //getting all data
+    useEffect(() => {
+        const getAllRecord = async () => {
+            setIsFetching(true)
+            const {data} = await getAllRecentSentQuotes();
+            if(data?.success === true){
+                let newArr = data?.AllQuotes.reverse()
+                let newarray = [];
+                newArr?.map((event, idx) => {
+                    return newarray.push([
+                        event.CustomerAndProductDetails.IDCardNo,
+                        event.CustomerAndProductDetails.productCategory,
+                        event.FinanceDetails.totalPurchaseAmt,
+                        event.RepaymentAmount.totalMonths,
+                        moment(event.CreatedAt).format("MMM Do YY"),
+                        event.quoteStatus,
+                        event._id,
+                        event._id,
+                    ]);
+                });
+                setAllData(newarray);
+            }else{
+                toast.error(data?.message);
+            }
+            setIsFetching(false)
+        }
+        getAllRecord();
+    },[location])
 
     return (
         <div className='container-fluid p-4 dashboard-content'>
@@ -55,152 +171,168 @@ const Applications = () => {
             </div>
 
             <div className='d-flex align-items-center panel-right'>
-                <div class="dropdown profile-dropdown">
+                <div className="dropdown profile-dropdown">
                     <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                         <AiFillBell />
                         <span>5</span>
                     </Link>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
-                                    <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
-                                    <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
+                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><Link className="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
+                                    <li><Link className="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
+                                    <li><Link className="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
                     </ul>
                 </div>
 
-                <div class="dropdown profile-dropdown">
-                <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                <div className="dropdown profile-dropdown">
+                <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                     <div className='d-flex align-items-center fs-small me-3'>
                     <img src={user} alt="" />
                     Mohammed
                                 </div>
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                <li><Link class="dropdown-item" to="#">Profile</Link></li>
-                                <li><Link class="dropdown-item" to="" onClick={logout}>Logout</Link></li>
+                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li><Link className="dropdown-item" to="#">Profile</Link></li>
+                                <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
                             </ul>
                 </div>
             </div>
             </div>
 
-            <div className="d-flex table-filters mt-4">
-                <input type="text" className='text-muted fs-small' placeholder='Search Name' />
-                <select class="text-muted fs-small" aria-label="Default select example">
-                    <option selected>Category - All</option>
-                    <option>Category Title</option>
-                    <option>Category Title</option>
-                    <option>Category Title</option>
-                    <option>Category Title</option>
-                </select>
-                <input type="text" className='text-muted fs-small' placeholder='Search Amount' />
-                <input type="text" className='text-muted fs-small' placeholder='Search Terms' />
-                <select className="text-muted fs-small" aria-label="Default select example">
-                    <option selected>Date</option>
-                    <option>Date</option>
-                    <option>Date</option>
-                    <option>Date</option>
-                </select>
-            </div>
+            {
+                isFetching === true ? (
+                    <div style={{display : 'flex' , justifyContent: 'center' , margin: 'auto'}}>
+                        <ThreeDots
+                            height = "60"
+                            width = "60"
+                            radius = "9"
+                            color = 'green'
+                            ariaLabel = 'three-dots-loading'
+                            wrapperStyle
+                            wrapperClass
+                        />
+                    </div>
+                ) : (
+                    <>
+                    <div className="d-flex table-filters mt-4">
+                        <input type="text" style={{maxWidth : "120px"}} className='text-muted fs-small' placeholder='Customer ID' value={filterData?.customerId} onChange={(e) => setFilterData({...filterData , customerId : e.target.value}) } />
+                        <select className="form-select text-muted" aria-label="Default select example" onChange={(e) => setFilterData({...filterData , category : e.target.value}) } >
+                            <option selected></option>
+                            <option>Lighting</option>
+                            <option >Cooling/Heating</option>
+                            <option >Smart Home technology System</option>
+                            <option >Solar & Battery System</option>
+                            <option >Plumbing</option>
+                            <option >Electrical </option>
+                            <option >Blinds, curtains & Shutters</option>
+                            <option >Flooring & Wallpaper</option>
+                            <option >Garage Doors</option>
+                        </select>
+                        <input type="number" className='text-muted fs-small' placeholder='Enter Amount' value={filterData?.totalAmount} onChange={(e) => setFilterData({...filterData , totalAmount : e.target.value}) } />
+                        <input type="number" className='text-muted fs-small' placeholder='Enter Terms' value={filterData?.terms} onChange={(e) => setFilterData({...filterData , terms : e.target.value}) } />
+                        <input type="date" className='text-muted fs-small' placeholder='Enter Terms' value={filterData?.date} onChange={(e) => setFilterData({...filterData , date : e.target.value}) } />
+                    </div>
+                    <div style={{display : 'flex' , justifyContent: 'flex-end'}} >
+                        <div style={{display : 'flex' , justifyContent: 'space-between' , minWidth : '200px'}} >
+                            <Button variant="info" style={{color : 'white' , backgroundColor : '#0B0A31'}} onClick={getFilteredResults} >Search Now</Button>
+                            <Button variant="info" style={{color : '#0B0A31' , backgroundColor : 'transparent' , border: 'none'}} onClick={clearFilters} >Clear</Button>
+                        </div>
+                    </div>
 
-            <div style={{display : 'flex' , justifyContent: 'flex-end'}} >
-                <Button variant="info" style={{color : 'white' , backgroundColor : '#0B0A31'}} >Search Now</Button>
-            </div>
+                    <div style={{minWidth : '100%' , marginTop : '25px', backgroundColor: 'transparent'}} >
+                        <Grid
+                            data={allData}
+                            columns={[
+                                {
+                                    name : "Cust. ID",
+                                    minWidth : '150px',
+                                },
+                                {
+                                    name : "Category",
+                                    minWidth : '185px',
+                                },
+                                {
+                                    name : "Amount",
+                                    minWidth : '150px',
+                                },
+                                {
+                                    name: "Terms",
+                                    minWidth : '120px',
+                                    formatter: (cell) =>
+                                    _(
+                                        <span className="badge badge-soft-secondary text-dark ">
+                                        {cell}
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    name: "Date",
+                                    minWidth : '150px',
+                                    formatter: (cell) =>
+                                    _(
+                                        <span className="badge badge-soft-info text-dark ">
+                                        {cell}
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    name: "Status",
+                                    minWidth : '150px',
+                                    formatter: (cell) =>
+                                    _(
+                                        <span className="badge badge-soft-info text-dark ">
+                                        {cell}
+                                        </span>
+                                    ),
+                                },
+                                {
+                                    name : "is Paid",
+                                    formatter: (cell) =>
+                                    _(
+                                        <>
+                                            <Button variant="link" size="sm" onClick={handleInvoiceInvoice} >Download</Button>
+                                        </>
+                                    ),
+                                },
+                                {
+                                    name: "Action",
+                                    minWidth : '150px',
+                                    formatter: (cell) =>
+                                    _(
+                                        <>
+                                            <Button variant="danger" size="sm" onClick={handleRefund} >Refund Now</Button>
+                                        </>
+                                    ),
+                                },
+                            ]}
+                            search={true}
+                            sort={true}
+                            resizable={true}
+                            fixedHeader={true}
+                            pagination={{ enabled: true, limit: 10 }}
+                            style= {{
+                                th  : {
+                                    backgroundColor : '#bdc3c7',
+                                    color : '#2f3542'
+                                },
+                                table  : {
+                                    backgroundColor : 'white',
+                                },
+                                td: {
+                                        textAlign: 'center',
+                                    }
+                            }}
+                        />
+                    </div>
+                    </>
+                )
+            }
 
-            {/* new data table */}
-            <div style={{minWidth : '100%' , marginTop : '25px', backgroundColor: 'transparent'}} >
-                <Grid
-                    data={users}
-                    columns={[
-                        {
-                            name : "Cust. ID",
-                            minWidth : '150px',
-                            backgroundColor: "red",
-                            color : 'pink'
-                        },
-                        {
-                            name : "Category",
-                            minWidth : '185px',
-                        },
-                        {
-                            name : "Amount",
-                            minWidth : '150px',
-                        },
-                        {
-                            name: "Terms",
-                            minWidth : '120px',
-                            formatter: (cell) =>
-                            _(
-                                <span className="badge badge-soft-secondary text-dark ">
-                                {cell}
-                                </span>
-                            ),
-                        },
-                        {
-                            name: "Date",
-                            minWidth : '150px',
-                            formatter: (cell) =>
-                            _(
-                                <span className="badge badge-soft-info text-dark ">
-                                {cell}
-                                </span>
-                            ),
-                        },
-                        {
-                            name: "Status",
-                            minWidth : '150px',
-                            formatter: (cell) =>
-                            _(
-                                <span className="badge badge-soft-info text-dark ">
-                                {cell}
-                                </span>
-                            ),
-                        },
-
-                        {
-                            name: "Action",
-                            minWidth : '150px',
-                            formatter: (cell) =>
-                            _(
-                                <>
-                                    <Dropdown>
-                                        <Dropdown.Toggle size="sm" variant="success" id="dropdown-basic" drop="start">
-                                            Action
-                                        </Dropdown.Toggle>
-
-                                        <Dropdown.Menu>
-                                            <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                </>
-                            ),
-                        },
-                    ]}
-                    search={true}
-                    loading ={true}
-                    sort={true}
-                    resizable={true}
-                    fixedHeader={true}
-                    pagination={{ enabled: true, limit: 10 }}
-                    style= {{
-                        th  : {
-                            backgroundColor : '#bdc3c7',
-                            color : '#2f3542'
-                        },
-                        table  : {
-                            backgroundColor : 'white',
-                        },
-                        td: {
-                            textAlign: 'center'
-                            }
-                    }}
-                />
-            </div>
-            {/* New data table end */}
 
             {/* Modal */}
-            <div class="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-body p-0">
+            <div className="modal fade" id="invoiceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
+                        <div className="modal-body p-0">
                             <div className="w-100 d-flex justify-content-end">
                                 <span className='bg-soft-danger text-danger modal-close' data-bs-dismiss="modal"><IoMdClose /></span>
                             </div>
@@ -255,10 +387,10 @@ const Applications = () => {
                 </div>
             </div>
 
-            <div class="modal fade" id="refundModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-body p-4">
+            <div className="modal fade" id="refundModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-content">
+                        <div className="modal-body p-4">
                             <div className="w-100 d-flex justify-content-end">
                                 <span className='bg-soft-danger text-danger modal-close' data-bs-dismiss="modal"><IoMdClose /></span>
                             </div>
@@ -301,6 +433,147 @@ const Applications = () => {
                 </div>
             </div>
             {/* Modal */}
+
+            {/* Invoice modal */}
+                <Modal
+                    show={invoice}
+                    onHide={handleInvoiceClose}
+                    backdrop="static"
+                    keyboard={false}
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>Your Invoice</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="modal-content">
+                            <div className="modal-body p-0">
+                                <h3 className='text-center fw-600'>Submit Invoice</h3>
+                                <div className="upload-field">
+                                    <img src={upload} alt="" />
+                                    <div>
+                                        <h5>Upload Invoice</h5>
+                                        <p className='text-muted fs-small mb-0'>Upload PDF file, Max size 10mb</p>
+                                    </div>
+                                    <input type="file" />
+                                </div>
+                                <ul style={{marginLeft : '-20px'}} >
+                                    <li className='d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted'>
+                                            Category
+                                            <span style={{marginRight : '15px'}} >Solar & Battery System</span>
+                                    </li> 
+                                    <li className='d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted'>
+                                            Amount
+                                            <span style={{marginRight : '15px'}} >SAR<span className='text-dark'> 1200</span></span>
+                                    </li> 
+                                    <li className='d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted'>
+                                            Deposit amount
+                                            <span style={{marginRight : '15px'}} >SAR<span className='text-dark'> 0</span></span>
+                                    </li> 
+                                    <li className='d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted'>
+                                            Financed amount
+                                            <span style={{marginRight : '15px'}} >SAR<span className='text-dark'> 0</span></span>
+                                    </li> 
+                                    <li className='d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted'>
+                                            Amount to be paid to partner
+                                            <span style={{marginRight : '15px'}} >SAR<span className='text-dark'> 1080</span></span>
+                                    </li> 
+                                    <li className='d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted'>
+                                            Customer name
+                                            <span style={{marginRight : '15px'}} >Mohammed</span>
+                                    </li> 
+                                    <li className='d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted'>
+                                            Customer phone number 
+                                            <span style={{marginRight : '15px'}} >+96655332156</span>
+                                    </li> 
+                                    <li className='d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted'>
+                                            Customer Email
+                                            <span style={{marginRight : '15px'}} >abc@gmail.com</span>
+                                    </li> 
+                                </ul>
+
+                                <button className="btn text-light bg-darkBlue w-100 mt-3" style={{ borderRadius: '6px', height: '47px' }}>Request Payment</button>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={handleInvoiceClose}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            {/* invoice modal end */}
+
+            {/* Refund modal */}
+                <Modal
+                    show={refund}
+                    onHide={handleRefundClose}
+                    backdrop="static"
+                    keyboard={false}
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>Refund Customer</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="modal-content">
+                            <div className="modal-body p-0">
+                                <h3 className='text-center fw-600'>Submit Invoice</h3>
+                                <div className="upload-field">
+                                    <img src={upload} alt="" />
+                                    <div>
+                                        <h5>Upload Invoice</h5>
+                                        <p className='text-muted fs-small mb-0'>Upload PDF file, Max size 10mb</p>
+                                    </div>
+                                    <input type="file" />
+                                </div>
+                                <ul style={{marginLeft : '-20px'}} >
+                                    <li className='d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted'>
+                                            Category
+                                            <span style={{marginRight : '15px'}} >Solar & Battery System</span>
+                                    </li> 
+                                    <li className='d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted'>
+                                            Amount
+                                            <span style={{marginRight : '15px'}} >SAR<span className='text-dark'> 1200</span></span>
+                                    </li> 
+                                    <li className='d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted'>
+                                            Deposit amount
+                                            <span style={{marginRight : '15px'}} >SAR<span className='text-dark'> 0</span></span>
+                                    </li> 
+                                    <li className='d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted'>
+                                            Financed amount
+                                            <span style={{marginRight : '15px'}} >SAR<span className='text-dark'> 0</span></span>
+                                    </li> 
+                                    <li className='d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted'>
+                                            Amount to be paid to partner
+                                            <span style={{marginRight : '15px'}} >SAR<span className='text-dark'> 1080</span></span>
+                                    </li> 
+                                    <li className='d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted'>
+                                            Customer name
+                                            <span style={{marginRight : '15px'}} >Mohammed</span>
+                                    </li> 
+                                    <li className='d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted'>
+                                            Customer phone number 
+                                            <span style={{marginRight : '15px'}} >+96655332156</span>
+                                    </li> 
+                                    <li className='d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted'>
+                                            Customer Email
+                                            <span style={{marginRight : '15px'}} >abc@gmail.com</span>
+                                    </li> 
+                                </ul>
+
+                                <button className="btn text-light bg-darkBlue w-100 mt-3" style={{ borderRadius: '6px', height: '47px' }}>Request Payment</button>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={handleRefundClose}>
+                            Close
+                        </Button>
+                        <Button variant="success" onClick={handleRefundClose}>
+                            Yes, Refund
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            {/* Refund modal end */}
 
         </div>
     )
