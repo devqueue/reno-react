@@ -6,15 +6,17 @@ const API = axios.create({
 });
 
 
-const adminToken = JSON.parse(localStorage.getItem('reno-admin-token'))
-
+let adminToken = JSON.parse(localStorage.getItem('reno-admin-token'))
+if(!adminToken){
+    adminToken = JSON.parse(sessionStorage.getItem("reno-merchant-token"));
+}
 
 // this is for using local storage in headers, otherwise it will not work
 API.interceptors.request.use((req) => {
-    if (localStorage.getItem('reno-admin-token')) {
+    if (localStorage.getItem('reno-admin-token') || sessionStorage.getItem("reno-admin-token")) {
         req.headers = {
                 'authorization' : `Bearer ${adminToken}`,
-                'reno-app-auth-token': JSON.parse(localStorage.getItem('reno-admin-token')),
+                'reno-app-auth-token': localStorage.getItem("reno-admin-token") ? JSON.parse(localStorage.getItem("reno-admin-token")) : JSON.parse(sessionStorage.getItem("reno-admin-token")) ,
                 'Accept' : 'application/json',
                 'Content-Type': 'application/json'
             }
@@ -32,6 +34,8 @@ const getAllQuotes = () => API.get(`/api/v1/admins/getAllQuotes`);
 const approveMerchantQuote = (quoteId) => API.put(`/api/v1/quotes/sendAdminMerchantResponse/${quoteId}`);
 const getRecentFinancialRequests = () => API.get(`/api/v1/admins/getAllRecentFinancialRequests`);
 const approveAnyFinancialRequest = (quoteId) => API.put(`/api/v1/quotes/sendAdminResponse/${quoteId}`);
+const getAllNotificationsOfAdmin = () => API.get(`/api/v1/notifications/getAllOfAdmin`);
+const markNotificationsOfAdminRead = (notificationId) => API.put(`/api/v1/notifications/markNotificationOfAdminAsRead/${notificationId}`);
 
 
 
@@ -43,5 +47,7 @@ module.exports = {
     getAllQuotes,
     approveMerchantQuote,
     getRecentFinancialRequests,
-    approveAnyFinancialRequest
+    approveAnyFinancialRequest,
+    getAllNotificationsOfAdmin,
+    markNotificationsOfAdminRead
 }

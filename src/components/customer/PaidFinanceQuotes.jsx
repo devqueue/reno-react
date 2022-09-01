@@ -16,6 +16,8 @@ import { ThreeDots } from  'react-loader-spinner'
 import {getRecentQuotesDeliveredToACustomer , deliveryConfirmationOfAQuote} from '../../api/CustomerApi'
 import {Button} from 'react-bootstrap'
 import moment from 'moment'
+import {getAllNotificationsOfCustomer ,markNotificationsOfMerchantRead } from '../../api/CustomerApi'
+
 
 
 const PaidFinanceQuotes = () => {
@@ -74,130 +76,178 @@ const PaidFinanceQuotes = () => {
         }
     },[location])
 
+    const [ allNotifications , setAllNotifications ] = useState([])
+    const [ allNotificationsCount , setAllNotificationsCount ] = useState([])
+    // getting all notifications
+    useEffect(() =>{
+        const getAllNotifications = async () => {
+            const {data} = await getAllNotificationsOfCustomer()
+            if(data?.success === true){
+                setAllNotifications(data?.Notifications)
+                let count = 0;
+                data?.Notifications?.map((item) => (
+                item?.isRead === false && (
+                    count += 1
+                )
+                ))
+                setAllNotificationsCount(count)
+            }
+            }
+        getAllNotifications();
+    },[])
+    // marking notification as read
+    const readNotification = async (id) => {
+        const {data} = await markNotificationsOfMerchantRead(id);
+        if(data?.success === true){
+            let newArr = allNotifications;
+            let isFound = newArr.find(item => item._id == id);
+            if(isFound){
+                isFound.isRead = true
+                newArr.filter(item => item._id == id ? isFound : item)
+                setAllNotifications(newArr)
+                setAllNotificationsCount(prev => prev - 1)
+            }
+            }
+    }
+
     return (
         <>
-        {
-            isFetching === true ? (
-                <div style={{display : 'flex' , justifyContent: 'center' , margin: 'auto'}}>
-                    <ThreeDots
-                        height = "60"
-                        width = "60"
-                        radius = "9"
-                        color = 'green'
-                        ariaLabel = 'three-dots-loading'
-                        wrapperStyle
-                        wrapperClass
-                    />
-                </div>
-            ) : (
-                <>
-                    <div className='container-fluid p-4 dashboard-content' style={{ display: 'flex', flexDirection: 'column' }}>
-                        <div className="panel-top d-flex align-items-center justify-content-between">
-                            <div className='panel-left'>
-                                <h5 className='mb-0 fw-600'>Paid Finance Quotes</h5>
-                                <p className='text-muted mb-0 text-light fs-small'>
-                                    {moment().format('MMMM Do YYYY')}
-                                </p>
-                            </div>
-
-                            <div className='d-flex align-items-center panel-right'>
-
-                                <div className="quotes-search me-3">
-                                    <img src={quotesSearch} alt="" />
-                                    <input type="text" className='text-muted' placeholder='Search' />
-                                </div>
-
-                                <div class="dropdown profile-dropdown">
-                                    <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <AiFillBell />
-                                        <span>5</span>
-                                    </Link>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
-                                        <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
-                                        <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li> 
-                                    </ul>
-                                </div>
-
-                                <div class="dropdown profile-dropdown">
-                                <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <div className='d-flex align-items-center fs-small me-3'>
-                                    <img src={user} alt="" />
-                                    Mohammed
-                                    </div>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><Link class="dropdown-item" to="#">Profile</Link></li>
-                                    <li><Link class="dropdown-item" to="" onClick={logout}>Logout</Link></li>
-                                </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Paid Finance Quotes */}
-                        <div className="row mt-4">
-                            {
-                                allData.length > 0 ? (
-                                    allData?.map((item) => (
-                                        <div className="col-12 mt-3" key={item?._id} >
-                                            <div className='d-flex justify-content-between fs-small quote-card'>
-                                                <ul>
-                                                    <li className='mb-3'>
-                                                        <span className='text-muted'>Company</span>
-                                                        {item?.Partner}
-                                                    </li>
-                                                    <li className='mb-3'>
-                                                        <span className='text-muted'>Phone</span>
-                                                        {item?.PhoneNo}
-                                                    </li>
-                                                    <li>
-                                                        <span className='text-muted'>Reference#</span>
-                                                        XXXXXXXXX
-                                                    </li>
-                                                </ul>
-
-                                                <img src={line} alt="" />
-
-                                                <ul>
-                                                    <li className='mb-3'>
-                                                        <span className='text-muted'>Product Category</span>
-                                                        {item?.ProductCategory?.productCategory}
-                                                    </li>
-                                                    <li className='mb-3'>
-                                                        <span className='text-muted'>Financed Amount</span>
-                                                        {item?.FirstInstallment?.totalPurchaseAmt} SAR
-                                                    </li>
-                                                    <li>
-                                                        <span className='text-muted'>First Installment</span>
-                                                        {item?.FirstInstallment?.depositAmt} SAR
-                                                    </li>
-                                                </ul>
-
-                                                <div>
-                                                    <div className="request-status-container">
-                                                        <div className="request-status text-green bg-soft-green">
-                                                            Paid
-                                                            <img src={success} alt="" />
-                                                        </div>
-                                                    </div>
-                                                    <button className='btn text-darkBlue border border-color-darkBlue finance-btn hover-bg' data-bs-toggle="modal" data-bs-target="#paidModal" onClick={() => setItemId(item?._id)} >I confirm that I’ve received products and services from the merchant</button>
-                                                    </div>
-                                            </div>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <div className="quotes-null">
-                                        <img src={financeNull} alt="" />
-                                        <h5>Sorry we couldn’t find any Recent Quotes Delivery Request for now</h5>
-                                        <p className='fs-small'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Purus lorem dolor id enim a, accumsan.</p>
-                                    </div>
-                                )
-                            }
-                        </div>
+            {
+                isFetching === true ? (
+                    <div style={{display : 'flex' , justifyContent: 'center' , margin: 'auto'}}>
+                        <ThreeDots
+                            height = "60"
+                            width = "60"
+                            radius = "9"
+                            color = 'green'
+                            ariaLabel = 'three-dots-loading'
+                            wrapperStyle
+                            wrapperClass
+                        />
                     </div>
-                </>
-            )
-        }
+                ) : (
+                    <>
+                        <div className='container-fluid p-4 dashboard-content' style={{ display: 'flex', flexDirection: 'column' }}>
+                            <div className="panel-top d-flex align-items-center justify-content-between">
+                                <div className='panel-left'>
+                                    <h5 className='mb-0 fw-600'>Paid Finance Quotes</h5>
+                                    <p className='text-muted mb-0 text-light fs-small'>
+                                        {moment().format('MMMM Do YYYY')}
+                                    </p>
+                                </div>
+
+                                <div className='d-flex align-items-center panel-right'>
+                        <div class="dropdown profile-dropdown">
+                            <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <AiFillBell />
+                                <span>{allNotificationsCount}</span>
+                            </Link>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                {
+                                    allNotifications?.length > 0 ? (
+                                        allNotifications?.map((item) => (
+                                            item?.isRead === false ? (
+                                                <li style={{backgroundColor : '#ecf0f1'}} onClick={() => readNotification(item?._id)}>
+                                                    <Link class="dropdown-item" to="">
+                                                        <strong>{item?.message} </strong> <br />
+                                                        <span style={{ fontSize: '12px' , color : '#34495e' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                                    </Link>
+                                                </li>
+                                            ) : (
+                                                <li style={{backgroundColor : 'transparent'}} >
+                                                <Link class="dropdown-item" to="">
+                                                        <strong>{item?.message} </strong> <br />
+                                                        <span className='text-muted' style={{ fontSize: '12px' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                                </Link>
+                                                </li>
+                                            )
+                                        ))
+                                    ) : (
+                                        <li style={{marginLeft : '15px'}} >Empty</li>
+                                    )
+                                }
+                            </ul>
+                        </div>
+
+                        <div className="dropdown profile-dropdown">
+                        <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div className='d-flex align-items-center fs-small me-3'>
+                            <img src={user} alt="" />
+                            Mohammed
+                                        </div>
+                                    </button>
+                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        <li><Link className="dropdown-item" to="#">Profile</Link></li>
+                                        <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
+                                    </ul>
+                        </div>
+                                </div>
+                            </div>
+
+                            {/* Paid Finance Quotes */}
+                            <div className="row mt-4">
+                                {
+                                    allData.length > 0 ? (
+                                        allData?.map((item) => (
+                                            <div className="col-12 mt-3" key={item?._id} >
+                                                <div className='d-flex justify-content-between fs-small quote-card'>
+                                                    <ul>
+                                                        <li className='mb-3'>
+                                                            <span className='text-muted'>Company</span>
+                                                            {item?.Partner}
+                                                        </li>
+                                                        <li className='mb-3'>
+                                                            <span className='text-muted'>Phone</span>
+                                                            {item?.PhoneNo}
+                                                        </li>
+                                                        <li>
+                                                            <span className='text-muted'>Reference#</span>
+                                                            XXXXXXXXX
+                                                        </li>
+                                                    </ul>
+
+                                                    <img src={line} alt="" />
+
+                                                    <ul>
+                                                        <li className='mb-3'>
+                                                            <span className='text-muted'>Product Category</span>
+                                                            {item?.ProductCategory?.productCategory}
+                                                        </li>
+                                                        <li className='mb-3'>
+                                                            <span className='text-muted'>Financed Amount</span>
+                                                            {item?.FirstInstallment?.totalPurchaseAmt} SAR
+                                                        </li>
+                                                        <li>
+                                                            <span className='text-muted'>First Installment</span>
+                                                            {item?.FirstInstallment?.depositAmt} SAR
+                                                        </li>
+                                                    </ul>
+
+                                                    <div>
+                                                        <div className="request-status-container">
+                                                            <div className="request-status text-green bg-soft-green">
+                                                                Paid
+                                                                <img src={success} alt="" />
+                                                            </div>
+                                                        </div>
+                                                        <button className='btn text-darkBlue border border-color-darkBlue finance-btn hover-bg' data-bs-toggle="modal" data-bs-target="#paidModal" onClick={() => setItemId(item?._id)} >I confirm that I’ve received products and services from the merchant</button>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="quotes-null">
+                                            <img src={financeNull} alt="" />
+                                            <h5>Sorry we couldn’t find any Recent Quotes Delivery Request for now</h5>
+                                            <p className='fs-small'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Purus lorem dolor id enim a, accumsan.</p>
+                                        </div>
+                                    )
+                                }
+                            </div>
+                        </div>
+                    </>
+                )
+            }
 
         {/* modals */}
 

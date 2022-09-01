@@ -9,7 +9,7 @@ const Sidebar = ({ isActive }) => {
   return (
     <div className={`customer-sidebar bg-darkBlue text-lightGray ${isActive ? 'active' : ''}`}>
         
-        <Link to='/customer/dashboard/panel'>
+        <Link to='/'>
             <img src={logoLight} className='logo' alt="" />
         </Link>
 
@@ -32,6 +32,10 @@ const Sidebar = ({ isActive }) => {
                 <NavLink activeClassName='active' className='text-lightGray fs-small' to='/customer/dashboard/paidFinanceQuotes' style={{textDecoration : "none"}}>
                     <BsClipboardCheck />
                     <span>Paid Finance Quotes</span>
+                </NavLink>
+                <NavLink activeClassName='active' className='text-lightGray fs-small' to='/customer/dashboard/getAllTravelingQuotes' style={{textDecoration : "none"}}>
+                    <BsClipboardCheck />
+                    <span>All Partner Approved Quotes</span>
                 </NavLink>
             </li>
         </ul>

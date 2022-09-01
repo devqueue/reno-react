@@ -6,6 +6,7 @@ import QuotesReceived from '../../components/customer/QuotesReceived'
 import RequestFinance from '../../components/customer/RequestFinance'
 import FinanceRequests from '../../components/customer/FinanceRequests'
 import PaidFinanceQuotes from '../../components/customer/PaidFinanceQuotes'
+import AllTravelingQuotes from '../../components/customer/AllTravelingQuotes'
 import Header from '../../components/Header'
 import { HiOutlineMenu } from 'react-icons/hi'
 
@@ -27,6 +28,7 @@ const CustomerDashboard = () => {
             <Route path='/quotesReceived/requestFinance/:id' element={<RequestFinance />} />
             <Route path='/financeRequests' element={<FinanceRequests />} />
             <Route path='/paidFinanceQuotes' element={<PaidFinanceQuotes />} />
+            <Route path='/getAllTravelingQuotes' element={<AllTravelingQuotes />} />
         </Routes>
     </div>
   )

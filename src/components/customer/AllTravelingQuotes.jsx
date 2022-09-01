@@ -15,33 +15,15 @@ import {
 } from "react-bs-datatable";
 import { toast } from 'react-toastify';
 import { ThreeDots } from  'react-loader-spinner'
-import {getAllQuotesToBeDelivered ,changeStatusOfQuote , getAllNotificationsOfMerchant ,markNotificationsOfMerchantRead } from '../../api/MerchentApi'
+import {getAllTravelingQuotes ,changeStatusOfQuote } from '../../api/CustomerApi'
 import moment from 'moment'
 import {useLocation , useNavigate , Link } from 'react-router-dom'
-
+import {getAllNotificationsOfCustomer ,markNotificationsOfMerchantRead , ApproveDisproveDelivery } from '../../api/CustomerApi'
 
 
 const MainPage = () => {
     const [ allData , setData ] = useState([]);
     const [ isFetching , setIsFetching ] = useState(false)
-
-    // approving merchant request for quote
-    const changeStatus = async (id , status) => {
-        let isFound = allData.find(item => item.Id === id);
-        if(isFound){
-            isFound.quoteStatus = status
-            const {data} = await changeStatusOfQuote(id , status);
-            if(data?.success === true){
-                    let newData = allData;
-                    let finalData = newData.filter(item => item.Id === id ? isFound : item );
-                    toast.success(`Quote Status Changed to ${status}`);
-                    setData(finalData)
-                }else{
-                    toast.success(data?.message);
-                }
-        }
-    }
-
 
     const TABLE_HEADERS = [
         {
@@ -49,12 +31,12 @@ const MainPage = () => {
             title: "Customer",
         },
         {
-            prop: "approvedDate",
-            title: "Approved Date"
-        },
-        {
             prop: "sent",
             title: "Sent Date"
+        },
+        {
+            prop: "approvedDate",
+            title: "Approved Date"
         },
         {
             prop: "category",
@@ -62,44 +44,73 @@ const MainPage = () => {
         },
         {
             prop: "isAdmin",
-            title: "Admin Response On Customer"
+            title: "Admin Response On Partner",
+            cell: (prop) => {
+                return (
+                        <>
+                            {
+                                prop?.isAdmin == "Pending" && (
+                                    <Button size="sm" variant="danger" style={{fontSize : '11px' , fontWeight : 600}} >Pending</Button>
+                                )
+                            }
+                            {
+                                prop?.isAdmin == "Approved" && (
+                                    <Button size="sm" variant="success" style={{fontSize : '11px' , fontWeight : 600}} >Approved</Button>
+                                )
+                            }
+                        </>
+                )
+            }
         },
         {
             prop : "_id",
             title: "Change Status",
+            name: "Status of Order",
+                cell: (prop) => {
+                    return (
+                        <>
+                            <Button size="sm" variant="primary" style={{fontSize : '11px' , fontWeight : 600}} >{prop?.quoteStatus}</Button>
+                            
+                        </>
+                    )
+                },
+            ignoreRowClick: true,
+            allowOverflow: true,
+            button: true,
+        },
+        {
+            prop : "changeNow",
+            title: "Change Status",
             name: "Actions",
             cell: (prop) => {
                 return (
-                    <Dropdown as={ButtonGroup}>
-                        {
-                            (prop?.quoteStatus !== "Traveling" && prop?.quoteStatus !== "Cancelled By Partner" && prop?.quoteStatus !== "Delivered By Partner") && (
-                                <Button size="sm"  style={{fontSize : '11px' , fontWeight : 600 , backgroundColor : '#40407a' , color : 'white'}} >Pending</Button>
-                            )
-                        }
-                        {
-                            prop?.quoteStatus === "Traveling" && (
-                                <Button size="sm" variant="primary" style={{fontSize : '11px' , fontWeight : 600}} >Traveling</Button>
-                            )
-                        }
-                        {
-                            prop?.quoteStatus === "Cancelled By Partner" && (
-                                <Button size="sm" variant="danger" style={{fontSize : '11px' , fontWeight : 600}} >Cancelled</Button>
-                            )
-                        }
-                        {
-                            prop?.quoteStatus === "Delivered By Partner" && (
-                                <Button size="sm" variant="success" style={{fontSize : '11px' , fontWeight : 600}} >Delivered</Button>
-                            )
-                        }
-                        <Dropdown.Toggle split size="sm" variant="primary" id="dropdown-split-basic" />
-                        <Dropdown.Menu style={{backgroundColor : 'transparent'}} >
-                            <Dropdown.Item onClick={() => changeStatus(prop?.Id , "Traveling")} style={{backgroundColor : '#192a56', color : 'white'}} >Traveling</Dropdown.Item>
-                            <Dropdown.Item onClick={() => changeStatus(prop?.Id , "Cancelled By Partner")} style={{backgroundColor : '#c23616', color : 'white'}} >Cancelled</Dropdown.Item>
-                            <Dropdown.Item onClick={() => changeStatus(prop?.Id , "Delivered By Partner")} style={{backgroundColor : '#10ac84', color : 'white'}} >Delivered</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                )
-                },
+                        <>
+                            {
+                                (prop?.quoteStatus == "Delivered By Partner" || prop?.quoteStatus == "Cancelled By Partner") && (
+                                    prop?.CustomerResponse == false ? (
+                                        <Button size="sm" variant="success" style={{fontSize : '11px' , fontWeight : 600}} onClick={() => changeStatus(prop?.Id , false)} >Delivery Confirmed</Button>
+                                    ) : (
+                                        <Button size="sm" variant="danger" style={{fontSize : '11px' , fontWeight : 600}} onClick={() => changeStatus(prop?.Id , true)} >Delivery Not Confirmed</Button>
+                                    )
+                                )
+                            }
+                            {
+                                (prop?.quoteStatus == "Traveling" || prop?.quoteStatus == "Pending") && (
+                                    <Button size="sm" variant="link" style={{fontSize : '11px' , fontWeight : 600 , textDecoration : 'none' , fontSize : '10px'}} >{prop?.quoteStatus}</Button>
+                                )
+                            }
+                            {
+                                (prop?.quoteStatus == "Delivery Confirmed By Customer" || prop?.quoteStatus == "Order Cancelled By Customer") && (
+                                    prop?.quoteStatus == "Delivery Confirmed By Customer" ? (
+                                        <Button size="sm" variant="success" style={{fontSize : '11px' , fontWeight : 600 , textDecoration : 'none' , fontSize : '10px'}} onClick={() => changeStatus(prop?.Id , false)} >Delivery Confirmed By You</Button>
+                                    ) : (
+                                        <Button size="sm" variant="danger" style={{fontSize : '11px' , fontWeight : 600 , textDecoration : 'none' , fontSize : '10px'}}  onClick={() => changeStatus(prop?.Id , true)} >Cancelled By You</Button>
+                                    )
+                                )
+                            }
+                        </>
+                    )
+            },
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
@@ -110,18 +121,19 @@ const MainPage = () => {
     useEffect(() => {
         const getAllRecords = async () => {
             setIsFetching(true)
-            const {data} = await getAllQuotesToBeDelivered();
+            const {data} = await getAllTravelingQuotes();
             let allDataArr = [];
             if(data?.success === true){
                 for(let i = 0; i !== data?.AllQuotes.length; i++){
                     let newArr = {
-                        customer: data?.AllQuotes[i]?.CustomerIDCardNo,
-                        approvedDate: moment(data?.AllQuotes[i]?.ApprovedDate).format('MMM Do YY, h:mm:ss a'),
-                        sent: moment(data?.AllQuotes[i]?.CreatedAt).format('MMMM Do YYYY, h:mm:ss a'),
+                        customer: data?.AllQuotes[i]?.Partner,
+                        approvedDate: moment(data?.AllQuotes[i]?.CreatedAt).format('MMM Do YY, h:mm:ss a'),
+                        sent: moment(data?.AllQuotes[i]?.SentAt).format('MMMM Do YYYY, h:mm:ss a'),
                         category: data?.AllQuotes[i]?.CustomerAndProductDetails?.productCategory,
-                        isAdmin: data?.AllQuotes[i].AdminApprovedDate === true ? "Approved" : "Pending",
+                        isAdmin: data?.AllQuotes[i].isAdminMerchantApproved == true ? "Approved" : "Pending",
                         isWorking: data?.AllQuotes[i]?.personalInfo?.workingStatus === "true" ? "Employed" : "UnEmployed",
-                        quoteStatus: data?.AllQuotes[i]?.QuoteStatus,
+                        quoteStatus: data?.AllQuotes[i]?.quoteStatus,
+                        changeNow : data?.AllQuotes[i]?.status,
                         Id: data?.AllQuotes[i]?._id,
                     }
                     allDataArr.push(newArr)
@@ -142,8 +154,8 @@ const MainPage = () => {
     const location = useLocation();
     // checking if user is signed in or not
     useEffect(() =>{
-        const customerToken = JSON.parse(localStorage.getItem('reno-merchant-token'))
-        const isSessionFound = sessionStorage.getItem("reno-merchant-token");
+        const customerToken = JSON.parse(localStorage.getItem('reno-customer-token'))
+        const isSessionFound = sessionStorage.getItem("reno-customer-token");
         if(!customerToken && !isSessionFound){
             navigate("/partner/auth/login");
         }
@@ -151,10 +163,8 @@ const MainPage = () => {
 
     // logging out
     const logout = async () => {
-        localStorage.removeItem("reno-merchant-token")
-        sessionStorage.removeItem('reno-merchant-token');
-        localStorage.removeItem("reno-merchantId")
-        sessionStorage.removeItem('reno-merchantId');
+        localStorage.removeItem("reno-customer-token")
+        sessionStorage.removeItem('reno-customer-token');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
         navigate('/');
@@ -165,42 +175,66 @@ const MainPage = () => {
     const [ allNotificationsCount , setAllNotificationsCount ] = useState([])
     // getting all notifications
     useEffect(() =>{
-      const getAllNotifications = async () => {
-          const {data} = await getAllNotificationsOfMerchant()
-          if(data?.success === true){
-            setAllNotifications(data?.Notifications)
-            let count = 0;
-            data?.Notifications?.map((item) => (
-              item?.isRead === false && (
-                count += 1
-              )
-            ))
-            setAllNotificationsCount(count)
-          }
-        }
+        const getAllNotifications = async () => {
+            console.log("calling")
+            const {data} = await getAllNotificationsOfCustomer()
+            console.log("data : ", data)
+            if(data?.success === true){
+                setAllNotifications(data?.Notifications)
+                let count = 0;
+                for(let p = 0; p !== data?.Notifications.length; p++){
+                    if(data?.Notifications[p]?.isRead === false){
+                        count += 1
+                    }
+                }
+                setAllNotificationsCount(count)
+            }
+            }
         getAllNotifications();
     },[])
     // marking notification as read
     const readNotification = async (id) => {
-      const {data} = await markNotificationsOfMerchantRead(id);
-      if(data?.success === true){
-          let newArr = allNotifications;
-          let isFound = newArr.find(item => item._id == id);
-          if(isFound){
-            isFound.isRead = true
-            newArr.filter(item => item._id == id ? isFound : item)
-            setAllNotifications(newArr)
-            setAllNotificationsCount(prev => prev - 1)
-          }
+        const {data} = await markNotificationsOfMerchantRead(id);
+        if(data?.success === true){
+            let newArr = allNotifications;
+            let isFound = newArr.find(item => item._id == id);
+            if(isFound){
+                isFound.isRead = true
+                newArr.filter(item => item._id == id ? isFound : item)
+                setAllNotifications(newArr)
+                setAllNotificationsCount(prev => prev - 1)
+            }
+            }
+    }
+
+    // approving merchant request for quote
+    const changeStatus = async (id , status) => {
+        let isFound = allData.find(item => item.Id === id);
+        if(isFound){
+            if(status == false){
+                isFound.quoteStatus = "Order Cancelled By Customer"
+            }else{
+                isFound.quoteStatus = "Delivery Confirmed By Customer"
+            }
+            const {data} = await ApproveDisproveDelivery(id , status);
+            if(data?.success === true){
+                let newData = allData;
+                let finalData = newData.filter(item => item.Id === id ? isFound : item );
+                toast.success(`Quote Status Changed to ${isFound.quoteStatus}`);
+                setData(finalData)
+            }else{
+                toast.success(data?.message);
+            }
         }
     }
+
 
     return (
         <>
             <div className='container-fluid p-4 dashboard-content'>
                 <div className="panel-top d-flex align-items-center justify-content-between">
                     <div className='panel-left'>
-                        <h5 className='mb-0 fw-600'>All Quotes Approved By Customers</h5>
+                        <h5 className='mb-0 fw-600'>All Quotes Approved By Partners</h5>
                         <p className='text-muted mb-0 text-light fs-small'>
                         {moment().format('MMMM Do YYYY')}
                         </p>

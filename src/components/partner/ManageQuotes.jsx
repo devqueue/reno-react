@@ -3,7 +3,7 @@ import { AiFillBell } from 'react-icons/ai'
 import { ThreeDots } from  'react-loader-spinner'
 import user from '../../assets/images/user.jpg'
 import quotesSearch from '../../assets/icons/quotesSearch.png'
-import {getAllRecentSentQuotes} from '../../api/MerchentApi'
+import {getAllRecentSentQuotes , getAllNotificationsOfMerchant ,markNotificationsOfMerchantRead } from '../../api/MerchentApi'
 import moment from 'moment'
 import { Link ,useNavigate , useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify';
@@ -78,6 +78,40 @@ const ManageQuotes = () => {
         }
     },[location])
 
+    const [ allNotifications , setAllNotifications ] = useState([])
+    const [ allNotificationsCount , setAllNotificationsCount ] = useState([])
+    // getting all notifications
+    useEffect(() =>{
+      const getAllNotifications = async () => {
+          const {data} = await getAllNotificationsOfMerchant()
+          if(data?.success === true){
+            setAllNotifications(data?.Notifications)
+            let count = 0;
+            data?.Notifications?.map((item) => (
+              item?.isRead === false && (
+                count += 1
+              )
+            ))
+            setAllNotificationsCount(count)
+          }
+        }
+        getAllNotifications();
+    },[])
+    // marking notification as read
+    const readNotification = async (id) => {
+      const {data} = await markNotificationsOfMerchantRead(id);
+      if(data?.success === true){
+          let newArr = allNotifications;
+          let isFound = newArr.find(item => item._id == id);
+          if(isFound){
+            isFound.isRead = true
+            newArr.filter(item => item._id == id ? isFound : item)
+            setAllNotifications(newArr)
+            setAllNotificationsCount(prev => prev - 1)
+          }
+        }
+    }
+
   return (
     <>
         {
@@ -105,36 +139,51 @@ const ManageQuotes = () => {
                   </div>
 
                   <div className='d-flex align-items-center panel-right'>
-                    <div className="quotes-search me-3">
-                        <img src={quotesSearch} alt="" />
-                        <input type="text" className='text-muted' placeholder='Search' />
-                    </div>
+                        <div class="dropdown profile-dropdown">
+                            <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <AiFillBell />
+                                <span>{allNotificationsCount}</span>
+                            </Link>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                {
+                                    allNotifications?.length > 0 ? (
+                                        allNotifications?.map((item) => (
+                                            item?.isRead === false ? (
+                                                <li style={{backgroundColor : '#ecf0f1'}} onClick={() => readNotification(item?._id)}>
+                                                    <Link class="dropdown-item" to="">
+                                                        <strong>{item?.message} </strong> <br />
+                                                        <span style={{ fontSize: '12px' , color : '#34495e' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                                    </Link>
+                                                </li>
+                                            ) : (
+                                                <li style={{backgroundColor : 'transparent'}} >
+                                                <Link class="dropdown-item" to="">
+                                                        <strong>{item?.message} </strong> <br />
+                                                        <span className='text-muted' style={{ fontSize: '12px' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                                </Link>
+                                                </li>
+                                            )
+                                        ))
+                                    ) : (
+                                        <li style={{marginLeft : '15px'}} >Empty</li>
+                                    )
+                                }
+                            </ul>
+                        </div>
 
-                    <div class="dropdown profile-dropdown">
-                        <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <AiFillBell />
-                            <span>5</span>
-                        </Link>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
-                                        <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
-                                        <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
-                        </ul>
+                        <div className="dropdown profile-dropdown">
+                        <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div className='d-flex align-items-center fs-small me-3'>
+                            <img src={user} alt="" />
+                            Mohammed
+                                        </div>
+                                    </button>
+                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        <li><Link className="dropdown-item" to="#">Profile</Link></li>
+                                        <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
+                                    </ul>
+                        </div>
                     </div>
-
-                    <div class="dropdown profile-dropdown">
-                      <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <div className='d-flex align-items-center fs-small me-3'>
-                          <img src={user} alt="" />
-                          Mohammed
-                                    </div>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><Link class="dropdown-item" to="#">Profile</Link></li>
-                                    <li><Link class="dropdown-item" to="" onClick={logout} >Logout</Link></li>
-                                </ul>
-                    </div>
-                  </div>
                 </div>
                   {
                     allData?.length > 0 && (

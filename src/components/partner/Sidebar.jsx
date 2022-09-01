@@ -13,8 +13,8 @@ const Sidebar = ({ isActive }) => {
         
         <div style={{ flex: '1' }}>
 
-            <Link to='/partner/dashboard/panel'>
-                <img src={logoLight} className='logo' alt="" />
+            <Link to='/'>
+                <img src={logoLight} className='logo' alt=""  />
             </Link>
 
             <h6 className='fs-small mb-3 partner-sidebar-title'>Main Menu</h6>
