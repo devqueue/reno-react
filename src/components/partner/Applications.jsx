@@ -31,7 +31,7 @@ const Applications = () => {
 
     // getting searched data
     const getFilteredResults = async () => {
-        await axios.get(process.env.REACT_APP_API_URL + `/api/v1/quotes/getAllFilteredRecords/${merchantId}?customerId=${filterData?.customerId}&category=${filterData?.category}&totalAmount=${filterData?.totalAmount}&terms=${filterData?.terms}&date=${filterData?.date}`)
+        await axios.get(process.env.REACT_APP_API_SERVER_URL + `/api/v1/quotes/getAllFilteredRecords/${merchantId}?customerId=${filterData?.customerId}&category=${filterData?.category}&totalAmount=${filterData?.totalAmount}&terms=${filterData?.terms}&date=${filterData?.date}`)
         .then(function (response) {
             console.log("response : ",response);
             if(response?.data?.success === true){
