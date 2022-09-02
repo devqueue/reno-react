@@ -134,7 +134,7 @@ const Panel = () => {
     <div className='container-fluid p-4 dashboard-content'>
         <div className="panel-top d-flex align-items-center justify-content-between">
           <div className='panel-left'>
-                        <h5 className='mb-0 fw-600'>All Quotes Approved By Partners</h5>
+                        <h5 className='mb-0 fw-600'>Dashboard</h5>
                         <p className='text-muted mb-0 text-light fs-small'>
                         {moment().format('MMMM Do YYYY')}
                         </p>
@@ -454,10 +454,10 @@ const Panel = () => {
                 <h3 className='fw-normal'>Invoice</h3>
                 <div className="d-flex justify-content-between fs-small py-2 border-top border-bottom border-dark">
                   <div>
-                    <span className='text-muted'>Bill Number</span> XXXXXXX
+                    <span className='text-muted'>Bill Number</span> 554485
                   </div>
                   <div>
-                    <span className='text-muted'>Order Number</span> XXXX
+                    <span className='text-muted'>Order Number</span> 55555
                   </div>
                 </div>
 

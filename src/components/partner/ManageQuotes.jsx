@@ -7,7 +7,6 @@ import {getAllRecentSentQuotes , getAllNotificationsOfMerchant ,markNotification
 import moment from 'moment'
 import { Link ,useNavigate , useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify';
-import monet from 'moment'
 
 const ManageQuotes = () => {
     const [ isFetching , setIsFetching ] = useState(false)
@@ -18,7 +17,6 @@ const ManageQuotes = () => {
         const getAllRecord = async () => {
           setIsFetching(true)
           const {data} = await getAllRecentSentQuotes();
-          console.log("all quotes : ", data);
           if(data?.success === true){
               setAllData(data?.AllQuotes.reverse());
           }else{
@@ -33,10 +31,16 @@ const ManageQuotes = () => {
     const returnHeader = (length) => {
       let pp = []
       for(let p = 0; p !== length; p++){
-              <td>{p + 1}</td>
-            pp.push(
+              if(p == 0){
+                pp.push(
+                    <td>{length}</td>
+                );
+              }else{
                 <td>{p + 1}</td>
-            );
+                pp.push(
+                    <td>{p + 1}</td>
+                );
+              }
         }
         return pp;
     }
@@ -44,7 +48,7 @@ const ManageQuotes = () => {
     // return Body of table
     const returnBody = (length , value) => {
       let pp = [
-        <td></td>
+        <td>{length}</td>
       ]
       for(let p = 0; p !== length; p++){
               <td>{p + 1}</td>
@@ -193,7 +197,7 @@ const ManageQuotes = () => {
                             <div className="row">
         
                               <div className="col-lg-3">
-                                <h6 className='text-muted fs-small mb-1'>Customer Name</h6>
+                                <h6 className='text-muted fs-small mb-1'>Customer ID Card No.</h6>
                                 <h6 className='text-darkBlue'>{item?.CustomerIDCardNo}</h6>
                               </div>
                               <div className="col-lg-3">
@@ -216,8 +220,9 @@ const ManageQuotes = () => {
                                       {returnHeader(item?.RepaymentAmount?.totalMonths)}
                                     </tr>
                                     <tr>
-                                      {returnBody(item?.RepaymentAmount?.totalMonths , item?.RepaymentAmount?.amountPerMonth )}
-                                    </tr>
+                                      
+                                        {returnBody(item?.RepaymentAmount?.totalMonths , item?.RepaymentAmount?.amountPerMonth )}
+                                      </tr>
                                   </tbody>
                                 </table>
                               </div>
@@ -225,11 +230,11 @@ const ManageQuotes = () => {
                               {
                                 item?.isAdminMerchantApproved === true ? (
                                   <>
-                                    <div className="quote-status text-color-primary bg-soft-orange">Sent</div>
+                                    <div className="quote-status text-color-primary bg-soft-orange">Approved</div>
                                   </>
                                 ) : (
                                   <>
-                                    <div className="quote-status text-color-primary bg-soft-primary">Approved</div>
+                                    <div className="quote-status text-color-primary bg-soft-primary">Pending</div>
                                   </>
                                 )
                               }

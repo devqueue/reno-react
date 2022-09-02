@@ -28,12 +28,13 @@ API.interceptors.request.use((req) => {
 // Admin Routes
 const signInAdmin = (data) => API.post(`/api/v1/admins/signin`, data);
 const getAllMerchants = () => API.get(`/api/v1/admins/getAllMerchants`);
+const getAllCustomers = () => API.get(`/api/v1/admins/getAllCustomers`);
 const disApproveAnyMerchant = (merchantId) => API.put(`/api/v1/admins/DisApproveNewMerchant/${merchantId}`);
 const ApproveAnyMerchant = (merchantId) => API.put(`/api/v1/admins/ApproveNewMerchant/${merchantId}`);
 const getAllQuotes = () => API.get(`/api/v1/admins/getAllQuotes`);
-const approveMerchantQuote = (quoteId) => API.put(`/api/v1/quotes/sendAdminMerchantResponse/${quoteId}`);
+const approveMerchantQuote = (quoteId , status) => API.put(`/api/v1/quotes/sendAdminMerchantResponse/${quoteId}/${status}`);
 const getRecentFinancialRequests = () => API.get(`/api/v1/admins/getAllRecentFinancialRequests`);
-const approveAnyFinancialRequest = (quoteId) => API.put(`/api/v1/quotes/sendAdminResponse/${quoteId}`);
+const approveAnyFinancialRequest = (quoteId, status) => API.put(`/api/v1/quotes/sendAdminResponse/${quoteId}/${status}`);
 const getAllNotificationsOfAdmin = () => API.get(`/api/v1/notifications/getAllOfAdmin`);
 const markNotificationsOfAdminRead = (notificationId) => API.put(`/api/v1/notifications/markNotificationOfAdminAsRead/${notificationId}`);
 
@@ -49,5 +50,6 @@ module.exports = {
     getRecentFinancialRequests,
     approveAnyFinancialRequest,
     getAllNotificationsOfAdmin,
-    markNotificationsOfAdminRead
+    markNotificationsOfAdminRead,
+    getAllCustomers
 }

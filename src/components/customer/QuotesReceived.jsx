@@ -12,7 +12,7 @@ import {getTodayReceivedQuotes , getReceivedQuotesPrevious , denyAnyQuote , getA
 import { Link , useNavigate , useLocation } from 'react-router-dom'
 import moment from 'moment'
 
-
+ 
 const QuotesReceived = () => {
     const [ isFetching , setIsFetching ] = useState(false)
     const navigate = useNavigate();
@@ -84,7 +84,7 @@ const QuotesReceived = () => {
         if(!customerToken && !isSessionFound){
             navigate("/customer/auth/login");
         }
-    },[location])
+    },[])
 
     const [ allNotifications , setAllNotifications ] = useState([])
     const [ allNotificationsCount , setAllNotificationsCount ] = useState([])
@@ -140,7 +140,7 @@ const QuotesReceived = () => {
                     <div className='container-fluid p-4 dashboard-content' style={{ display: 'flex', flexDirection: 'column' }}>
                         <div className="panel-top d-flex align-items-center justify-content-between">
                             <div className='panel-left'>
-                                <h5 className='mb-0 fw-600'>All Quotes Approved By Partners</h5>
+                                <h5 className='mb-0 fw-600'>All Quotes Received</h5>
                                 <p className='text-muted mb-0 text-light fs-small'>
                                 {moment().format('MMMM Do YYYY')}
                                 </p>
@@ -213,7 +213,7 @@ const QuotesReceived = () => {
                                                     </li>
                                                     <li>
                                                         <span className='text-muted'>Reference#</span>
-                                                        XXXXXXXXX
+                                                        3654785
                                                     </li>
                                                 </ul>
 
@@ -268,7 +268,7 @@ const QuotesReceived = () => {
                                                     </li>
                                                     <li>
                                                         <span className='text-muted'>Reference#</span>
-                                                        XXXXXXXXX
+                                                        885569985
                                                     </li>
                                                 </ul>
 

@@ -13,6 +13,8 @@ import { toast } from 'react-toastify';
 import { ThreeDots } from  'react-loader-spinner'
 import {getRecentFinancialRequests , approveAnyFinancialRequest } from '../../api/AdminApi'
 import user from '../../assets/images/user.jpg'
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Dropdown from 'react-bootstrap/Dropdown';
 import {useNavigate , Link} from 'react-router-dom'
 import moment from 'moment'
 import { AiFillBell } from 'react-icons/ai'
@@ -24,23 +26,27 @@ const MainPage = () => {
     const [ isFetching , setIsFetching ] = useState(false)
 
     // approving merchant request for quote
-    const changeStatus = async (id) => {
+    const changeStatus = async (id , status) => {
         let isFound = allData.find(item => item.Id === id);
         if(isFound){
-            if(isFound.Status === false){
-                isFound.status = true
-                isFound.quoteStatus = "Quote Approved By Reno"
-                const {data} = await approveAnyFinancialRequest(id);
+                isFound.isMerchantApproved = status
+                let msg = ""
+                if(status == false){
+                    msg = "Request Denied By Reno SuccessFully"
+                }else{
+                    msg = "Request Approved and Sent to Merchant/Partner SuccessFully"
+                }
+                isFound.quoteStatus = msg;
+                const {data} = await approveAnyFinancialRequest(id , status);
                 if(data?.success === true){
                     let newData = allData;
                     let finalData = newData.filter(item => item.Id === id ? isFound : item );
-                    toast.success("Quote Approved By Reno and Notification Sent to Partner for Delivery Successfully");
+                    toast.success(msg);
                     setData(finalData)
                 }else{
                     toast.success(data?.message);
                 }
             }
-        }
     }
 
     const TABLE_HEADERS = [
@@ -74,12 +80,24 @@ const MainPage = () => {
             name: "Actions",
             cell: (prop) => {
                 return (
-                    prop?.status == false ? (
-                        <Button size="sm" variant="primary" onClick={() => changeStatus(prop?.Id)} >{prop?.quoteStatus}</Button>
-                    ) : (
-                        <Button size="sm" variant="success" onClick={() => changeStatus(prop?.Id)} >{prop?.quoteStatus}</Button>
+                        <Dropdown as={ButtonGroup}>
+                            {
+                                prop?.Status == false && (
+                                    <Button size="sm" variant="primary" style={{fontSize : '11px' , fontWeight : 600}} >Declined</Button>
+                                )
+                            }
+                            {
+                                prop?.Status == true && (
+                                    <Button size="sm" variant="success" style={{fontSize : '11px' , fontWeight : 600}} >Approved</Button>
+                                )
+                            }
+                            <Dropdown.Toggle split size="sm" variant="primary" id="dropdown-split-basic" />
+                            <Dropdown.Menu style={{backgroundColor : 'transparent'}} >
+                                <Dropdown.Item onClick={() => changeStatus(prop?.Id , false)} style={{backgroundColor : '#c23616', color : 'white'}} >Declined</Dropdown.Item>
+                                <Dropdown.Item onClick={() => changeStatus(prop?.Id , true)} style={{backgroundColor : '#10ac84', color : 'white'}} >Approved</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
                     )
-                )
                 },
             ignoreRowClick: true,
             allowOverflow: true,
@@ -103,7 +121,7 @@ const MainPage = () => {
                         martialStatus: data?.AllQuotes[i]?.personalInfo?.martialStatus,
                         isWorking: data?.AllQuotes[i]?.personalInfo?.workingStatus === "true" ? "Employed" : "UnEmployed",
                         quoteStatus: data?.AllQuotes[i]?.quoteStatus,
-                        Status: data?.AllQuotes[i]?.Status,
+                        Status: data?.AllQuotes[i]?.isAdminApproved,
                         Id: data?.AllQuotes[i]?._id,
                     }
                     allDataArr.push(newArr)

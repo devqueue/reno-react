@@ -25,7 +25,6 @@ const FinanceRequests = () => {
     const [ allData , setAllData ] = useState([]);
     const [ allPreviousData , setAllPreviousData ] = useState([]);
 
-    
     const location = useLocation();
     // checking if user is signed in or not
     useEffect(() =>{
@@ -120,59 +119,59 @@ const FinanceRequests = () => {
                 <>
                     <div className='container-fluid p-4 dashboard-content' style={{ display: 'flex', flexDirection: 'column' }}>
                         <div className="panel-top d-flex align-items-center justify-content-between">
-                    <div className='panel-left'>
-                        <h5 className='mb-0 fw-600'>All Quotes Approved By Partners</h5>
-                        <p className='text-muted mb-0 text-light fs-small'>
-                        {moment().format('MMMM Do YYYY')}
-                        </p>
-                    </div>
+                        <div className='panel-left'>
+                            <h5 className='mb-0 fw-600'>All Finance Requests Sent</h5>
+                            <p className='text-muted mb-0 text-light fs-small'>
+                            {moment().format('MMMM Do YYYY')}
+                            </p>
+                        </div>
 
-                    <div className='d-flex align-items-center panel-right'>
-                        <div class="dropdown profile-dropdown">
-                            <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                <AiFillBell />
-                                <span>{allNotificationsCount}</span>
-                            </Link>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                {
-                                    allNotifications?.length > 0 ? (
-                                        allNotifications?.map((item) => (
-                                            item?.isRead === false ? (
-                                                <li style={{backgroundColor : '#ecf0f1'}} onClick={() => readNotification(item?._id)}>
+                        <div className='d-flex align-items-center panel-right'>
+                            <div class="dropdown profile-dropdown">
+                                <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <AiFillBell />
+                                    <span>{allNotificationsCount}</span>
+                                </Link>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    {
+                                        allNotifications?.length > 0 ? (
+                                            allNotifications?.map((item) => (
+                                                item?.isRead === false ? (
+                                                    <li style={{backgroundColor : '#ecf0f1'}} onClick={() => readNotification(item?._id)}>
+                                                        <Link class="dropdown-item" to="">
+                                                            <strong>{item?.message} </strong> <br />
+                                                            <span style={{ fontSize: '12px' , color : '#34495e' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                                        </Link>
+                                                    </li>
+                                                ) : (
+                                                    <li style={{backgroundColor : 'transparent'}} >
                                                     <Link class="dropdown-item" to="">
-                                                        <strong>{item?.message} </strong> <br />
-                                                        <span style={{ fontSize: '12px' , color : '#34495e' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                                            <strong>{item?.message} </strong> <br />
+                                                            <span className='text-muted' style={{ fontSize: '12px' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
                                                     </Link>
-                                                </li>
-                                            ) : (
-                                                <li style={{backgroundColor : 'transparent'}} >
-                                                <Link class="dropdown-item" to="">
-                                                        <strong>{item?.message} </strong> <br />
-                                                        <span className='text-muted' style={{ fontSize: '12px' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
-                                                </Link>
-                                                </li>
-                                            )
-                                        ))
-                                    ) : (
-                                        <li style={{marginLeft : '15px'}} >Empty</li>
-                                    )
-                                }
-                            </ul>
-                        </div>
+                                                    </li>
+                                                )
+                                            ))
+                                        ) : (
+                                            <li style={{marginLeft : '15px'}} >Empty</li>
+                                        )
+                                    }
+                                </ul>
+                            </div>
 
-                        <div className="dropdown profile-dropdown">
-                        <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div className='d-flex align-items-center fs-small me-3'>
-                            <img src={user} alt="" />
-                            Mohammed
-                                        </div>
-                                    </button>
-                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><Link className="dropdown-item" to="#">Profile</Link></li>
-                                        <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
-                                    </ul>
+                            <div className="dropdown profile-dropdown">
+                            <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div className='d-flex align-items-center fs-small me-3'>
+                                <img src={user} alt="" />
+                                Mohammed
+                                            </div>
+                                        </button>
+                                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                            <li><Link className="dropdown-item" to="#">Profile</Link></li>
+                                            <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
+                                        </ul>
+                            </div>
                         </div>
-                    </div>
                         </div>
 
                         {/* today quotes */}
@@ -194,7 +193,7 @@ const FinanceRequests = () => {
                                                     </li>
                                                     <li>
                                                         <span className='text-muted'>Reference#</span>
-                                                        XXXXXXXXX
+                                                        78445557
                                                     </li>
                                                 </ul>
 
@@ -217,15 +216,15 @@ const FinanceRequests = () => {
 
                                                 <div>
                                                     {
-                                                        item?.quoteStatus === "Approved By Admin" ? (
-                                                            <div className="request-status-container">
+                                                        item?.isAdminApproved === true ? (
+                                                            <div className="request-status-container" style={{marginLeft : '25px'}} >
                                                                 <div className="request-status text-green bg-soft-green" style={{maxWidth: '100px' , maxHeight : '30px' , backgroundColor : 'white' , marginLeft : '30px' , display: 'flex' , alignItems : 'center' ,  marginBottom : '25px', justifyContent : 'space-between'  }} >
                                                                     Approved
                                                                     <img src={success} alt=""  style={{maxWidth: '80px' , maxHeight : '30px'  }}  />
                                                                 </div>
                                                             </div>
                                                         ) : (
-                                                            <div className="request-status-container">
+                                                            <div className="request-status-container"  >
                                                                 <div className="request-status text-green bg-soft-green" style={{maxWidth: '100px' , maxHeight : '30px' , backgroundColor : 'white' , marginLeft : '30px' , display: 'flex' , alignItems : 'center' ,  marginBottom : '25px', justifyContent : 'space-between'  }} >
                                                                     Pending
                                                                 </div>
@@ -270,7 +269,7 @@ const FinanceRequests = () => {
                                                     </li>
                                                     <li>
                                                         <span className='text-muted'>Reference#</span>
-                                                        XXXXXXXXX
+                                                        9878458
                                                     </li>
                                                 </ul>
 
@@ -293,8 +292,8 @@ const FinanceRequests = () => {
 
                                                 <div>
                                                     {
-                                                        item?.quoteStatus === "Approved By Admin" ? (
-                                                            <div className="request-status-container">
+                                                        item?.isAdminApproved === true ? (
+                                                            <div className="request-status-container" style={{marginLeft : '25px'}} >
                                                                 <div className="request-status text-green bg-soft-green" style={{maxWidth: '100px' , maxHeight : '30px' , backgroundColor : 'white' , marginLeft : '30px' , display: 'flex' , alignItems : 'center' ,  marginBottom : '25px', justifyContent : 'space-between'  }} >
                                                                     Approved
                                                                     <img src={success} alt=""  style={{maxWidth: '80px' , maxHeight : '30px'  }}  />

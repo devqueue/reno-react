@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.css";
 import React , {useState , useEffect} from "react";
 import { Col, Row, Table , Button } from "react-bootstrap";
+import Dropdown from 'react-bootstrap/Dropdown';
 import {
     DatatableWrapper,
     Filter,
@@ -14,12 +15,10 @@ import { ThreeDots } from  'react-loader-spinner'
 import {getAllQuotes , approveMerchantQuote } from '../../api/AdminApi'
 import user from '../../assets/images/user.jpg'
 import {useNavigate , Link} from 'react-router-dom'
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import moment from 'moment'
 import { AiFillBell } from 'react-icons/ai'
 import {getAllNotificationsOfAdmin ,markNotificationsOfAdminRead} from '../../api/AdminApi'
-
-
-
 
 
 const MainPage = () => {
@@ -27,21 +26,25 @@ const MainPage = () => {
     const [ isFetching , setIsFetching ] = useState(false)
 
     // approving merchant request for quote
-    const changeStatus = async (id) => {
+    const changeStatus = async (id , status) => {
         let isFound = allData.find(item => item.Id === id);
         if(isFound){
-            if(isFound.isMerchantApproved === false){
-                isFound.isMerchantApproved = true
-                isFound.quoteStatus = "Quote Sent to Customer"
-                const {data} = await approveMerchantQuote(id);
-                if(data?.success === true){
-                    let newData = allData;
-                    let finalData = newData.filter(item => item.Id === id ? isFound : item );
-                    toast.success("Quote Approved and Sent to Customer Successfully");
-                    setData(finalData)
-                }else{
-                    toast.success(data?.message);
-                }
+            isFound.isMerchantApproved = status
+            let msg = ""
+            if(status == false){
+                msg = "Reno Declined Quote SuccessFully"
+            }else{
+                msg = "Quote Approved and Sent to Customer SuccessFully"
+            }
+            isFound.quoteStatus = msg;
+            const {data} = await approveMerchantQuote(id , status);
+            if(data?.success === true){
+                let newData = allData;
+                let finalData = newData.filter(item => item.Id === id ? isFound : item );
+                toast.success(msg);
+                setData(finalData)
+            }else{
+                toast.success(data?.message);
             }
         }
     }
@@ -77,12 +80,24 @@ const MainPage = () => {
             name: "Actions",
             cell: (prop) => {
                 return (
-                    prop?.status == false ? (
-                        <Button size="sm" variant="primary" onClick={() => changeStatus(prop?.Id)} >{prop?.quoteStatus}</Button>
-                    ) : (
-                        <Button size="sm" variant="success" onClick={() => changeStatus(prop?.Id)} >{prop?.quoteStatus}</Button>
+                        <Dropdown as={ButtonGroup}>
+                            {
+                                prop?.isMerchantApproved == false && (
+                                    <Button size="sm" variant="primary" style={{fontSize : '11px' , fontWeight : 600}} >Declined</Button>
+                                )
+                            }
+                            {
+                                prop?.isMerchantApproved == true && (
+                                    <Button size="sm" variant="success" style={{fontSize : '11px' , fontWeight : 600}} >Approved</Button>
+                                )
+                            }
+                            <Dropdown.Toggle split size="sm" variant="primary" id="dropdown-split-basic" />
+                            <Dropdown.Menu style={{backgroundColor : 'transparent'}} >
+                                <Dropdown.Item onClick={() => changeStatus(prop?.Id , false)} style={{backgroundColor : '#c23616', color : 'white'}} >Declined</Dropdown.Item>
+                                <Dropdown.Item onClick={() => changeStatus(prop?.Id , true)} style={{backgroundColor : '#10ac84', color : 'white'}} >Approved</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
                     )
-                )
                 },
             ignoreRowClick: true,
             allowOverflow: true,

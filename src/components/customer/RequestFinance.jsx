@@ -221,7 +221,7 @@ const RequestFinance = () => {
         <div className='container-fluid p-4 dashboard-content'>
             <div className="panel-top d-flex align-items-center justify-content-between">
                     <div className='panel-left'>
-                        <h5 className='mb-0 fw-600'>All Quotes Approved By Partners</h5>
+                        <h5 className='mb-0 fw-600'>Finance Requests</h5>
                         <p className='text-muted mb-0 text-light fs-small'>
                         {moment().format('MMMM Do YYYY')}
                         </p>
@@ -319,6 +319,7 @@ const RequestFinance = () => {
                                 <div className="col-lg-6 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Owned/Rented</label>
                                     <select class="form-select text-muted" aria-label="Default select example" onChange={(e) => setQuoteData({...quoteDate , isOwned : e.target.value}) }>
+                                        <option selected></option>
                                         <option value={true}>Yes</option>
                                         <option value={false}>No</option>
                                     </select>
@@ -343,7 +344,12 @@ const RequestFinance = () => {
                                 </div>
                                 <div className="col-lg-6 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Marital status</label>
-                                    <input type="text" className='form-control' placeholder='Select your marital status' value={quoteDate?.martialStatus} onChange={(e) => setQuoteData({...quoteDate , martialStatus : e.target.value})} required />
+                                    <select class="form-select text-muted" aria-label="Default select example" onChange={(e) => setQuoteData({...quoteDate , martialStatus : e.target.value}) }>
+                                        <option selected></option>
+                                        <option >Married</option>
+                                        <option >Un-Married</option>
+                                        <option >Divorced</option>
+                                    </select>
                                 </div>
                                 <div className="col-lg-6 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Number of family Members</label>
@@ -766,7 +772,7 @@ const RequestFinance = () => {
                     <div className="col-lg-12 form-group mb-4">
                         <label className='form-label text-muted fs-small'>Home Type</label>
                         <select class="form-select text-muted" aria-label="Default select example" onChange={(e) => setUpdateData({...updateData , homeType : e.target.value}) }>
-                            <option selected>Apartment / Villa / Duplex / Floor</option>
+                            <option selected>{updateData?.homeType}</option>
                             <option>Apartment</option>
                             <option>Villa</option>
                             <option>Duplex</option>
@@ -788,7 +794,7 @@ const RequestFinance = () => {
                     <div className="col-lg-12 form-group mb-4">
                         <label className='form-label text-muted fs-small'>Number of family Members</label>
                         <select class="form-select text-muted" aria-label="Default select example"  onChange={(e) => setUpdateData({...updateData , familyMembersCount : e.target.value}) }>
-                            <option selected>Select Number of family Members</option>
+                            <option selected>{updateData?.familyMembersCount}</option>
                             <option>3</option>
                             <option>5</option>
                             <option>10</option>
@@ -801,7 +807,7 @@ const RequestFinance = () => {
                     <div className="col-lg-12 form-group mb-4">
                         <label className='form-label text-muted fs-small'>Working status</label>
                         <select class="form-select text-muted" aria-label="Default select example" onChange={(e) => setUpdateData({...updateData , workingStatus : e.target.value}) }>
-                            <option selected>Select your working status</option>
+                            <option selected>{updateData?.workingStatus}</option>
                             <option value={true}>Yes</option>
                             <option value={false}>No</option>
                         </select>

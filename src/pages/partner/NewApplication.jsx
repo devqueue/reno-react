@@ -50,10 +50,9 @@ const NewApllication = () => {
     // calculating value
     useEffect(() => {
         if(quoteDate.totalPurchaseAmount !== 0 && quoteDate.depositAmount !== 0){
-            let diff = quoteDate.totalPurchaseAmount - quoteDate.depositAmount;
-            let totalMonths = quoteDate.totalPurchaseAmount / quoteDate.depositAmount
+            let totalMonths = (quoteDate.totalPurchaseAmount - quoteDate.depositAmount) / quoteDate.depositAmount
             let newMonths = Math.round(totalMonths)
-            setQuoteData({...quoteDate , balanceOwning : diff , amountPerMonth: quoteDate.depositAmount , totalMonths : newMonths})
+            setQuoteData({...quoteDate , balanceOwning : (quoteDate.totalPurchaseAmount - quoteDate.depositAmount) , amountPerMonth: quoteDate.depositAmount , totalMonths : newMonths})
         }
     }, [quoteDate.totalPurchaseAmount , quoteDate.depositAmount])
 
@@ -79,7 +78,7 @@ const NewApllication = () => {
     const sendQuote = async () => {
         setIsFetching(true)
         const {data} = await sendNewQuoteRequest(quoteDate);
-        if(data?.success === true){
+        if(data?.success == true){
             toast.success("Application Sent SuccessFully");
             emptyQuoteData();
             await delay(1500)
@@ -304,13 +303,14 @@ const NewApllication = () => {
                     <div className="row mt-5">
                         <div className="col-lg-6 m-auto">
 
-                            <h5 className='text-center fw-600'>Customer & Product Details</h5>
+                            <h5 className='text-center fw-600'>Customer & Product Details  </h5>
                             <h6 className='text-center text-muted fw-normal'>Please fill in the details below and continue.</h6>
 
                             <div className="row finance-form mt-4">
 
                                 <div className="col-12 form-group mb-4">
-                                    <label className='form-label text-muted fs-small'>Customer ID Card/Iqama Number</label>
+                                    <label className='form-label text-muted fs-small'>Customer ID Card/Iqama Number </label>
+                                    <br/><span style={{fontSize : '12px', color :"crimson"}} >(if customer is not found on reno, customer then will receive email for this quote)</span>
                                     <input type="text" className='form-control' placeholder='Enter your ID Card/Iqama Number' value={quoteDate?.IDCardNo} onChange={(e) => setQuoteData({...quoteDate , IDCardNo : e.target.value})}  required />
                                 </div>
                                 <div className="col-12 form-group mb-4">
@@ -327,6 +327,7 @@ const NewApllication = () => {
                                 </div>
                                 <div className="col-12 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Email</label>
+                                    <br/><span style={{fontSize : '12px', color :"crimson"}} >(Please provide a valid email, in case customer is not on reno)</span>
                                     <input type="email" className='form-control' placeholder='Enter your customer’s email address' value={quoteDate?.email} onChange={(e) => setQuoteData({...quoteDate , email : e.target.value})}  required />
                                 </div>
                                 <div className="col-12 form-group mb-4">
@@ -572,7 +573,7 @@ const NewApllication = () => {
                     <div className="col-12 form-group mb-4">
                         <label className='form-label text-muted fs-small'>Product Category</label>
                         <select class="form-select text-muted" aria-label="Default select example" onChange={(e) => setUpdateData({...updateData , productCategory : e.target.value}) }>
-                            <option selected></option>
+                            <option selected>{updateData?.productCategory}</option>
                             <option>Lighting</option>
                             <option >Cooling/Heating</option>
                             <option >Smart Home technology System</option>
