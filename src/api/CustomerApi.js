@@ -42,6 +42,7 @@ const getAllTravelingQuotes = () => API.get(`/api/v1/quotes/getAllTravelingOfCus
 const getAllNotificationsOfCustomer = () => API.get(`/api/v1/notifications/getAllOfACustomer`);
 const markNotificationsOfMerchantRead = (notificationId) => API.put(`/api/v1/notifications/markNotificationOfCustomerAsRead/${notificationId}`);
 const ApproveDisproveDelivery = (quoteId, status) => API.put(`/api/v1/quotes/sendCustomerDeliveryResponse/${quoteId}/${status}`);
+const getDashboardData = () => API.get(`/api/v1/quotes/getAllFinancedAmtOfCustomer`);
 
 
 module.exports = {
@@ -60,5 +61,6 @@ module.exports = {
     getAllTravelingQuotes,
     getAllNotificationsOfCustomer,
     markNotificationsOfMerchantRead,
-    ApproveDisproveDelivery
+    ApproveDisproveDelivery,
+    getDashboardData
 }

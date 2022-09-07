@@ -16,7 +16,7 @@ const Dashboard = () => {
   const [ allSent , setSentCount ] = useState(0);
   const [ allPending , setPendingCount ] = useState(0);
   const [ allApproved , setApprovedCount ] = useState(0);
-  
+
 
     // logging out
     const logout = async () => {
@@ -59,12 +59,12 @@ const Dashboard = () => {
     labels: ['1 Jun', '3 Jun', '6 jun', '9 jun', '12 jun', '12 jun', '15 jun', '18 jun', '21 jun', '24 jun', '27 jun', '30 jun'],
     data: [1700, 1500, 1000, 1500, 2200, 1766, 2500, 1200, 1800, 1980, 1509, 1900, 0]
   }
-  
+
   const annual = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     data: [1000, 1500, 2000, 1500, 1800, 1766, 2200, 1600, 2200, 1980, 2400, 1000, 0]
   }
-  
+
   const total = {
     labels: ['2011', '2012', '2013', '2014', '2015', '2016', '2017', '2018', '2019', '2020', '2021', '2022'],
     data: [1500, 1800, 2000, 1200, 1800, 1500, 2500, 2200, 1500, 1980, 2000, 1700, 0]
@@ -196,7 +196,7 @@ const Dashboard = () => {
                                         <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
                                     </ul>
                         </div>
-                    </div>
+          </div>
         </div>
 
         <div className="row mt-4">
@@ -212,7 +212,7 @@ const Dashboard = () => {
                   <span className='text-muted fw-normal'>Approved</span>{allApproved}
                 </li>
                 <li className='d-flex align-items-center justify-content-between py-2 fw-600'>
-                  <span className='text-muted fw-normal'>Total</span>{allSent}
+                  <span className='text-muted fw-normal'>Total Unpaid</span>{allSent}
                 </li>
               </ul>
             </div>

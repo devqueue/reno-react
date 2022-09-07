@@ -69,7 +69,7 @@ const MainPage = () => {
                 cell: (prop) => {
                     return (
                         <>
-                            <Button size="sm" variant="primary" style={{fontSize : '11px' , fontWeight : 600}} >{prop?.quoteStatus}</Button>
+                            <Button size="sm" variant="link" style={{fontSize : '11px' , fontWeight : 600 , textDecoration : 'none'}} >{prop?.quoteStatus}</Button>
                             
                         </>
                     )

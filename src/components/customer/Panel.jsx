@@ -15,13 +15,14 @@ import { toast } from 'react-toastify';
 import { Link , useNavigate , useLocation } from 'react-router-dom'
 import { ThreeDots } from  'react-loader-spinner'
 import moment from 'moment'
-import {getAllRecentQuotesForHomeScreen , getUpcomingPaymentsOfQuotes , getAllNotificationsOfCustomer ,markNotificationsOfMerchantRead } from '../../api/CustomerApi'
+import {getAllRecentQuotesForHomeScreen , getDashboardData , getUpcomingPaymentsOfQuotes , getAllNotificationsOfCustomer ,markNotificationsOfMerchantRead } from '../../api/CustomerApi'
 
 const Panel = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [ allRecords , setAllRecords] = useState([]);
   const [ isFetching , setIsFetching ] = useState(false)
+  const [ totalFinanced , setTotalFinanced ] = useState(0)
   const [ allDuePayments , setAllDuePayments ] =  useState([])
 
   useEffect(() => {
@@ -32,9 +33,15 @@ const Panel = () => {
           setAllRecords(data?.AllQuotes);
         }
 
+        // getting all financed amount
+        const response = await getDashboardData();
+        if(response?.data?.success === true){
+          setTotalFinanced(response?.data?.FinancedAmt)
+        }
+
         // getting all due payments
         const res = await getUpcomingPaymentsOfQuotes();
-        if(data?.success === true){
+        if(res?.data?.success === true){
           setAllDuePayments(res?.data?.allRecords);
         }
 
@@ -185,7 +192,7 @@ const Panel = () => {
                                         <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
                                     </ul>
                         </div>
-                    </div>
+          </div>
         </div>
 
         <div className="row mt-4">
@@ -204,7 +211,7 @@ const Panel = () => {
             <div className="widget">
               <div className='widget-text'>
                 <p className="text-gray mb-1 fs-small">financed amount <span className='text-muted'>(SAR)</span></p>
-                <h3 className='mb-0 fw-600'>00</h3>
+                <h3 className='mb-0 fw-600'>{totalFinanced}</h3>
               </div>
               <div className="widget-icon bg-soft-danger">
                 <img src={widget2} alt="" />
@@ -226,7 +233,7 @@ const Panel = () => {
             <div className="widget">
               <div className='widget-text'>
                 <p className="text-gray mb-1 fs-small">Remaining amount <span className='text-muted'>(SAR)</span></p>
-                <h3 className='mb-0 fw-600'>00</h3>
+                <h3 className='mb-0 fw-600'>{totalFinanced}</h3>
               </div>
               <div className="widget-icon bg-soft-purple">
                 <img src={widget4} alt="" />

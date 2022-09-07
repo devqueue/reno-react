@@ -75,7 +75,7 @@ const Applications = () => {
         setIsFetching(true)
         const {data} = await getAllRecentSentQuotes();
         if(data?.success === true){
-            let newArr = data?.AllQuotes.reverse()
+            let newArr = data?.AllQuotes
             let newarray = [];
             newArr?.map((event, idx) => {
                 return newarray.push([
@@ -137,7 +137,7 @@ const Applications = () => {
             setIsFetching(true)
             const {data} = await getAllRecentSentQuotes();
             if(data?.success === true){
-                let newArr = data?.AllQuotes.reverse()
+                let newArr = data?.AllQuotes
                 let newarray = [];
                 newArr?.map((event, idx) => {
                     return newarray.push([
@@ -292,90 +292,93 @@ const Applications = () => {
                         </div>
                     </div>
 
-                    <div style={{minWidth : '100%' , marginTop : '25px', backgroundColor: 'transparent'}} >
-                        <Grid
-                            data={allData}
-                            columns={[
-                                {
-                                    name : "Cust. ID",
-                                    minWidth : '150px',
-                                },
-                                {
-                                    name : "Category",
-                                    minWidth : '185px',
-                                },
-                                {
-                                    name : "Amount",
-                                    minWidth : '150px',
-                                },
-                                {
-                                    name: "Terms",
-                                    minWidth : '120px',
-                                    formatter: (cell) =>
-                                    _(
-                                        <span className="badge badge-soft-secondary text-dark ">
-                                        {cell}
-                                        </span>
-                                    ),
-                                },
-                                {
-                                    name: "Date",
-                                    minWidth : '150px',
-                                    formatter: (cell) =>
-                                    _(
-                                        <span className="badge badge-soft-info text-dark ">
-                                        {cell}
-                                        </span>
-                                    ),
-                                },
-                                {
-                                    name: "Status",
-                                    minWidth : '150px',
-                                    formatter: (cell) =>
-                                    _(
-                                        <span className="badge badge-soft-info text-dark ">
-                                        {cell}
-                                        </span>
-                                    ),
-                                },
-                                {
-                                    name : "is Paid",
-                                    formatter: (cell) =>
-                                    _(
-                                        <>
-                                            <Button variant="link" size="sm" onClick={handleInvoiceInvoice} >Download</Button>
-                                        </>
-                                    ),
-                                },
-                                {
-                                    name: "Action",
-                                    minWidth : '150px',
-                                    formatter: (cell) =>
-                                    _(
-                                        <>
-                                            <Button variant="danger" size="sm" onClick={handleRefund} >Refund Now</Button>
-                                        </>
-                                    ),
-                                },
-                            ]}
-                            search={true}
-                            sort={true}
-                            resizable={true}
-                            fixedHeader={true}
-                            pagination={{ enabled: true, limit: 10 }}
-                            style= {{
-                                th  : {
-                                    backgroundColor : '#bdc3c7',
-                                    color : '#2f3542'
-                                },
-                                table  : {
-                                    backgroundColor : 'white',
-                                },
-                                td: {
-                                        textAlign: 'center',
-                                    }
-                            }}
-                        />
+                    <div className="row" style={{minWidth : '100%' , marginTop : '25px', backgroundColor: 'transparent'}} >
+                        <div className="col-12" >
+                            <Grid
+                                data={allData}
+                                columns={[
+                                    {
+                                        name : "Cust. ID",
+                                        minWidth : '150px',
+                                    },
+                                    {
+                                        name : "Category",
+                                        minWidth : '185px',
+                                    },
+                                    {
+                                        name : "Amount",
+                                        minWidth : '150px',
+                                    },
+                                    {
+                                        name: "Terms",
+                                        minWidth : '120px',
+                                        formatter: (cell) =>
+                                        _(
+                                            <span className="badge badge-soft-secondary text-dark ">
+                                            {cell}
+                                            </span>
+                                        ),
+                                    },
+                                    {
+                                        name: "Date",
+                                        minWidth : '150px',
+                                        formatter: (cell) =>
+                                        _(
+                                            <span className="badge badge-soft-info text-dark ">
+                                            {cell}
+                                            </span>
+                                        ),
+                                    },
+                                    {
+                                        name: "Status",
+                                        minWidth : '150px',
+                                        formatter: (cell) =>
+                                        _(
+                                            <span className="badge badge-soft-info text-dark ">
+                                            {cell}
+                                            </span>
+                                        ),
+                                    },
+                                    {
+                                        name : "is Paid",
+                                        formatter: (cell) =>
+                                        _(
+                                            <>
+                                                <Button variant="link" size="sm" onClick={handleInvoiceInvoice} >Download</Button>
+                                            </>
+                                        ),
+                                    },
+                                    {
+                                        name: "Action",
+                                        minWidth : '150px',
+                                        formatter: (cell) =>
+                                        _(
+                                            <>
+                                                <Button variant="danger" size="sm" onClick={handleRefund} >Refund Now</Button>
+                                            </>
+                                        ),
+                                    },
+                                ]}
+                                search={true}
+                                sort={true}
+                                resizable={true}
+                                fixedHeader={true}
+                                pagination={{ enabled: true, limit: 10 }}
+                                style= {{
+                                    th  : {
+                                        backgroundColor : '#bdc3c7',
+                                        color : '#2f3542'
+                                    },
+                                    table  : {
+                                        backgroundColor : 'white',
+                                        minWidth : '100%'
+                                    },
+                                    td: {
+                                            textAlign: 'center',
+                                        }
+                                }}
+                            />
+                        </div>
                     </div>
                     </>
                 )

@@ -42,7 +42,6 @@ const MainPage = () => {
         }
     }
 
-
     const TABLE_HEADERS = [
         {
             prop: "customer",

@@ -18,7 +18,7 @@ const ManageQuotes = () => {
           setIsFetching(true)
           const {data} = await getAllRecentSentQuotes();
           if(data?.success === true){
-              setAllData(data?.AllQuotes.reverse());
+              setAllData(data?.AllQuotes);
           }else{
               toast.error(data?.message);
           }

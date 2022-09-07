@@ -1,5 +1,5 @@
 import React, { useState , useEffect } from 'react'
-import { Link , useNavigate } from 'react-router-dom'
+import { Link , useNavigate , useLocation } from 'react-router-dom'
 import { AiFillBell } from 'react-icons/ai'
 import { toast } from 'react-toastify';
 import user from '../../assets/images/user.jpg'
@@ -10,7 +10,7 @@ import appStep2 from '../../assets/icons/appStep2.png'
 import appStep3 from '../../assets/icons/appStep3.png'
 import appStep4 from '../../assets/icons/appStep4.png'
 import tick from '../../assets/images/tick.png'
-import {sendNewQuoteRequest} from '../../api/MerchentApi'
+import {sendNewQuoteRequest , getAllNotificationsOfMerchant , markNotificationsOfMerchantRead } from '../../api/MerchentApi'
 import { ThreeDots } from  'react-loader-spinner'
 import moment from 'moment'
 import Modal from 'react-bootstrap/Modal';
@@ -20,10 +20,12 @@ import Modal from 'react-bootstrap/Modal';
 const NewApllication = () => {
     document.title = 'Reno | Partner Portal'
     const navigate = useNavigate()
+    const location = useLocation()
 
     const [step, setStep] = useState(1)
     const [ isFetching , setIsFetching ] = useState(false)
     const [ updateData , setUpdateData ] = useState(null)
+    const [ transCount , setTransCount ] = useState(1)
     const [choice, setChoice] = useState(true)
     const [ quoteDate , setQuoteData ] = useState({
         totalPurchaseAmount : 0,
@@ -31,7 +33,7 @@ const NewApllication = () => {
         balanceOwning: 0,
         isCustomerUsingRenoFirstTime : true,
         amountPerMonth : 0,
-        totalMonths : 0,
+        totalMonths : transCount,
         IDCardNo : '',
         phoneNo : '',
         email : '',
@@ -47,14 +49,26 @@ const NewApllication = () => {
         }
     }, [])
 
+    // checking if user is signed in or not
+    useEffect(() =>{
+        const customerToken = JSON.parse(localStorage.getItem('reno-merchant-token'))
+        const isSessionFound = sessionStorage.getItem("reno-merchant-token");
+        if(!customerToken && !isSessionFound){
+            navigate("/partner/auth/login");
+        }
+    },[location])
+
     // calculating value
     useEffect(() => {
         if(quoteDate.totalPurchaseAmount !== 0 && quoteDate.depositAmount !== 0){
-            let totalMonths = (quoteDate.totalPurchaseAmount - quoteDate.depositAmount) / quoteDate.depositAmount
-            let newMonths = Math.round(totalMonths)
-            setQuoteData({...quoteDate , balanceOwning : (quoteDate.totalPurchaseAmount - quoteDate.depositAmount) , amountPerMonth: quoteDate.depositAmount , totalMonths : newMonths})
+            let totalMonths = (quoteDate.totalPurchaseAmount - quoteDate.depositAmount) / transCount
+            let AmtPerMnt = (quoteDate.totalPurchaseAmount - quoteDate.depositAmount) / transCount
+            let n = AmtPerMnt.toFixed(2)
+            let newMonths = Math.ceil(totalMonths)
+            setQuoteData({...quoteDate , balanceOwning : (quoteDate.totalPurchaseAmount - quoteDate.depositAmount) , amountPerMonth: n , totalMonths : newMonths})
+            setUpdateData({...quoteDate , balanceOwning : (quoteDate.totalPurchaseAmount - quoteDate.depositAmount) , amountPerMonth: n , totalMonths : newMonths})
         }
-    }, [quoteDate.totalPurchaseAmount , quoteDate.depositAmount])
+    }, [quoteDate.totalPurchaseAmount , quoteDate.depositAmount , transCount , updateData.totalPurchaseAmount , updateData.depositAmount  ])
 
     // checking all fields of step 01
     const checkStep01 = () => {
@@ -135,6 +149,52 @@ const NewApllication = () => {
         handleCustomerClose()
     }
 
+    const [ allNotifications , setAllNotifications ] = useState([])
+    const [ allNotificationsCount , setAllNotificationsCount ] = useState([])
+    // getting all notifications
+    useEffect(() =>{
+      const getAllNotifications = async () => {
+          const {data} = await getAllNotificationsOfMerchant()
+          if(data?.success === true){
+            setAllNotifications(data?.Notifications)
+            let count = 0;
+            data?.Notifications?.map((item) => (
+              item?.isRead === false && (
+                count += 1
+              )
+            ))
+            setAllNotificationsCount(count)
+          }
+        }
+        getAllNotifications();
+    },[])
+    // marking notification as read
+    const readNotification = async (id) => {
+      const {data} = await markNotificationsOfMerchantRead(id);
+      if(data?.success === true){
+          let newArr = allNotifications;
+          let isFound = newArr.find(item => item._id == id);
+          if(isFound){
+            isFound.isRead = true
+            newArr.filter(item => item._id == id ? isFound : item)
+            setAllNotifications(newArr)
+            setAllNotificationsCount(prev => prev - 1)
+          }
+        }
+    }
+
+    // logging out
+    const logout = async () => {
+        localStorage.removeItem("reno-merchant-token")
+        sessionStorage.removeItem('reno-merchant-token');
+        localStorage.removeItem("reno-merchantId")
+        sessionStorage.removeItem('reno-merchantId');
+        toast.success("Signed Out SuccessFully");
+        await delay(2000);
+        navigate('/');
+    }
+    // sleeping
+
     return (
         <div className='container-fluid p-4 dashboard-content'>
             <div className="panel-top d-flex align-items-center justify-content-between">
@@ -146,30 +206,50 @@ const NewApllication = () => {
                 </div>
 
                 <div className='d-flex align-items-center panel-right'>
-                    <div class="dropdown profile-dropdown">
-                        <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <AiFillBell />
-                            <span>5</span>
-                        </Link>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
-                                        <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
-                                        <li><Link class="dropdown-item" to="#">You have received a new quote from John Doe <br /> <span className='text-muted' style={{ fontSize: '12px' }}>6 june 2022, 12:00 AM</span></Link></li>
-                        </ul>
-                    </div>
+                        <div class="dropdown profile-dropdown">
+                            <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <AiFillBell />
+                                <span>{allNotificationsCount}</span>
+                            </Link>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                {
+                                    allNotifications?.length > 0 ? (
+                                        allNotifications?.map((item) => (
+                                            item?.isRead === false ? (
+                                                <li style={{backgroundColor : '#ecf0f1'}} onClick={() => readNotification(item?._id)}>
+                                                    <Link class="dropdown-item" to="">
+                                                        <strong>{item?.message} </strong> <br />
+                                                        <span style={{ fontSize: '12px' , color : '#34495e' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                                    </Link>
+                                                </li>
+                                            ) : (
+                                                <li style={{backgroundColor : 'transparent'}} >
+                                                <Link class="dropdown-item" to="">
+                                                        <strong>{item?.message} </strong> <br />
+                                                        <span className='text-muted' style={{ fontSize: '12px' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                                </Link>
+                                                </li>
+                                            )
+                                        ))
+                                    ) : (
+                                        <li style={{marginLeft : '15px'}} >Empty</li>
+                                    )
+                                }
+                            </ul>
+                        </div>
 
-                    <div class="dropdown profile-dropdown">
-                    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <div className='d-flex align-items-center fs-small me-3'>
-                        <img src={user} alt="" />
-                        Mohammed
-                                    </div>
-                                </button>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><Link class="dropdown-item" to="#">Profile</Link></li>
-                                    <li><Link class="dropdown-item" to="#">Logout</Link></li>
-                                </ul>
-                    </div>
+                        <div className="dropdown profile-dropdown">
+                        <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div className='d-flex align-items-center fs-small me-3'>
+                            <img src={user} alt="" />
+                            Mohammed
+                                        </div>
+                                    </button>
+                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        <li><Link className="dropdown-item" to="#">Profile</Link></li>
+                                        <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
+                                    </ul>
+                        </div>
                 </div>
             </div>
 
@@ -236,6 +316,10 @@ const NewApllication = () => {
                                         <h5 className='fs-small text-darkBlue'>SAR</h5>
                                     </div>
                                 </div>
+                                <div className="col-12 form-group mb-4">
+                                    <label className='form-label text-muted fs-small'>Select No of Tenure</label>
+                                    <input type="number" className='form-control' value={transCount} onChange={(e) =>setTransCount(e.target.value)}  />
+                                </div>
                                 <div className="col-12 mb-4">
                                     <label className='form-label text-muted fs-small'>Is Customer using reno for the first time</label>
                                     <div className="yes-no-container">
@@ -276,7 +360,7 @@ const NewApllication = () => {
                                         <h6 className='text-darkBlue mb-0 fw-600'>For</h6>
 
                                         <div className='text-end'>
-                                            <h6 className='text-darkBlue fw-600'>{quoteDate?.totalMonths}</h6>
+                                            <h6 className='text-darkBlue fw-600'>{transCount}</h6>
                                             <span className='text-muted fs-small'>Months</span>
                                         </div>
                                     </div>
@@ -413,8 +497,8 @@ const NewApllication = () => {
                                         </div>
                                         <ul className='fs-small mb-0 p-3'>
                                             <li className='d-flex py-2 align-items-center justify-content-between'>
-                                                <h5 className='text-dark fw-600'>{quoteDate?.amountPerMonth} SAR <br /> <span className='fs-small text-muted fw-normal'>per XXXX</span></h5>
-                                                <h5 className='fw-600 text-end'>{quoteDate?.totalMonths} <br /> <span className='text-muted fs-small fw-normal'> Months</span></h5>
+                                                <h5 className='text-dark fw-600'>{quoteDate?.amountPerMonth} SAR <br /> <span className='fs-small text-muted fw-normal'>per month</span></h5>
+                                                <h5 className='fw-600 text-end'>{transCount} <br /> <span className='text-muted fs-small fw-normal'> Months</span></h5>
                                             </li>
                                         </ul>
                                     </div>
@@ -524,6 +608,10 @@ const NewApllication = () => {
                             <input type="number" className='form-control' value={updateData?.balanceOwning} disabled />
                             <h5 className='fs-small text-darkBlue'>SAR</h5>
                         </div>
+                    </div>
+                    <div className="col-12 form-group mb-4">
+                        <label className='form-label text-muted fs-small'>Select No of Transactions</label>
+                        <input type="number" className='form-control' value={transCount} onChange={(e) =>setTransCount(e.target.value)}  />
                     </div>
                     <div className="col-12 mb-4">
                         <label className='form-label text-muted fs-small'>Is Customer using reno for the first time</label>
