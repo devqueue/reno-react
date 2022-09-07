@@ -68,7 +68,7 @@ const NewApllication = () => {
             setQuoteData({...quoteDate , balanceOwning : (quoteDate.totalPurchaseAmount - quoteDate.depositAmount) , amountPerMonth: n , totalMonths : newMonths})
             setUpdateData({...quoteDate , balanceOwning : (quoteDate.totalPurchaseAmount - quoteDate.depositAmount) , amountPerMonth: n , totalMonths : newMonths})
         }
-    }, [quoteDate.totalPurchaseAmount , quoteDate.depositAmount , transCount , updateData.totalPurchaseAmount , updateData.depositAmount  ])
+    }, [quoteDate.totalPurchaseAmount , quoteDate.depositAmount , transCount , updateData , updateData  ])
 
     // checking all fields of step 01
     const checkStep01 = () => {
