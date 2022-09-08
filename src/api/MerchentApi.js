@@ -36,6 +36,8 @@ const getQuotesForHomeScreen = () => API.get(`/api/v1/quotes/getAllQuotesCountOf
 const getAllNotificationsOfMerchant = () => API.get(`/api/v1/notifications/getAllOfAMerchant`);
 const markNotificationsOfMerchantRead = (notificationId) => API.put(`/api/v1/notifications/markNotificationOfMerchantAsRead/${notificationId}`);
 const getSearchedRecords = (filters) => API.get(`/api/v1/quotes/getAllFilteredRecords/${filters}`);
+const addMerchantNewTicket = (data) => API.post(`/api/v1/issueTickets/addNewByMerchant`, data);
+const getAllTicketsOfAMerchant = () => API.get(`/api/v1/issueTickets/getAllTicketsOfAMerchant`);
 
 
 
@@ -49,5 +51,7 @@ module.exports = {
     getQuotesForHomeScreen,
     getAllNotificationsOfMerchant,
     markNotificationsOfMerchantRead,
-    getSearchedRecords
+    getSearchedRecords,
+    addMerchantNewTicket,
+    getAllTicketsOfAMerchant
 }

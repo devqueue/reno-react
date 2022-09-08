@@ -37,6 +37,8 @@ const getRecentFinancialRequests = () => API.get(`/api/v1/admins/getAllRecentFin
 const approveAnyFinancialRequest = (quoteId, status) => API.put(`/api/v1/quotes/sendAdminResponse/${quoteId}/${status}`);
 const getAllNotificationsOfAdmin = () => API.get(`/api/v1/notifications/getAllOfAdmin`);
 const markNotificationsOfAdminRead = (notificationId) => API.put(`/api/v1/notifications/markNotificationOfAdminAsRead/${notificationId}`);
+const sendContactUsEmail = (data) => API.put(`/api/v1/admins/sendContactUsEmail`, data);
+const getAllTicketsForAdmin = () => API.get(`/api/v1/issueTickets/getAllTicketsForAdmin`);
 
 
 
@@ -51,5 +53,7 @@ module.exports = {
     approveAnyFinancialRequest,
     getAllNotificationsOfAdmin,
     markNotificationsOfAdminRead,
-    getAllCustomers
+    getAllCustomers,
+    sendContactUsEmail,
+    getAllTicketsForAdmin
 }

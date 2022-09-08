@@ -80,23 +80,8 @@ const MainPage = () => {
             name: "Actions",
             cell: (prop) => {
                 return (
-                        <Dropdown as={ButtonGroup}>
-                            {
-                                prop?.isMerchantApproved == false && (
-                                    <Button size="sm" variant="primary" style={{fontSize : '11px' , fontWeight : 600}} >Declined</Button>
-                                )
-                            }
-                            {
-                                prop?.isMerchantApproved == true && (
-                                    <Button size="sm" variant="success" style={{fontSize : '11px' , fontWeight : 600}} >Approved</Button>
-                                )
-                            }
-                            <Dropdown.Toggle split size="sm" variant="primary" id="dropdown-split-basic" />
-                            <Dropdown.Menu style={{backgroundColor : 'transparent'}} >
-                                <Dropdown.Item onClick={() => changeStatus(prop?.Id , false)} style={{backgroundColor : '#c23616', color : 'white'}} >Declined</Dropdown.Item>
-                                <Dropdown.Item onClick={() => changeStatus(prop?.Id , true)} style={{backgroundColor : '#10ac84', color : 'white'}} >Approved</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
+                        <Button size="sm" variant="link" style={{fontSize : '11px' , cursor : 'text', fontWeight : 600 , textDecoration :'none' , color : '#0B0A31' }} >{prop?.quoteStatus}</Button>
+                        
                     )
                 },
             ignoreRowClick: true,

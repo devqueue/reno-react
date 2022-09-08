@@ -65,8 +65,8 @@ const NewApllication = () => {
             let AmtPerMnt = (quoteDate.totalPurchaseAmount - quoteDate.depositAmount) / transCount
             let n = AmtPerMnt.toFixed(2)
             let newMonths = Math.ceil(totalMonths)
-            setQuoteData({...quoteDate , balanceOwning : (quoteDate.totalPurchaseAmount - quoteDate.depositAmount) , amountPerMonth: n , totalMonths : newMonths})
-            setUpdateData({...quoteDate , balanceOwning : (quoteDate.totalPurchaseAmount - quoteDate.depositAmount) , amountPerMonth: n , totalMonths : newMonths})
+            setQuoteData({...quoteDate , balanceOwning : (quoteDate.totalPurchaseAmount - quoteDate.depositAmount) , amountPerMonth: n , totalMonths : transCount})
+            setUpdateData({...quoteDate , balanceOwning : (quoteDate.totalPurchaseAmount - quoteDate.depositAmount) , amountPerMonth: n , totalMonths : transCount})
         }
     }, [quoteDate.totalPurchaseAmount , quoteDate.depositAmount , transCount  ])
 
@@ -317,8 +317,21 @@ const NewApllication = () => {
                                     </div>
                                 </div>
                                 <div className="col-12 form-group mb-4">
-                                    <label className='form-label text-muted fs-small'>Select No of Tenure</label>
-                                    <input type="number" className='form-control' value={transCount} onChange={(e) =>setTransCount(e.target.value)}  />
+                                    <label className='form-label text-muted fs-small'>Select Tenure (Months)</label>
+                                    <select class="form-select me-3 text-muted" style={{ width: '100%' }} aria-label="Default select example" onChange={(e) =>setTransCount(e.target.value)}  >
+                                        <option selected disabled></option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                        <option>6</option>
+                                        <option>7</option>
+                                        <option>8</option>
+                                        <option>9</option>
+                                        <option>10</option>
+                                        <option>11</option>
+                                        <option>12</option>
+                                    </select>
+                                    {/* <input type="number" className='form-control' value={transCount} onChange={(e) =>setTransCount(e.target.value)}  /> */}
                                 </div>
                                 <div className="col-12 mb-4">
                                     <label className='form-label text-muted fs-small'>Is Customer using reno for the first time</label>
@@ -611,7 +624,20 @@ const NewApllication = () => {
                     </div>
                     <div className="col-12 form-group mb-4">
                         <label className='form-label text-muted fs-small'>Select No of Transactions</label>
-                        <input type="number" className='form-control' value={transCount} onChange={(e) =>setTransCount(e.target.value)}  />
+                        <select class="form-select me-3 text-muted" style={{ width: '100%' }} aria-label="Default select example" onChange={(e) =>setTransCount(e.target.value)}  >
+                            <option selected disabled>{transCount} </option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                            <option>9</option>
+                            <option>10</option>
+                            <option>11</option>
+                            <option>12</option>
+                        </select>
+                        {/* <input type="number" className='form-control' value={transCount} onChange={(e) =>setTransCount(e.target.value)}  /> */}
                     </div>
                     <div className="col-12 mb-4">
                         <label className='form-label text-muted fs-small'>Is Customer using reno for the first time</label>

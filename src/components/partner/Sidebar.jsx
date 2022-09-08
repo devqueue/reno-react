@@ -41,6 +41,10 @@ const Sidebar = ({ isActive }) => {
                         <BsChatLeftQuote />
                         <span>Quotes Approved By Customers</span>
                     </NavLink>
+                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/partner/dashboard/customer-support' style={{textDecoration: 'none'}}>
+                        <BsChatLeftQuote />
+                        <span>Customer Support</span>
+                    </NavLink>
                 </li>
             </ul>
 

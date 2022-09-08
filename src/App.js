@@ -19,6 +19,7 @@ import AllMerchants from './pages/admin/MerchantsData'
 import AllCustomers from './pages/admin/CustomersData'
 import AllFinancialRequests from './pages/admin/FinancialRequests'
 import AllQuotes from './pages/admin/QuotesData'
+import AllTickets from './pages/admin/TicketSupport'
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route exact path='/admin/customersData' element={<AllCustomers />} />
           <Route exact path='/admin/quotesData' element={<AllQuotes />} />
           <Route exact path='/admin/financialRequestsData' element={<AllFinancialRequests />} />
+          <Route exact path='/admin/customer-issues' element={<AllTickets />} />
         </Routes>
       </Router>
     </div>

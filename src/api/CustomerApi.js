@@ -43,6 +43,8 @@ const getAllNotificationsOfCustomer = () => API.get(`/api/v1/notifications/getAl
 const markNotificationsOfMerchantRead = (notificationId) => API.put(`/api/v1/notifications/markNotificationOfCustomerAsRead/${notificationId}`);
 const ApproveDisproveDelivery = (quoteId, status) => API.put(`/api/v1/quotes/sendCustomerDeliveryResponse/${quoteId}/${status}`);
 const getDashboardData = () => API.get(`/api/v1/quotes/getAllFinancedAmtOfCustomer`);
+const addCustomerNewTicket = (data) => API.post(`/api/v1/issueTickets/adNewByCustomer`, data);
+const getAllTicketsOfACustomer = () => API.get(`/api/v1/issueTickets/getAllTicketsOfACustomer`);
 
 
 module.exports = {
@@ -62,5 +64,7 @@ module.exports = {
     getAllNotificationsOfCustomer,
     markNotificationsOfMerchantRead,
     ApproveDisproveDelivery,
-    getDashboardData
+    getDashboardData,
+    addCustomerNewTicket,
+    getAllTicketsOfACustomer
 }
