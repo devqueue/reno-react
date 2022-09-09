@@ -8,6 +8,7 @@ import FinanceRequests from '../../components/customer/FinanceRequests'
 import PaidFinanceQuotes from '../../components/customer/PaidFinanceQuotes'
 import AllTravelingQuotes from '../../components/customer/AllTravelingQuotes'
 import UserTickets from '../../components/customer/UserTicksts'
+import Profile from '../../components/customer/Password'
 import Header from '../../components/Header'
 import { HiOutlineMenu } from 'react-icons/hi'
 
@@ -31,6 +32,7 @@ const CustomerDashboard = () => {
             <Route path='/paidFinanceQuotes' element={<PaidFinanceQuotes />} />
             <Route path='/getAllTravelingQuotes' element={<AllTravelingQuotes />} />
             <Route path='/customer-support' element={<UserTickets />} />
+            <Route path='/profile' element={<Profile />} />
         </Routes>
     </div>
   )

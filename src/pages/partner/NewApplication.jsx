@@ -10,7 +10,7 @@ import appStep2 from '../../assets/icons/appStep2.png'
 import appStep3 from '../../assets/icons/appStep3.png'
 import appStep4 from '../../assets/icons/appStep4.png'
 import tick from '../../assets/images/tick.png'
-import {sendNewQuoteRequest , getAllNotificationsOfMerchant , markNotificationsOfMerchantRead } from '../../api/MerchentApi'
+import {sendNewQuoteRequest , getAllNotificationsOfMerchant , checkCustomerExistsOrNot ,  markNotificationsOfMerchantRead } from '../../api/MerchentApi'
 import { ThreeDots } from  'react-loader-spinner'
 import moment from 'moment'
 import Modal from 'react-bootstrap/Modal';
@@ -24,6 +24,7 @@ const NewApllication = () => {
 
     const [step, setStep] = useState(1)
     const [ isFetching , setIsFetching ] = useState(false)
+    const [ ifCustomerExists , setIfCustomerExists ] = useState(false)
     const [ updateData , setUpdateData ] = useState(null)
     const [ transCount , setTransCount ] = useState(1)
     const [choice, setChoice] = useState(true)
@@ -195,6 +196,16 @@ const NewApllication = () => {
     }
     // sleeping
 
+    // find if customer exists on Reno or not
+    const checkCustomer = async (value) => {
+        const {data} = await checkCustomerExistsOrNot(value);
+        if(data?.success === true){
+            setIfCustomerExists(true)
+        }else{
+            setIfCustomerExists(false)
+        }
+    }
+
     return (
         <div className='container-fluid p-4 dashboard-content'>
             <div className="panel-top d-flex align-items-center justify-content-between">
@@ -298,7 +309,7 @@ const NewApllication = () => {
                                 <div className="col-12 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Purchase Total</label>
                                     <div className="sar-container">
-                                        <input type="number" className='form-control' value={quoteDate?.totalPurchaseAmount} onChange={(e) => setQuoteData({...quoteDate , totalPurchaseAmount : e.target.value})} required/>
+                                        <input type="number" className='form-control' value={quoteDate?.totalPurchaseAmount} onChange={(e) => setQuoteData({...quoteDate , totalPurchaseAmount : e.target.value})} autofocus={true} required/>
                                         <h5 className='fs-small text-darkBlue'>SAR</h5>
                                     </div>
                                 </div>
@@ -408,7 +419,14 @@ const NewApllication = () => {
                                 <div className="col-12 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Customer ID Card/Iqama Number </label>
                                     <br/><span style={{fontSize : '12px', color :"crimson"}} >(if customer is not found on reno, customer then will receive email for this quote)</span>
-                                    <input type="text" className='form-control' placeholder='Enter your ID Card/Iqama Number' value={quoteDate?.IDCardNo} onChange={(e) => setQuoteData({...quoteDate , IDCardNo : e.target.value})}  required />
+                                    <input type="text" className='form-control' placeholder='Enter your ID Card/Iqama Number' value={quoteDate?.IDCardNo} onChange={(e) => setQuoteData({...quoteDate , IDCardNo : e.target.value})} onBlur={(e) => checkCustomer(e.target.value)} autofocus={true} required />
+                                    {
+                                        ifCustomerExists == true ? (
+                                            <span style={{fontSize : '12px', color :"#00b894"}} >Customer Found On Reno</span>
+                                        ) : (
+                                            <span style={{fontSize : '12px', color :"crimson"}} >Customer Not Found On Reno</span>
+                                        )
+                                    }
                                 </div>
                                 <div className="col-12 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Phone Number</label>

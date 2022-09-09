@@ -35,6 +35,10 @@ const Sidebar = ({ isActive }) => {
                         <AiOutlineSend />
                         <span>Customer Issues</span>
                     </NavLink>
+                    <NavLink activeClassName='active' className='text-lightGray fs-small' style={{textDecoration: 'none'}} to='/admin/profile'>
+                        <AiOutlineSend />
+                        <span>Profile</span>
+                    </NavLink>
                 </li>
             </ul>
 

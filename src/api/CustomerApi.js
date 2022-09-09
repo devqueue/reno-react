@@ -45,6 +45,10 @@ const ApproveDisproveDelivery = (quoteId, status) => API.put(`/api/v1/quotes/sen
 const getDashboardData = () => API.get(`/api/v1/quotes/getAllFinancedAmtOfCustomer`);
 const addCustomerNewTicket = (data) => API.post(`/api/v1/issueTickets/adNewByCustomer`, data);
 const getAllTicketsOfACustomer = () => API.get(`/api/v1/issueTickets/getAllTicketsOfACustomer`);
+const addNewTicketResponse = (data) => API.post(`/api/v1/issueTicketsResponse/addNewResponseByCustomer`, data);
+const getResponseOfAnyTicket = (ticketId) => API.get(`/api/v1/issueTicketsResponse/getAllResponseOnAnyTicketByCustomer/${ticketId}`);
+const checkUserPassword = (password) => API.get(`/api/v1/customers/checkPassword/${password}`);
+const updateUserPassword = (password) => API.put(`/api/v1/customers/updatePassword/${password}`);
 
 
 module.exports = {
@@ -66,5 +70,9 @@ module.exports = {
     ApproveDisproveDelivery,
     getDashboardData,
     addCustomerNewTicket,
-    getAllTicketsOfACustomer
+    getAllTicketsOfACustomer,
+    addNewTicketResponse,
+    getResponseOfAnyTicket,
+    checkUserPassword,
+    updateUserPassword
 }

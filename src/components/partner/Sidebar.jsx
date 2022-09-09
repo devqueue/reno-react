@@ -41,10 +41,10 @@ const Sidebar = ({ isActive }) => {
                         <BsChatLeftQuote />
                         <span>Quotes Approved By Customers</span>
                     </NavLink>
-                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/partner/dashboard/customer-support' style={{textDecoration: 'none'}}>
+                    {/* <NavLink activeClassName='active' className='text-lightGray fs-small' to='/partner/dashboard/customer-support' style={{textDecoration: 'none'}}>
                         <BsChatLeftQuote />
                         <span>Customer Support</span>
-                    </NavLink>
+                    </NavLink> */}
                 </li>
             </ul>
 
@@ -60,11 +60,11 @@ const Sidebar = ({ isActive }) => {
                         <BsPeople />
                         <span>Community</span>
                     </NavLink>
-                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/help' style={{textDecoration: 'none'}}>
+                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/partner/dashboard/customer-support' style={{textDecoration: 'none'}}>
                         <BsQuestionCircle />
                         <span>Help & Support</span>
                     </NavLink>
-                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/settings' style={{textDecoration: 'none'}}>
+                    <NavLink activeClassName='active' className='text-lightGray fs-small' to='/partner/dashboard/profile' style={{textDecoration: 'none'}}>
                         <IoSettingsOutline />
                         <span>Settings</span>
                     </NavLink>

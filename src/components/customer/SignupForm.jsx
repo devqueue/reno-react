@@ -38,7 +38,7 @@ const SignupForm = () => {
         const {data} = await signUpCustomer(userData);
         console.log("data of response : ", data)
         if(data?.success === true){
-            toast.success(data?.message);
+            toast.success("Signed Up SuccessFully");
             setUserDate({
                 IDCardNo : '',
                 password : '',

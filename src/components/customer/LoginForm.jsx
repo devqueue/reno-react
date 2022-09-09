@@ -31,8 +31,10 @@ const LoginForm = () => {
             })
             if(isRemember === true){
                 localStorage.setItem("reno-customer-token", JSON.stringify(data?.Token));
+                localStorage.setItem("reno-customerId", JSON.stringify(data?.User?.Id));
             }else{
                 sessionStorage.setItem("reno-customer-token", JSON.stringify(data?.Token));
+                sessionStorage.setItem("reno-customerId", JSON.stringify(data?.User?.Id));
             }
             await delay(1500)
             setIsFetching(false)

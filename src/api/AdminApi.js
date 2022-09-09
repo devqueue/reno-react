@@ -39,6 +39,11 @@ const getAllNotificationsOfAdmin = () => API.get(`/api/v1/notifications/getAllOf
 const markNotificationsOfAdminRead = (notificationId) => API.put(`/api/v1/notifications/markNotificationOfAdminAsRead/${notificationId}`);
 const sendContactUsEmail = (data) => API.put(`/api/v1/admins/sendContactUsEmail`, data);
 const getAllTicketsForAdmin = () => API.get(`/api/v1/issueTickets/getAllTicketsForAdmin`);
+const addNewTicketResponse = (data) => API.post(`/api/v1/issueTicketsResponse/addNewResponseByAdmin`, data);
+const getResponseOfAnyTicket = (ticketId) => API.get(`/api/v1/issueTicketsResponse/getAllResponseOnAnyTicketByAdmin/${ticketId}`);
+const changeStatusOfATicket = (ticketId ,status) => API.put(`/api/v1/issueTickets/changeStatusOfATicket/${ticketId}/${status}`);
+const checkUserPassword = (password) => API.get(`/api/v1/admins/checkPassword/${password}`);
+const updateUserPassword = (password) => API.put(`/api/v1/admins/updatePassword/${password}`);
 
 
 
@@ -55,5 +60,10 @@ module.exports = {
     markNotificationsOfAdminRead,
     getAllCustomers,
     sendContactUsEmail,
-    getAllTicketsForAdmin
+    getAllTicketsForAdmin,
+    addNewTicketResponse,
+    getResponseOfAnyTicket,
+    changeStatusOfATicket,
+    checkUserPassword,
+    updateUserPassword
 }

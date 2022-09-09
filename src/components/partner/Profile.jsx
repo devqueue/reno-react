@@ -6,7 +6,7 @@ import { AiFillBell } from 'react-icons/ai'
 import { toast } from 'react-toastify';
 import { ThreeDots } from  'react-loader-spinner'
 import moment from 'moment'
-import {getAllNotificationsOfCustomer ,markNotificationsOfMerchantRead , checkUserPassword , updateUserPassword } from '../../api/CustomerApi'
+import {getAllNotificationsOfCustomer ,markNotificationsOfMerchantRead , checkUserPassword , updateUserPassword } from '../../api/MerchentApi'
 
 
 const Password = () => {
@@ -55,8 +55,8 @@ const Password = () => {
 
     // logging out
     const logout = async () => {
-        localStorage.removeItem("reno-customer-token")
-        sessionStorage.removeItem('reno-customer-token');
+        localStorage.removeItem("reno-merchant-token")
+        sessionStorage.removeItem('reno-merchant-token');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
         navigate('/');
@@ -154,7 +154,7 @@ const Password = () => {
                                                 </div>
                                             </button>
                                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                <li><Link className="dropdown-item" to="/getAllTravelingQuotes">Profile</Link></li>
+                                                <li><Link className="dropdown-item" to="/partner/dashboard/profile">Profile</Link></li>
                                                 <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
                                             </ul>
                                 </div>

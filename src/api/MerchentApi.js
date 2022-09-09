@@ -38,6 +38,11 @@ const markNotificationsOfMerchantRead = (notificationId) => API.put(`/api/v1/not
 const getSearchedRecords = (filters) => API.get(`/api/v1/quotes/getAllFilteredRecords/${filters}`);
 const addMerchantNewTicket = (data) => API.post(`/api/v1/issueTickets/addNewByMerchant`, data);
 const getAllTicketsOfAMerchant = () => API.get(`/api/v1/issueTickets/getAllTicketsOfAMerchant`);
+const checkCustomerExistsOrNot = (idCardNo) => API.get(`/api/v1/merchants/checkCustomerExistsOrNot/${idCardNo}`);
+const addNewTicketResponse = (data) => API.post(`/api/v1/issueTicketsResponse/addNewResponseByMerchant`, data);
+const getResponseOfAnyTicket = (ticketId) => API.get(`/api/v1/issueTicketsResponse/getAllResponseOnAnyTicketByMerchant/${ticketId}`);
+const checkUserPassword = (password) => API.get(`/api/v1/merchants/checkPassword/${password}`);
+const updateUserPassword = (password) => API.put(`/api/v1/merchants/updatePassword/${password}`);
 
 
 
@@ -53,5 +58,10 @@ module.exports = {
     markNotificationsOfMerchantRead,
     getSearchedRecords,
     addMerchantNewTicket,
-    getAllTicketsOfAMerchant
+    getAllTicketsOfAMerchant,
+    checkCustomerExistsOrNot,
+    addNewTicketResponse,
+    getResponseOfAnyTicket,
+    checkUserPassword,
+    updateUserPassword
 }

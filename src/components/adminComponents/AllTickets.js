@@ -3,19 +3,30 @@ import { AiFillBell } from 'react-icons/ai'
 import user from '../../assets/images/user.jpg'
 import { toast } from 'react-toastify';
 import { ThreeDots } from  'react-loader-spinner'
-import {getAllNotificationsOfAdmin ,markNotificationsOfAdminRead , getAllTicketsForAdmin} from '../../api/AdminApi'
+import {getAllNotificationsOfAdmin , markNotificationsOfAdminRead , getAllTicketsForAdmin , addNewTicketResponse , getResponseOfAnyTicket ,changeStatusOfATicket } from '../../api/AdminApi'
 import { Link , useNavigate , useLocation } from 'react-router-dom'
 import moment from 'moment'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import Accordion from 'react-bootstrap/Accordion';
+import { useAccordionButton } from 'react-bootstrap/AccordionButton';
+
 
 
 const QuotesReceived = () => {
     const [ isFetching , setIsFetching ] = useState(false)
+    const [ isSending , setIsSending ] = useState(false)
+    const [ isResFetching , setIsResFetching ] = useState(false)
+    const [ userId , setUserId ] = useState("")
+    const [ allResponses , setAllResponses ] = useState([]);
     const navigate = useNavigate();
     const [ allData , setAllData ] = useState([]);
     const [ ticketData , setTicketData ] = useState({
         title : "",
+        desc : "",
+    });
+    const [ responseData , setResponseData ] = useState({
+        ticketId : "",
         desc : "",
     });
 
@@ -71,6 +82,11 @@ const QuotesReceived = () => {
             navigate("/customer/auth/login");
             toast.error("Please login to Continue");
         }
+        let userId = JSON.parse(sessionStorage.getItem("reno-adminId"));
+        if(!userId){
+            userId = JSON.parse(localStorage.getItem("reno-adminId"));
+        }
+        setUserId(userId)
     },[])
 
     const [ allNotifications , setAllNotifications ] = useState([])
@@ -105,6 +121,82 @@ const QuotesReceived = () => {
                 setAllNotificationsCount(prev => prev - 1)
             }
             }
+    }
+
+    // custom toggle function
+    function CustomToggle({ children, eventKey ,ticketId }) {
+        // getting all responses
+        const getData = useAccordionButton(eventKey, async () =>{
+            setIsResFetching(true)
+            const {data} = await getResponseOfAnyTicket(ticketId);
+            if(data?.success === true){
+                setAllResponses(data?.allResponses)
+            }else{
+                setAllResponses([])
+            }
+            setIsResFetching(false)
+        }
+        );
+
+        const decoratedOnClick = useAccordionButton(eventKey, async () =>
+                console.log('totally custom!' ,ticketId),
+                //getData(ticketId)
+        );
+
+        return (
+            <button className="btn btn-light " style={{textDecoration : 'none' , border : '1px solid #27ae60' , fontWeight : 600 ,  color : '#27ae60'}} onClick={() => {decoratedOnClick(); getData() }} >{children}</button>
+        );
+    }
+
+    // sending new Response
+    const sendMyResponse = async () => {
+        setIsSending(true)
+        const {data} = await addNewTicketResponse(responseData);
+        if(data?.success === true){
+            setIsResFetching(true)
+            toast.success(data?.message);
+            const res = await getResponseOfAnyTicket(responseData?.ticketId);
+            if(res?.data?.success === true){
+                setAllResponses(res?.data?.allResponses)
+
+                // updating ticket last update time
+                // let newArr = allData
+                // let isFound = newArr.find(item => item?._id == responseData?.ticketId);
+                // if(isFound){
+                //     isFound.updatedAt = new Date();
+                //     newArr.filter(item => item._id == responseData?.ticketId ? isFound : item)
+                //     let myNewArr = newArr.sort(function(a, b){return new Date(b.updatedAt) - new Date(a.updatedAt)})
+                //     console.log("myNewArr  ",myNewArr )
+                //     setAllData(myNewArr)
+                // }
+            }
+            setIsResFetching(false)
+            setResponseData({
+                ticketId : "",
+                desc : "",
+            })
+        }else{
+            toast.error(data?.message);
+        }
+        setIsResFetching(false)
+        setIsSending(false)
+    }
+
+    // changing status of ticket
+    const markStatusResolved = async (ticketId , status) => {
+        const {data} = await changeStatusOfATicket(ticketId , status);
+        if(data?.success === true){
+            toast.success(data?.message);
+            let newArr = allData;
+            let isFound = newArr.find(item => item._id == ticketId);
+            if(isFound){
+                isFound.status = status
+                let newMyArr = newArr.filter(item => item._id == ticketId ? isFound : item)
+                setAllData(newMyArr)
+            }
+        }else{
+            toast.error(data?.message);
+        }
     }
 
     return (
@@ -178,44 +270,134 @@ const QuotesReceived = () => {
                             </div>
                         </div>
 
-                        {/* <div className="row " >
-                            <div className="col-12 d-flex justify-content-center " style={{marginTop : '20px'}} >
-                                <button className="btn btn-light " style={{textDecoration : 'none' , border : '1px solid crimson' , fontWeight : 600 ,  color : 'crimson'}} onClick={handleAddNewTicketShow} >Need Help?</button>
-                            </div>
-                        </div> */}
-
                         {/* all Tickets */}
-                        <div className="row mt-4">
-                            {
-                                allData.length > 0 ? (
-                                    allData?.map((item) => (
-                                        <div className="col-12 mt-3"  >
-                                            <div className='d-flex justify-content-between fs-small quote-card'>
-                                                <ul>
-                                                    <li className='mb-3'>
-                                                        <span className='text-muted'>Title</span>
-                                                        {item?.title}
-                                                    </li>
-                                                    <li className='mb-3'>
-                                                        <span className='text-muted'>Status</span>
-                                                        {item?.status == false ? (<span style={{color : 'crimson' , fontWeight : 600}} >Un Resolved</span>) : (<span style={{color : '#27ae60' , fontWeight : 600}} >Resolved</span>) }
-                                                    </li>
-                                                    <li>
-                                                        <span className='text-muted'>Last Updated</span>
-                                                        {moment(item?.updatedAt).format('MMM Do YYYY, h:mm:ss a')}
-                                                    </li>
-                                                </ul>
-                                                <button className="btn btn-light " style={{textDecoration : 'none' , border : '1px solid #27ae60' , fontWeight : 600 ,  color : '#27ae60'}} onClick={handleViewTicketShow} >View Details</button>
-                                            </div>
+                        <Accordion >
+                                {
+                                    allData.length > 0 ? (
+                                        allData?.map((item, index) => (
+                                            <Accordion.Item eventKey={index} style={{marginBottom : '20px'}} >
+                                                <div className="col-12 d-flex justify-content-between fs-small quote-card" style={{minHeight : '100%' , padding : 'none', minWidth : '100%'}} >
+                                                    <ul>
+                                                        <li className='mb-3'>
+                                                            <span className='text-muted'>Title</span>
+                                                            {item?.title}
+                                                        </li>
+                                                        <li className='mb-3'>
+                                                            <span className='text-muted'>Status</span>
+                                                            {item?.status == false ? (<span style={{color : 'crimson' , fontWeight : 600}} >Un Resolved</span>) : (<span style={{color : '#27ae60' , fontWeight : 600}} >Resolved</span>) }
+                                                        </li>
+                                                        <li>
+                                                            <span className='text-muted'>Last Updated</span>
+                                                            {moment(item?.updatedAt).format('MMM Do YYYY, h:mm:ss a')}
+                                                        </li>
+                                                    </ul>
+                                                    <div className="d-flex flex-column" >
+                                                        <CustomToggle eventKey={index} ticketId={item?._id} >View Details</CustomToggle>
+                                                        {
+                                                            item?.status == false ? (
+                                                                <button className="btn btn-light " style={{textDecoration : 'none' , marginTop : '15px', fontSize : '12px', border : '1px solid #e74c3c' , fontWeight : 600 ,  color : '#e74c3c'}} onClick={() => markStatusResolved(item?._id , true)} >Mark As Resolved</button>
+                                                            ) : (
+                                                                <button className="btn btn-light " style={{textDecoration : 'none' , marginTop : '15px', fontSize : '12px', border : '1px solid #27ae60' , fontWeight : 600 ,  color : '#27ae60'}} onClick={() => markStatusResolved(item?._id , false)} >Mark As Un-Resolved</button>
+                                                            )
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <Accordion.Body eventKey={index}>
+                                                    {
+                                                        isResFetching === true ? (
+                                                            <div style={{display : 'flex' , justifyContent: 'center' , margin: 'auto'}}>
+                                                                <ThreeDots
+                                                                    height = "60"
+                                                                    width = "60"
+                                                                    radius = "9"
+                                                                    color = 'green'
+                                                                    ariaLabel = 'three-dots-loading'
+                                                                    wrapperStyle
+                                                                    wrapperClass
+                                                                />
+                                                            </div>
+                                                        ) : (
+                                                            <div className="row" key={item?._id} style={{paddingTop : '30px'}} >
+                                                                <div className="d-flex flex-column" style={{marginBottom : '20px'}} >
+                                                                    <h6 style={{marginLeft : '15px', color : '#d35400'}} >Issue Description : </h6>
+                                                                    <p style={{ padding : '10px' , borderRadius : '10px'}} >
+                                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vel mi ac felis aliquet finibus eu sit amet leo. Praesent sed euismod nisi. In maximus facilisis tempor. Cras in cursus est, id feugiat mauris. Aenean sed sapien ligula. Fusce mattis, ipsum eu hendrerit sollicitudin, lectus lacus fermentum sapien, eu pretium orci est nec erat. Donec sit amet dictum magna. Ut vitae sem eu ligula consectetur volutpat vitae sit amet metus. Etiam imperdiet nec purus quis bibendum. Quisque aliquet diam aliquet lectus luctus molestie.
+                                                                    </p>
+                                                                </div>
+                                                                <h4 style={{marginLeft : '15px', fontWeight : 600 , }} >Comments : </h4>
+                                                                {
+                                                                    allResponses?.length > 0 ? (
+                                                                        allResponses?.map((item) => (
+                                                                            <>
+                                                                                <div className="d-flex flex-column" style={{marginBottom : '20px', paddingTop : '15px'}} >
+                                                                                    <h6 style={{marginLeft : '15px'}} >By:
+                                                                                        {
+                                                                                            (userId == item?.MerchantId || userId == item?.CustomerId || userId == item?.AdminId) ? (
+                                                                                                "You"
+                                                                                            ) : (
+                                                                                                item?.MerchantName || item?.CustomerName || item?.AdminName
+                                                                                            )
+                                                                                        }
+                                                                                        <img alt="user cover" style={{maxWidth : '50px' , maxHeight : '50px' , borderRadius : '50%'}} src={item?.CustomerPic || item?.MerchantPic || item?.AdminPic || "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg" } />
+                                                                                        </h6>
+                                                                                    <p style={{ padding : '10px' , borderRadius : '10px'}} >
+                                                                                        {item?.Description}
+                                                                                    </p>
+                                                                                    <h6 style={{marginLeft : '15px', fontSize : '15px', color : '#e67e22'}}>Posted On : <span style={{fontSize : '12px', marginLeft : '20px', color : '#2c3e50'}} >{moment(item?.createdAt).format('MMM Do YY, h:mm:ss a')}</span></h6>
+                                                                                </div>
+                                                                                <hr />
+                                                                            </>
+                                                                        ))
+                                                                    ) : (
+                                                                        <p style={{marginBottom : '25px', fontWeight : 600 , }} >No Comments Found</p>
+                                                                    )
+                                                                }
+
+                                                                {/* Sending New Response */}
+                                                                {
+                                                                    item?.status == false ? (
+                                                                        <div className="d-flex flex-column" style={{marginTop : '25px'}} >
+                                                                            <h5>Add Your Response</h5>
+                                                                            <div className="col-12 form-group mb-3">
+                                                                                <textarea className='form-control input-field contact-textarea' placeholder='Please write down your issue...' value={responseData?.desc} onChange={(e) => setResponseData({...responseData , ticketId : item?._id ,  desc : e.target.value})}></textarea>
+                                                                            </div>
+                                                                            {
+                                                                                isSending === true ? (
+                                                                                    <div style={{display : 'flex' , justifyContent: 'center' , margin: 'auto'}}>
+                                                                                        <ThreeDots
+                                                                                            height = "60"
+                                                                                            width = "60"
+                                                                                            radius = "9"
+                                                                                            color = 'green'
+                                                                                            ariaLabel = 'three-dots-loading'
+                                                                                            wrapperStyle
+                                                                                            wrapperClass
+                                                                                        />
+                                                                                    </div>
+                                                                                ) : (
+                                                                                    <div className="col-12 d-flex justify-content-center">
+                                                                                        <button className='btn ' style={{fontWeight : 600 , backgroundColor : '#0B0A31' , color : 'white'}} onClick={sendMyResponse} >Send  Now</button>
+                                                                                    </div>
+                                                                                )
+                                                                            }
+                                                                        </div>
+                                                                    ) : (
+                                                                        <p style={{fontWeight : 600}} >Issus is Marked as Resolved By You, Please mark this as Un-Resolved to start adding new responses.</p>
+                                                                    )
+                                                                }
+                                                            </div>
+                                                        )
+                                                    }
+                                                </Accordion.Body>
+                                            </Accordion.Item>
+                                        ))
+                                    ) : (
+                                        <div style={{display : 'flex', justifyContent: 'center' , alignItems : 'center'}} >
+                                            No Tickets Posted yet
                                         </div>
-                                    ))
-                                ) : (
-                                    <div style={{display : 'flex', justifyContent: 'center' , alignItems : 'center'}} >
-                                        No Tickets Posted yet
-                                    </div>
-                                )
-                            }
-                        </div>
+                                    )
+                                }
+                        </Accordion>
 
                     </div>
                 </>

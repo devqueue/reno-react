@@ -8,6 +8,7 @@ import ManageQuotes from '../../components/partner/ManageQuotes'
 import Applications from '../../components/partner/Applications'
 import AllCustomerApprovedQuotes from '../../components/partner/AllQuotesToBeDelivered'
 import MerchantsTickets from '../../components/partner/MerchantTickets'
+import Profile from '../../components/partner/Profile'
 import { HiOutlineMenu } from 'react-icons/hi'
 
 const PartnerDashboard = () => {
@@ -30,6 +31,7 @@ const PartnerDashboard = () => {
             <Route path='/applications' element={<Applications />} />
             <Route path='/quotes-approved-by-customers' element={<AllCustomerApprovedQuotes />} />
             <Route path='/customer-support' element={<MerchantsTickets />} />
+            <Route path='/profile' element={<Profile />} />
         </Routes>
     </div>
   )
