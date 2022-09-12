@@ -330,20 +330,15 @@ const QuotesReceived = () => {
                                                                         allResponses?.map((item) => (
                                                                             <>
                                                                                 <div className="d-flex flex-column" style={{marginBottom : '20px', paddingTop : '15px'}} >
-                                                                                    <h6 style={{marginLeft : '15px'}} >By:
+                                                                                    <h6 style={{marginLeft : '15px'}} >By: &nbsp;
                                                                                         {
-                                                                                            (userId == item?.MerchantId || userId == item?.CustomerId || userId == item?.AdminId) ? (
-                                                                                                "You"
-                                                                                            ) : (
-                                                                                                item?.MerchantName || item?.CustomerName || item?.AdminName
-                                                                                            )
+                                                                                            item?.MerchantName || item?.CustomerName || item?.AdminName
                                                                                         }
-                                                                                        <img alt="user cover" style={{maxWidth : '50px' , maxHeight : '50px' , borderRadius : '50%'}} src={item?.CustomerPic || item?.MerchantPic || item?.AdminPic || "https://t4.ftcdn.net/jpg/00/65/77/27/360_F_65772719_A1UV5kLi5nCEWI0BNLLiFaBPEkUbv5Fv.jpg" } />
                                                                                         </h6>
                                                                                     <p style={{ padding : '10px' , borderRadius : '10px'}} >
                                                                                         {item?.Description}
                                                                                     </p>
-                                                                                    <h6 style={{marginLeft : '15px', fontSize : '15px', color : '#e67e22'}}>Posted On : <span style={{fontSize : '12px', marginLeft : '20px', color : '#2c3e50'}} >{moment(item?.createdAt).format('MMM Do YY, h:mm:ss a')}</span></h6>
+                                                                                    <h6 style={{marginLeft : '15px', fontSize : '15px', color : '#636e72'}}>Posted On : <span style={{fontSize : '12px', marginLeft : '20px', color : '#2c3e50'}} >{moment(item?.createdAt).format('MMM Do YY, h:mm:ss a')}</span></h6>
                                                                                 </div>
                                                                                 <hr />
                                                                             </>
