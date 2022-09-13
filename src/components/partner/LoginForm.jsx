@@ -6,13 +6,37 @@ import { ThreeDots } from  'react-loader-spinner'
 import eye from '../../assets/icons/eye.png'
 import lock from '../../assets/images/lock.png'
 import tick from '../../assets/images/tick.png'
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import {sendMyMerchantForgetPassword , verifyMerchantPIN, updateMerchantPassword} from '../../api/AdminApi'
+
 
 const LoginForm = () => {
     const [pass1, setPass1] = useState(false)
+    const [custEmail, setCustEmail] = useState("")
+    const [custPin, setCustPin] = useState("")
+    const [custPasswordOne, setCustPasswordOne] = useState("")
+    const [custPasswordTwo, setCustPasswordTwo] = useState("")
+    // sending email
+    const [sendMyEmail, setSendMyEmail] = useState(false);
+    const handleSendMyEmailClose = () => setSendMyEmail(false);
+    const handleSendMyEmail = () => setSendMyEmail(true);
+
+    // sending email
+    const [enterPIN, setEnterPIN] = useState(false);
+    const handleEnterPINClose = () => setEnterPIN(false);
+    const handleEnterPIN = () => setEnterPIN(true);
+
+    // sending new password
+    const [enterPassword, setEnterPassword] = useState(false);
+    const handleEnterPasswordClose = () => setEnterPassword(false);
+    const handleEnterPassword = () => setEnterPassword(true);
+
     document.title = 'Reno | Partner Login'
 
     const navigate = useNavigate();
     const [ isFetching , setIsFetching ] = useState(false)
+    const [ isMyFetching , setIsMyFetching ] = useState(false)
     const [ isRemember , setRemember ] = useState(false)
     const [ userData , setUserDate ] = useState({
         email : '',
@@ -30,13 +54,17 @@ const LoginForm = () => {
                 email : '',
                 password : '',
             })
-            if(isRemember === true){
+            //if(isRemember === true){
                 localStorage.setItem("reno-merchant-token", JSON.stringify(data?.Token));
                 localStorage.setItem("reno-merchantId", JSON.stringify(data?.User?.Id));
-            }else{
-                sessionStorage.setItem("reno-merchant-token", JSON.stringify(data?.Token));
-                sessionStorage.setItem("reno-merchantId", JSON.stringify(data?.User?.Id));
-            }
+                localStorage.setItem("reno-merchantName", JSON.stringify(data?.User?.UserName));
+                localStorage.setItem("reno-merchantPic", JSON.stringify(data?.User?.ProfilePic));
+            // }else{
+            //     sessionStorage.setItem("reno-merchant-token", JSON.stringify(data?.Token));
+            //     sessionStorage.setItem("reno-merchantId", JSON.stringify(data?.User?.Id));
+            //     sessionStorage.setItem("reno-merchantName", JSON.stringify(data?.User?.UserName));
+            //     sessionStorage.setItem("reno-merchantPic", JSON.stringify(data?.User?.ProfilePic));
+            // }
             await delay(1500)
             setIsFetching(false)
             navigate('/partner/dashboard/panel');
@@ -58,6 +86,67 @@ const LoginForm = () => {
             navigate("/partner/dashboard/panel");
         }
     },[])
+
+    // sending customer pin for forget password
+    const sendMyCustEmail = async () => {
+        if(custEmail == ""){
+            toast.warning("Email is Required.")
+            return;
+        }
+        setIsMyFetching(true)
+        const {data} = await sendMyMerchantForgetPassword(custEmail);
+        if(data?.success === true){
+            toast.success("Email Sent SuccessFully, Now please enter 4 digits PIN to reset your password which we have sent you in email.");
+            handleSendMyEmailClose()
+            handleEnterPIN()
+        }else{
+            toast.error(data?.message)
+        }
+        setIsMyFetching(false)
+    }
+
+    // sending PIN
+    const sendPIN = async () => {
+        if(custPin == ""){
+            toast.warning("PIN Code is Required.")
+            return;
+        }
+        setIsMyFetching(true)
+        const {data} = await verifyMerchantPIN(custEmail , custPin);
+        if(data?.success === true){
+            toast.success(data?.message);
+            handleSendMyEmailClose()
+            handleEnterPINClose()
+            handleEnterPassword()
+        }else{
+            toast.error(data?.message)
+        }
+        setIsMyFetching(false)
+    }
+
+    // sending password
+    const sendMyPassword = async () => {
+        if(custPasswordOne == "" || custPasswordTwo == ""){
+            toast.warning("Please fill Both Fields")
+            return;
+        }
+        if(custPasswordOne !== custPasswordTwo ){
+            toast.warning("Passwords Do Not Match")
+            return;
+        }
+        setIsMyFetching(true)
+        const {data} = await updateMerchantPassword(custEmail ,custPasswordOne);
+        console.log("password response : ", data);
+        if(data?.success === true){
+            toast.success(data?.message);
+            handleSendMyEmailClose()
+            handleEnterPINClose()
+            handleEnterPasswordClose()
+        }else{
+            toast.error(data?.message)
+        }
+        setIsMyFetching(false)
+    }
 
     return (
         <div className='auth-container py-5'>
@@ -88,14 +177,14 @@ const LoginForm = () => {
                         </div>
                     </div>
                     <h6 className='text-end mb-4'>
-                        <Link to='#' className='text-light fw-light' data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password?</Link>
+                        <Link to='#' className='text-light fw-light' onClick={handleSendMyEmail}>Forgot Password?</Link>
                     </h6>
-                    <div className="form-check d-flex align-items-center mb-2">
+                    {/* <div className="form-check d-flex align-items-center mb-2">
                         <input className="form-check-input auth-check me-3" type="checkbox"  value="" id="remember" onClick={() => setRemember(!isRemember)} />
                         <label className="form-check-label fs-small" for="remember">
                             Remember me
                         </label>
-                    </div>
+                    </div> */}
                     {
                         isFetching === true ? (
                             <div style={{display : 'flex' , justifyContent: 'center' , margin: 'auto'}}>
@@ -163,6 +252,156 @@ const LoginForm = () => {
                     </div>
                 </div>
             </div>
+
+            {/* getting email from user */}
+                <Modal
+                    show={sendMyEmail}
+                    onHide={handleSendMyEmailClose}
+                    backdrop="static"
+                    keyboard={false}
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>
+                            <h4 className='text-dark fw-600'>Forgot Password?</h4>
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="modal-dialog modal-dialog-centered"  style={{border: '2px solid white' ,  marginTop : '-10px', marginBottom : '0px'}} >
+                            <div className="modal-content p-3">
+                                <div className="modal-body">
+                                    <div className="d-flex justify-content-center max-w-100" style={{maxHeight : '200px'}} >
+                                        <img src={lock} alt="" style={{maxheight : '200px' , objectFit: 'contain'}} />
+                                    </div>
+                                    <p className='text-dark fs-small' >
+                                        Please enter the email address associated with your account.
+                                    </p>
+                                    <input type="text" className='form-control fs-small text-dark' placeholder='Enter email here' style={{marginBottom : '15px'}} value={custEmail} onChange={(e) => setCustEmail(e.target.value)} />
+                                    {
+                                        isMyFetching === true ? (
+                                            <div style={{display : 'flex' , justifyContent: 'center' , margin: 'auto'}}>
+                                                <ThreeDots
+                                                    height = "60"
+                                                    width = "60"
+                                                    radius = "9"
+                                                    color = 'green'
+                                                    ariaLabel = 'three-dots-loading'
+                                                    wrapperStyle
+                                                    wrapperClass
+                                                />
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <button className="btn btn-success bg-darkBlue w-100 rounded-3 text-light mb-2" onClick={() => sendMyCustEmail()} >Send me PIN</button>
+                                                <button className="btn  btn-danger border modal-cancel border-color-darkBlue w-100 rounded-3 text-darkBlue " onClick={handleSendMyEmailClose}>Cancel</button>
+                                            </>
+                                        )
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                </Modal>
+
+                {/* getting PIN Code from user */}
+                <Modal
+                    show={enterPIN}
+                    onHide={handleEnterPINClose}
+                    backdrop="static"
+                    keyboard={false}
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>
+                            <h4 className='text-dark fw-600'>Enter PIN</h4>
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="modal-dialog modal-dialog-centered"  style={{border: '2px solid white' ,  marginTop : '-10px', marginBottom : '0px'}} >
+                            <div className="modal-content p-3">
+                                <div className="modal-body">
+                                    {/* <div className="d-flex justify-content-center max-w-100" style={{maxHeight : '200px'}} >
+                                        <img src={lock} alt="" style={{maxheight : '200px' , objectFit: 'contain'}} />
+                                    </div> */}
+                                    <p className='text-dark fs-small' >
+                                        Please enter the PIN code we have sent to you.
+                                    </p>
+                                    <input type="number" className='form-control fs-small text-dark' placeholder='Enter email here' style={{marginBottom : '15px'}} value={custPin} onChange={(e) => setCustPin(e.target.value)} />
+                                    {
+                                        isMyFetching === true ? (
+                                            <div style={{display : 'flex' , justifyContent: 'center' , margin: 'auto'}}>
+                                                <ThreeDots
+                                                    height = "60"
+                                                    width = "60"
+                                                    radius = "9"
+                                                    color = 'green'
+                                                    ariaLabel = 'three-dots-loading'
+                                                    wrapperStyle
+                                                    wrapperClass
+                                                />
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <button className="btn btn-success bg-darkBlue w-100 rounded-3 text-light mb-2" onClick={sendPIN}>Submit Now</button>
+                                                <button className="btn  btn-danger border modal-cancel border-color-darkBlue w-100 rounded-3 text-darkBlue " onClick={handleEnterPINClose}>Cancel</button>
+                                            </>
+                                        )
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                </Modal>
+
+                {/* sending new password */}
+                <Modal
+                    show={enterPassword}
+                    onHide={handleEnterPasswordClose}
+                    backdrop="static"
+                    keyboard={false}
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>
+                            <h4 className='text-dark fw-600'>Re-set Password</h4>
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="modal-dialog modal-dialog-centered"  style={{border: '2px solid white' ,  marginTop : '-10px', marginBottom : '0px'}} >
+                            <div className="modal-content p-3">
+                                <div className="modal-body">
+                                    {/* <div className="d-flex justify-content-center max-w-100" style={{maxHeight : '200px'}} >
+                                        <img src={lock} alt="" style={{maxheight : '200px' , objectFit: 'contain'}} />
+                                    </div> */}
+                                    <p className='text-dark fs-small' >
+                                        Please enter your New Password.
+                                    </p>
+                                    <h6>Enter New Password : </h6>
+                                    <input type="text" className='form-control fs-small text-dark' placeholder='Enter email here' style={{marginBottom : '15px'}} value={custPasswordOne} onChange={(e) => setCustPasswordOne(e.target.value)} />
+                                    <h6>Re-Enter Password : </h6>
+                                    <input type="text" className='form-control fs-small text-dark' placeholder='Enter email here' style={{marginBottom : '15px'}} value={custPasswordTwo} onChange={(e) => setCustPasswordTwo(e.target.value)} />
+                                    {
+                                        isMyFetching === true ? (
+                                            <div style={{display : 'flex' , justifyContent: 'center' , margin: 'auto'}}>
+                                                <ThreeDots
+                                                    height = "60"
+                                                    width = "60"
+                                                    radius = "9"
+                                                    color = 'green'
+                                                    ariaLabel = 'three-dots-loading'
+                                                    wrapperStyle
+                                                    wrapperClass
+                                                />
+                                            </div>
+                                        ) : (
+                                            <>
+                                            <button className="btn btn-success bg-darkBlue w-100 rounded-3 text-light mb-2" onClick={sendMyPassword}>Reset Now</button>
+                                            <button className="btn  btn-danger border modal-cancel border-color-darkBlue w-100 rounded-3 text-darkBlue " onClick={handleEnterPasswordClose}>Cancel</button>
+                                            </>
+                                        )
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                </Modal>
 
             {/* Modals */}
 

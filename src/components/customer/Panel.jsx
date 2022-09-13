@@ -24,6 +24,8 @@ const Panel = () => {
   const [ isFetching , setIsFetching ] = useState(false)
   const [ totalFinanced , setTotalFinanced ] = useState(0)
   const [ allDuePayments , setAllDuePayments ] =  useState([])
+  const [ userName , setUserName ] = useState("");
+    const [ userPic , setUserPic ] = useState("");
 
   useEffect(() => {
       const getData = async () => {
@@ -57,8 +59,19 @@ const Panel = () => {
         const customerToken = JSON.parse(localStorage.getItem('reno-customer-token'))
         const isSessionFound = sessionStorage.getItem("reno-customer-token");
         if(!customerToken && !isSessionFound){
-            navigate("/customer/auth/login");
+            navigate("/partner/auth/login");
         }
+        let name = JSON.parse(localStorage.getItem('reno-customerName'))
+        if(!name){
+            name = JSON.parse(sessionStorage.getItem("reno-customerName"));
+        }
+        setUserName(name)
+
+        let pic = JSON.parse(localStorage.getItem('reno-customerPhoto'))
+        if(!pic){
+            pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
+        }
+        setUserPic(pic)
     },[location])
 
   const options = {
@@ -66,10 +79,10 @@ const Panel = () => {
   }
 
   const data = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'July', 'Aug', 'Sept' , 'Oct' , 'Nov' , 'Dec'],
     datasets: [{
       label: 'Due or late',
-      data: [2.2, 0.5, 5, 8, 1.9, 2],
+      data: [2.8, 0.5, 5, 8, 13.9, 2],
       backgroundColor: '#F18056',
       borderRadius: 5
     }, {
@@ -93,9 +106,14 @@ const Panel = () => {
   const [tab, setTab] = useState(1)
 
     // logging out
+    // logging out
     const logout = async () => {
         localStorage.removeItem("reno-customer-token")
         sessionStorage.removeItem('reno-customer-token');
+        localStorage.removeItem("reno-customerName")
+        sessionStorage.removeItem('reno-customerName');
+        localStorage.removeItem("reno-customerPhoto")
+        sessionStorage.removeItem('reno-customerPhoto');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
         navigate('/');
@@ -142,9 +160,9 @@ const Panel = () => {
         <div className="panel-top d-flex align-items-center justify-content-between">
           <div className='panel-left'>
                         <h5 className='mb-0 fw-600'>Dashboard</h5>
-                        <p className='text-muted mb-0 text-light fs-small'>
+                        {/* <p className='text-muted mb-0 text-light fs-small'>
                         {moment().format('MMMM Do YYYY')}
-                        </p>
+                        </p> */}
           </div>
 
           <div className='d-flex align-items-center panel-right'>
@@ -181,17 +199,16 @@ const Panel = () => {
                         </div>
 
                         <div className="dropdown profile-dropdown">
-                        <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div className='d-flex align-items-center fs-small me-3'>
-                            <img src={user} alt="" />
-                            Mohammed
-                                        </div>
-                                    </button>
-                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                                                        <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
-
-                                        <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
-                                    </ul>
+                                    <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div className='d-flex align-items-center fs-small me-3'>
+                                    <img src={userPic} alt="" style={{maxWidth: '50px', maxheight : '50px', borderRadius : '50%' }} />
+                                        {userName}
+                                                </div>
+                                            </button>
+                                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
+                                                <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
+                                            </ul>
                         </div>
           </div>
         </div>

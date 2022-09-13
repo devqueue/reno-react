@@ -48,7 +48,7 @@ const Sidebar = ({ isActive }) => {
 
         <ul style={{marginLeft : '-30px'}}>
             <li>
-                <NavLink activeClassName='active' className='text-lightGray fs-small' to='/community' style={{textDecoration : "none"}}>
+                <NavLink activeClassName='active' className='text-lightGray fs-small' to='/partnersLocation' style={{textDecoration : "none"}}>
                     <BsPeople />
                     <span>Community</span>
                 </NavLink>

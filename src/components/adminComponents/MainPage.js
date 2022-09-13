@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 import { ThreeDots } from  'react-loader-spinner'
 import {getAllMerchants , disApproveAnyMerchant, ApproveAnyMerchant} from '../../api/AdminApi'
 import user from '../../assets/images/user.jpg'
-import {useNavigate , Link} from 'react-router-dom'
+import {useNavigate , Link, useLocation} from 'react-router-dom'
 import moment from 'moment'
 import { AiFillBell } from 'react-icons/ai'
 import {getAllNotificationsOfAdmin ,markNotificationsOfAdminRead} from '../../api/AdminApi'
@@ -22,6 +22,9 @@ import {getAllNotificationsOfAdmin ,markNotificationsOfAdminRead} from '../../ap
 const MainPage = () => {
     const [ allData , setData ] = useState([]);
     const [ isFetching , setIsFetching ] = useState(false)
+    const [ userName , setUserName ] = useState("");
+    const [ userPic , setUserPic ] = useState("");
+    const location = useLocation()
 
     const changeStatus = async (id) => {
         let isFound = allData.find(item => item.Id === id);
@@ -132,10 +135,33 @@ const MainPage = () => {
     const navigate = useNavigate()
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
+    /// checking if user is signed in or not
+    useEffect(() =>{
+        const adminToken = JSON.parse(localStorage.getItem('reno-admin-token'))
+        const isSessionFound = sessionStorage.getItem("reno-admin-token");
+        if(!adminToken && !isSessionFound){
+            navigate("/admin/login");
+        }
+        let name = JSON.parse(localStorage.getItem('reno-adminName'))
+        if(!name){
+            name = JSON.parse(sessionStorage.getItem("reno-adminName"));
+        }
+        setUserName(name)
+
+        let pic = JSON.parse(localStorage.getItem('reno-adminPic'))
+        if(!pic){
+            pic = JSON.parse(sessionStorage.getItem("reno-adminPic"));
+        }
+        setUserPic(pic)
+    },[location])
     // logging out
     const logout = async () => {
         localStorage.removeItem("reno-admin-token")
         sessionStorage.removeItem('reno-admin-token');
+        localStorage.removeItem("reno-adminName")
+        sessionStorage.removeItem('reno-adminName');
+        localStorage.removeItem("reno-adminPic")
+        sessionStorage.removeItem('reno-adminPic');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
         navigate('/admin');
@@ -195,57 +221,57 @@ const MainPage = () => {
                         <div className="panel-top d-flex align-items-center justify-content-between">
                             <div className='panel-left'>
                                 <h5 className='mb-0 fw-600'>All Merchants</h5>
-                                <p className='text-muted mb-0 text-light fs-small'>
+                                {/* <p className='text-muted mb-0 text-light fs-small'>
                                 {moment().format('MMMM Do YYYY')}
-                                </p>
+                                </p> */}
                             </div>
 
                             <div className='d-flex align-items-center panel-right'>
-                        <div class="dropdown profile-dropdown">
-                            <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                <AiFillBell />
-                                <span>{allNotificationsCount}</span>
-                            </Link>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                {
-                                    allNotifications?.length > 0 ? (
-                                        allNotifications?.map((item) => (
-                                            item?.isRead === false ? (
-                                                <li style={{backgroundColor : '#ecf0f1'}} onClick={() => readNotification(item?._id)}>
-                                                    <Link class="dropdown-item" to="">
-                                                        <strong>{item?.message} </strong> <br />
-                                                        <span style={{ fontSize: '12px' , color : '#34495e' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
-                                                    </Link>
-                                                </li>
+                                <div class="dropdown profile-dropdown">
+                                    <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <AiFillBell />
+                                        <span>{allNotificationsCount}</span>
+                                    </Link>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        {
+                                            allNotifications?.length > 0 ? (
+                                                allNotifications?.map((item) => (
+                                                    item?.isRead === false ? (
+                                                        <li style={{backgroundColor : '#ecf0f1'}} onClick={() => readNotification(item?._id)}>
+                                                            <Link class="dropdown-item" to="">
+                                                                <strong>{item?.message} </strong> <br />
+                                                                <span style={{ fontSize: '12px' , color : '#34495e' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                                            </Link>
+                                                        </li>
+                                                    ) : (
+                                                        <li style={{backgroundColor : 'transparent'}} >
+                                                        <Link class="dropdown-item" to="">
+                                                                <strong>{item?.message} </strong> <br />
+                                                                <span className='text-muted' style={{ fontSize: '12px' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                                        </Link>
+                                                        </li>
+                                                    )
+                                                ))
                                             ) : (
-                                                <li style={{backgroundColor : 'transparent'}} >
-                                                <Link class="dropdown-item" to="">
-                                                        <strong>{item?.message} </strong> <br />
-                                                        <span className='text-muted' style={{ fontSize: '12px' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
-                                                </Link>
-                                                </li>
+                                                <li style={{marginLeft : '15px'}} >Empty</li>
                                             )
-                                        ))
-                                    ) : (
-                                        <li style={{marginLeft : '15px'}} >Empty</li>
-                                    )
-                                }
-                            </ul>
-                        </div>
-
-                        <div className="dropdown profile-dropdown">
-                        <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div className='d-flex align-items-center fs-small me-3'>
-                            <img src={user} alt="" />
-                            Mohammed
-                                        </div>
-                                    </button>
-                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><Link className="dropdown-item" to="#">Profile</Link></li>
-                                        <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
+                                        }
                                     </ul>
-                        </div>
-                    </div>
+                                </div>
+
+                                <div className="dropdown profile-dropdown">
+                                    <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div className='d-flex align-items-center fs-small me-3'>
+                                    <img src={userPic} alt="" style={{maxWidth: '50px', maxheight : '50px', borderRadius : '50%' }} />
+                                        {userName}
+                                                </div>
+                                            </button>
+                                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
+                                                <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
+                                            </ul>
+                                </div>
+                            </div>
                         </div>
                         <Row style={{width : '100%'}} className="d-flex flex-col justify-content-center align-items-center border-top border-bottom">
                             <Col
@@ -259,7 +285,7 @@ const MainPage = () => {
                                     headers={TABLE_HEADERS}
                                     paginationOptionsProps={{
                                         initialState: {
-                                            rowsPerPage: 5,
+                                            rowsPerPage: 10,
                                             options: [5, 10, 15, 20]
                                         }
                                     }}

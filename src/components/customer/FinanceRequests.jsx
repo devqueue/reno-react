@@ -24,6 +24,8 @@ const FinanceRequests = () => {
     const [ isFetching , setIsFetching ] = useState(false)
     const [ allData , setAllData ] = useState([]);
     const [ allPreviousData , setAllPreviousData ] = useState([]);
+    const [ userName , setUserName ] = useState("");
+    const [ userPic , setUserPic ] = useState("");
 
     const location = useLocation();
     // checking if user is signed in or not
@@ -31,8 +33,19 @@ const FinanceRequests = () => {
         const customerToken = JSON.parse(localStorage.getItem('reno-customer-token'))
         const isSessionFound = sessionStorage.getItem("reno-customer-token");
         if(!customerToken && !isSessionFound){
-            navigate("/customer/auth/login");
+            navigate("/partner/auth/login");
         }
+        let name = JSON.parse(localStorage.getItem('reno-customerName'))
+        if(!name){
+            name = JSON.parse(sessionStorage.getItem("reno-customerName"));
+        }
+        setUserName(name)
+
+        let pic = JSON.parse(localStorage.getItem('reno-customerPhoto'))
+        if(!pic){
+            pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
+        }
+        setUserPic(pic)
     },[location])
 
     //getting all data
@@ -59,6 +72,10 @@ const FinanceRequests = () => {
     const logout = async () => {
         localStorage.removeItem("reno-customer-token")
         sessionStorage.removeItem('reno-customer-token');
+        localStorage.removeItem("reno-customerName")
+        sessionStorage.removeItem('reno-customerName');
+        localStorage.removeItem("reno-customerPhoto")
+        sessionStorage.removeItem('reno-customerPhoto');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
         navigate('/');
@@ -121,57 +138,23 @@ const FinanceRequests = () => {
                         <div className="panel-top d-flex align-items-center justify-content-between">
                             <div className='panel-left'>
                                 <h5 className='mb-0 fw-600'>All Finance Requests Sent</h5>
-                                <p className='text-muted mb-0 text-light fs-small'>
+                                {/* <p className='text-muted mb-0 text-light fs-small'>
                                 {moment().format('MMMM Do YYYY')}
-                                </p>
+                                </p> */}
                             </div>
 
-                            <div className='d-flex align-items-center panel-right'>
-                                <div class="dropdown profile-dropdown">
-                                    <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <AiFillBell />
-                                        <span>{allNotificationsCount}</span>
-                                    </Link>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        {
-                                            allNotifications?.length > 0 ? (
-                                                allNotifications?.map((item) => (
-                                                    item?.isRead === false ? (
-                                                        <li style={{backgroundColor : '#ecf0f1'}} onClick={() => readNotification(item?._id)}>
-                                                            <Link class="dropdown-item" to="">
-                                                                <strong>{item?.message} </strong> <br />
-                                                                <span style={{ fontSize: '12px' , color : '#34495e' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
-                                                            </Link>
-                                                        </li>
-                                                    ) : (
-                                                        <li style={{backgroundColor : 'transparent'}} >
-                                                        <Link class="dropdown-item" to="">
-                                                                <strong>{item?.message} </strong> <br />
-                                                                <span className='text-muted' style={{ fontSize: '12px' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
-                                                        </Link>
-                                                        </li>
-                                                    )
-                                                ))
-                                            ) : (
-                                                <li style={{marginLeft : '15px'}} >Empty</li>
-                                            )
-                                        }
-                                    </ul>
-                                </div>
-
-                                <div className="dropdown profile-dropdown">
-                                <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div className="dropdown profile-dropdown">
+                                    <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                     <div className='d-flex align-items-center fs-small me-3'>
-                                    <img src={user} alt="" />
-                                    Mohammed
+                                    <img src={userPic} alt="" style={{maxWidth: '50px', maxheight : '50px', borderRadius : '50%' }} />
+                                        {userName}
                                                 </div>
                                             </button>
                                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                                 <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
                                                 <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
                                             </ul>
-                                </div>
-                            </div>
+                        </div>
                         </div>
 
                         {/* today quotes */}
@@ -403,7 +386,7 @@ const FinanceRequests = () => {
                         </label>
                     </div>
 
-                    <button className="btn bg-darkBlue text-light mt-4 w-100" style={{ height: '50px', borderRadius: '6px' }} data-bs-toggle="modal" data-bs-target="#paidModal">Pay Now</button>
+                    <button className="btn btn-success mt-4 w-100" style={{ height: '50px', borderRadius: '6px' }} data-bs-toggle="modal" data-bs-target="#paidModal">Pay Now</button>
                     
                 </div>
                 </div>

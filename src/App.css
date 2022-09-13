@@ -775,6 +775,12 @@ a {
     box-shadow: inset 0 -1px 0 rgb(0 0 0 / 13%);
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .accordion-button:not(.collapsed) {
     color: #2d3436 !important;
     background-color: #FFFFFF !important;

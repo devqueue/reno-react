@@ -25,6 +25,8 @@ const PaidFinanceQuotes = () => {
     const [ isFetching , setIsFetching ] = useState(false)
     const [ allData , setAllData ] = useState([]);
     const [ itemId , setItemId ] = useState("")
+    const [ userName , setUserName ] = useState("");
+    const [ userPic , setUserPic ] = useState("");
 
     //getting all data
     useEffect(() => {
@@ -56,9 +58,14 @@ const PaidFinanceQuotes = () => {
     }
 
     // logging out
+    // logging out
     const logout = async () => {
         localStorage.removeItem("reno-customer-token")
         sessionStorage.removeItem('reno-customer-token');
+        localStorage.removeItem("reno-customerName")
+        sessionStorage.removeItem('reno-customerName');
+        localStorage.removeItem("reno-customerPhoto")
+        sessionStorage.removeItem('reno-customerPhoto');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
         navigate('/');
@@ -72,8 +79,19 @@ const PaidFinanceQuotes = () => {
         const customerToken = JSON.parse(localStorage.getItem('reno-customer-token'))
         const isSessionFound = sessionStorage.getItem("reno-customer-token");
         if(!customerToken && !isSessionFound){
-            navigate("/customer/auth/login");
+            navigate("/partner/auth/login");
         }
+        let name = JSON.parse(localStorage.getItem('reno-customerName'))
+        if(!name){
+            name = JSON.parse(sessionStorage.getItem("reno-customerName"));
+        }
+        setUserName(name)
+
+        let pic = JSON.parse(localStorage.getItem('reno-customerPhoto'))
+        if(!pic){
+            pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
+        }
+        setUserPic(pic)
     },[location])
 
     const [ allNotifications , setAllNotifications ] = useState([])
@@ -131,9 +149,9 @@ const PaidFinanceQuotes = () => {
                             <div className="panel-top d-flex align-items-center justify-content-between">
                                 <div className='panel-left'>
                                     <h5 className='mb-0 fw-600'>Paid Finance Quotes</h5>
-                                    <p className='text-muted mb-0 text-light fs-small'>
+                                    {/* <p className='text-muted mb-0 text-light fs-small'>
                                         {moment().format('MMMM Do YYYY')}
-                                    </p>
+                                    </p> */}
                                 </div>
 
                                 <div className='d-flex align-items-center panel-right'>
@@ -169,18 +187,17 @@ const PaidFinanceQuotes = () => {
                             </ul>
                         </div>
 
-                        <div className="dropdown profile-dropdown">
-                        <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div className='d-flex align-items-center fs-small me-3'>
-                            <img src={user} alt="" />
-                            Mohammed
-                                        </div>
-                                    </button>
-                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                                                        <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
-
-                                        <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
-                                    </ul>
+                                <div className="dropdown profile-dropdown">
+                                    <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div className='d-flex align-items-center fs-small me-3'>
+                                    <img src={userPic} alt="" style={{maxWidth: '50px', maxheight : '50px', borderRadius : '50%' }} />
+                                        {userName}
+                                                </div>
+                                            </button>
+                                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
+                                                <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
+                                            </ul>
                         </div>
                                 </div>
                             </div>

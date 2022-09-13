@@ -34,6 +34,8 @@ const LoginForm = () => {
             //if(isRemember === true){
                 localStorage.setItem("reno-admin-token", JSON.stringify(data?.Token));
                 localStorage.setItem("reno-adminId", JSON.stringify(data?.User?.Id));
+                localStorage.setItem("reno-adminName", JSON.stringify(data?.User?.UserName));
+                localStorage.setItem("reno-adminPic", JSON.stringify(data?.User?.ProfilePic));
             //}
             // else{
             //     sessionStorage.setItem("reno-admin-token", JSON.stringify(data?.Token));

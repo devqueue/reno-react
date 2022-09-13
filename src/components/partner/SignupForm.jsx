@@ -70,26 +70,26 @@ const SignupForm = () => {
 
                     <div className="row">
                         <div className="form-group col-lg-6 mb-4">
-                            <label className='form-label'>First Name</label>
+                            <label className='form-label'>First Name <span style={{color : 'crimson'}} >(*)</span></label>
                             <div className="auth-input-container">
                                 <input type="text" className='form-control px-3' placeholder='First Name' value={userData?.firstName} onChange={(e) => setUserDate({...userData , firstName : e.target.value})} required />
                             </div>
                         </div>
                         <div className="form-group col-lg-6 mb-4">
-                            <label className='form-label'>Last Name</label>
+                            <label className='form-label'>Last Name <span style={{color : 'crimson'}} >(*)</span></label>
                             <div className="auth-input-container">
                                 <input type="text" className='form-control px-3' placeholder='Last Name'  value={userData?.lastName} onChange={(e) => setUserDate({...userData , lastName : e.target.value})} required />
                             </div>
                         </div>
                     </div>
                     <div className="form-group mb-4">
-                        <label className='form-label'>Email Address</label>
+                        <label className='form-label'>Email Address <span style={{color : 'crimson'}} >(*)</span></label>
                         <div className="auth-input-container">
                             <input type="email" className='form-control px-3' placeholder='Enter Your Email Address' value={userData?.email} onChange={(e) => setUserDate({...userData , email : e.target.value})} required />
                         </div>
                     </div>
                     <div className="form-group mb-4">
-                        <label className='form-label'>Mobile Number</label>
+                        <label className='form-label'>Mobile Number <span style={{color : 'crimson'}} >(*)</span></label>
                         <div className="d-flex">
                             <select class="form-select shadow-none fs-small text-muted number-select me-2" aria-label="Default select example">
                                 <option selected>+966</option>
@@ -102,7 +102,7 @@ const SignupForm = () => {
                     </div>
                     <div className="row">
                         <div className="form-group col-lg-6 mb-4">
-                            <label className='form-label'>Select Country</label>
+                            <label className='form-label'>Select Country <span style={{color : 'crimson'}} >(*)</span></label>
                             <select class="form-select shadow-none fs-small text-muted number-select w-100 me-2" aria-label="Default select example" onChange={(e) => setUserDate({...userData , country : e.target.value})}>
                                 <option>Saudi Arabia</option>
                                 <option >United Emirates</option>
@@ -110,7 +110,7 @@ const SignupForm = () => {
                             </select>
                         </div>
                         <div className="form-group col-lg-6 mb-4">
-                            <label className='form-label'>City</label>
+                            <label className='form-label'>City <span style={{color : 'crimson'}} >(*)</span></label>
                             <select class="form-select shadow-none fs-small text-muted number-select w-100 me-2" aria-label="Default select example" onChange={(e) => setUserDate({...userData , city : e.target.value})}>
                                 <option>Riyadh</option>
                                 <option>Jaddah</option>
@@ -127,7 +127,7 @@ const SignupForm = () => {
                         </div>
                     </div>
                     <div className="form-group mb-4">
-                        <label className='form-label'> Select your Category</label>
+                        <label className='form-label'> Select your Category </label>
                         <select class="form-select shadow-none fs-small text-muted number-select w-100 me-2" aria-label="Default select example" onChange={(e) => setUserDate({...userData , category : e.target.value})}>
                             <option>Lighting</option>
                             <option >Cooling/Heating</option>

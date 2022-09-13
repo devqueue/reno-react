@@ -62,7 +62,12 @@ const ContactForm = () => {
                                 <input type="email"  className='form-control input-field' placeholder='Your Email' pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" value={contactData?.email} onChange={(e) => setContactData({...contactData , email : e.target.value})} required />
                             </div>
                             <div className="col-lg-12 form-group mb-3">
-                                <input type="text" className='form-control input-field' placeholder='Subject' value={contactData?.subject} onChange={(e) => setContactData({...contactData , subject : e.target.value})} />
+                            <label>Select Inquiry Type</label>
+                            <select className="form-select text-muted" style={{minHeight : '35px'}} aria-label="Default select example" onChange={(e) => setContactData({...contactData , subject : e.target.value}) } >
+                                <option selected disabled style={{minHeight : '35px', maxWidth : '300px'}}></option>
+                                <option style={{minHeight : '35px', maxWidth : '300px'}}>Homeonwer Inquiry</option>
+                                <option style={{minHeight : '35px',  maxWidth : '300px'}}>Business Inquiry</option>
+                            </select>
                             </div>
                             <div className="col-12 form-group mb-3">
                                 <textarea className='form-control input-field contact-textarea' placeholder='Your message here...' value={contactData?.msg} onChange={(e) => setContactData({...contactData , msg : e.target.value})}></textarea>

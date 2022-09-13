@@ -11,6 +11,8 @@ import { toast } from 'react-toastify';
 const ManageQuotes = () => {
     const [ isFetching , setIsFetching ] = useState(false)
     const [ allData , setAllData ] = useState([]);
+    const [ userName , setUserName ] = useState("");
+    const [ userPic , setUserPic ] = useState("");
 
     //getting all data
     useEffect(() => {
@@ -61,14 +63,7 @@ const ManageQuotes = () => {
 
     const navigate = useNavigate()
 
-    // logging out
-    const logout = async () => {
-        localStorage.removeItem("reno-merchant-token")
-        sessionStorage.removeItem('reno-merchant-token');
-        toast.success("Signed Out SuccessFully");
-        await delay(2000);
-        navigate('/');
-    }
+
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -80,7 +75,34 @@ const ManageQuotes = () => {
         if(!customerToken && !isSessionFound){
             navigate("/partner/auth/login");
         }
+        let name = JSON.parse(localStorage.getItem('reno-merchantName'))
+        if(!name){
+            name = JSON.parse(sessionStorage.getItem("reno-merchantName"));
+        }
+        setUserName(name)
+
+        let pic = JSON.parse(localStorage.getItem('reno-merchantPic'))
+        if(!pic){
+            pic = JSON.parse(sessionStorage.getItem("reno-merchantPic"));
+        }
+        setUserPic(pic)
     },[location])
+
+    // logging out
+    const logout = async () => {
+        localStorage.removeItem("reno-merchant-token")
+        sessionStorage.removeItem('reno-merchant-token');
+        localStorage.removeItem("reno-merchantId")
+        sessionStorage.removeItem('reno-merchantId');
+        localStorage.removeItem("reno-merchantName")
+        sessionStorage.removeItem('reno-merchantName');
+        localStorage.removeItem("reno-merchantPic")
+        sessionStorage.removeItem('reno-merchantPic');
+        toast.success("Signed Out SuccessFully");
+        await delay(2000);
+        navigate('/');
+    }
+    // sleeping
 
     const [ allNotifications , setAllNotifications ] = useState([])
     const [ allNotificationsCount , setAllNotificationsCount ] = useState([])
@@ -137,9 +159,9 @@ const ManageQuotes = () => {
                 <div className="panel-top d-flex align-items-center justify-content-between mb-4">
                   <div className='panel-left'>
                     <h5 className='mb-0 fw-600'>Manage Quotes</h5>
-                    <p className='text-muted mb-0 text-light fs-small'>
+                    {/* <p className='text-muted mb-0 text-light fs-small'>
                       {moment().format('MMMM Do YYYY')}
-                    </p>
+                    </p> */}
                   </div>
 
                   <div className='d-flex align-items-center panel-right'>
@@ -176,18 +198,18 @@ const ManageQuotes = () => {
                         </div>
 
                         <div className="dropdown profile-dropdown">
-                        <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div className='d-flex align-items-center fs-small me-3'>
-                            <img src={user} alt="" />
-                            Mohammed
-                                        </div>
-                                    </button>
-                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><Link className="dropdown-item" to="/partner/dashboard/profile">Profile</Link></li>
-                                        <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
-                                    </ul>
+                                    <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div className='d-flex align-items-center fs-small me-3'>
+                                    <img src={userPic} alt="" style={{maxWidth: '50px', maxheight : '50px', borderRadius : '50%' }} />
+                                        {userName}
+                                                </div>
+                                            </button>
+                                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
+                                                <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
+                                            </ul>
                         </div>
-                    </div>
+                  </div>
                 </div>
                   {
                     allData?.length > 0 && (
@@ -208,7 +230,10 @@ const ManageQuotes = () => {
                                 <h6 className='text-muted fs-small mb-1'>Time</h6>
                                 <h6 className='text-darkBlue'>{ moment(item?.CreatedAt).format('h:mm:ss a')}</h6>
                               </div>
-                              <div className="col-lg-3"></div>
+                              <div className="col-lg-3">
+                                <h6 className='text-muted fs-small mb-1 '>User Email</h6>
+                                <h6 className='text-darkBlue mt-3'>{item?.CustomerAndProductDetails?.email}</h6>
+                              </div>
         
                             </div>
                             <div className="row mt-3">

@@ -38,6 +38,28 @@ const QuotesReceived = () => {
     const [viewTicket, setViewTicket] = useState(false);
     const handleViewTicketClose = () => setViewTicket(false);
     const handleViewTicketShow = () => setViewTicket(true);
+    const [ userName , setUserName ] = useState("");
+    const [ userPic , setUserPic ] = useState("");
+
+    // checking if user is signed in or not
+    useEffect(() =>{
+        const customerToken = JSON.parse(localStorage.getItem('reno-customer-token'))
+        const isSessionFound = sessionStorage.getItem("reno-customer-token");
+        if(!customerToken && !isSessionFound){
+            navigate("/partner/auth/login");
+        }
+        let name = JSON.parse(localStorage.getItem('reno-customerName'))
+        if(!name){
+            name = JSON.parse(sessionStorage.getItem("reno-customerName"));
+        }
+        setUserName(name)
+
+        let pic = JSON.parse(localStorage.getItem('reno-customerPhoto'))
+        if(!pic){
+            pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
+        }
+        setUserPic(pic)
+    },[location])
 
     //getting all data unresolved tickets
     useEffect(() => {
@@ -77,6 +99,10 @@ const QuotesReceived = () => {
     const logout = async () => {
         localStorage.removeItem("reno-customer-token")
         sessionStorage.removeItem('reno-customer-token');
+        localStorage.removeItem("reno-customerName")
+        sessionStorage.removeItem('reno-customerName');
+        localStorage.removeItem("reno-customerPhoto")
+        sessionStorage.removeItem('reno-customerPhoto');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
         navigate('/');
@@ -250,15 +276,14 @@ const QuotesReceived = () => {
                                 </div>
 
                                 <div className="dropdown profile-dropdown">
-                                <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                     <div className='d-flex align-items-center fs-small me-3'>
-                                    <img src={user} alt="" />
-                                    Mohammed
+                                    <img src={userPic} alt="" style={{maxWidth: '50px', maxheight : '50px', borderRadius : '50%' }} />
+                                        {userName}
                                                 </div>
                                             </button>
                                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                                                                <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
-
+                                                <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
                                                 <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
                                             </ul>
                                 </div>
@@ -314,7 +339,7 @@ const QuotesReceived = () => {
                                                                 <div className="d-flex flex-column" style={{marginBottom : '20px'}} >
                                                                     <h6 style={{marginLeft : '15px', color : '#d35400'}} >Issue Description : </h6>
                                                                     <p style={{ padding : '10px' , borderRadius : '10px'}} >
-                                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vel mi ac felis aliquet finibus eu sit amet leo. Praesent sed euismod nisi. In maximus facilisis tempor. Cras in cursus est, id feugiat mauris. Aenean sed sapien ligula. Fusce mattis, ipsum eu hendrerit sollicitudin, lectus lacus fermentum sapien, eu pretium orci est nec erat. Donec sit amet dictum magna. Ut vitae sem eu ligula consectetur volutpat vitae sit amet metus. Etiam imperdiet nec purus quis bibendum. Quisque aliquet diam aliquet lectus luctus molestie.
+                                                                        {item?.desc}
                                                                     </p>
                                                                 </div>
                                                                 <h4 style={{marginLeft : '15px', fontWeight : 600 , }} >Comments : </h4>

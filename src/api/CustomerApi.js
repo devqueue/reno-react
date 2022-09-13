@@ -49,6 +49,9 @@ const addNewTicketResponse = (data) => API.post(`/api/v1/issueTicketsResponse/ad
 const getResponseOfAnyTicket = (ticketId) => API.get(`/api/v1/issueTicketsResponse/getAllResponseOnAnyTicketByCustomer/${ticketId}`);
 const checkUserPassword = (password) => API.get(`/api/v1/customers/checkPassword/${password}`);
 const updateUserPassword = (password) => API.put(`/api/v1/customers/updatePassword/${password}`);
+const getCustomerDetails = () => API.get(`/api/v1/customers/getCustomerDetails`);
+const updateCustomerPic = (data) => API.put(`/api/v1/customers/updateProfilePic`, data);
+const updateCustomerDetails = (data) => API.put(`/api/v1/customers/updateCustomerProfile`, data);
 
 
 module.exports = {
@@ -74,5 +77,8 @@ module.exports = {
     addNewTicketResponse,
     getResponseOfAnyTicket,
     checkUserPassword,
-    updateUserPassword
+    updateUserPassword,
+    getCustomerDetails,
+    updateCustomerPic,
+    updateCustomerDetails
 }

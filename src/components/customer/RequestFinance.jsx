@@ -21,6 +21,8 @@ const RequestFinance = () => {
     const {id} = useParams();
     const [step, setStep] = useState(1)
     const navigate = useNavigate()
+    const [ userName , setUserName ] = useState("");
+    const [ userPic , setUserPic ] = useState("");
 
     const [ isFetching , setIsFetching ] = useState(false)
     const [ updateData , setUpdateData ] = useState(null)
@@ -99,6 +101,9 @@ const RequestFinance = () => {
         if(quoteDate?.basicSalary === 0 || quoteDate?.housingAllowance === '' ){
             toast.error("Please Provide All Fields");
         }else{
+            let previous = Number(quoteDate?.basicSalary);
+            previous -= Number(quoteDate?.familyMembersFees);
+            setQuoteData({...quoteDate , basicSalary : previous})
             setStep(3)
         }
     }
@@ -121,7 +126,7 @@ const RequestFinance = () => {
             emptyQuoteData();
             await delay(1500)
             setIsFetching(false)
-            navigate('/customer/dashboard/panel');
+            navigate('customer/dashboard/financeRequests');
         }else{
             await delay(1500)
             setIsFetching(false)
@@ -157,6 +162,10 @@ const RequestFinance = () => {
     const logout = async () => {
         localStorage.removeItem("reno-customer-token")
         sessionStorage.removeItem('reno-customer-token');
+        localStorage.removeItem("reno-customerName")
+        sessionStorage.removeItem('reno-customerName');
+        localStorage.removeItem("reno-customerPhoto")
+        sessionStorage.removeItem('reno-customerPhoto');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
         navigate('/');
@@ -171,8 +180,19 @@ const RequestFinance = () => {
         const customerToken = JSON.parse(localStorage.getItem('reno-customer-token'))
         const isSessionFound = sessionStorage.getItem("reno-customer-token");
         if(!customerToken && !isSessionFound){
-            navigate("/customer/auth/login");
+            navigate("/partner/auth/login");
         }
+        let name = JSON.parse(localStorage.getItem('reno-customerName'))
+        if(!name){
+            name = JSON.parse(sessionStorage.getItem("reno-customerName"));
+        }
+        setUserName(name)
+
+        let pic = JSON.parse(localStorage.getItem('reno-customerPhoto'))
+        if(!pic){
+            pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
+        }
+        setUserPic(pic)
     },[location])
 
     // updating data
@@ -217,14 +237,30 @@ const RequestFinance = () => {
             }
     }
 
+    // changing home allownce
+    const addAmt = () => {
+        if(quoteDate.housingAllowance !== 0 ){
+            let previous = Number(quoteDate?.basicSalary);
+            previous += Number(quoteDate?.housingAllowance);
+            setQuoteData({...quoteDate , basicSalary : previous})
+        }
+    }
+    const addAmtOne = () => {
+        if(quoteDate.housingAllowance !== 0 ){
+            let previous = Number(quoteDate?.basicSalary);
+            previous += Number(quoteDate?.otherAllowance);
+            setQuoteData({...quoteDate , basicSalary : previous})
+        }
+    }
+
     return (
         <div className='container-fluid p-4 dashboard-content'>
             <div className="panel-top d-flex align-items-center justify-content-between">
                     <div className='panel-left'>
                         <h5 className='mb-0 fw-600'>Finance Requests</h5>
-                        <p className='text-muted mb-0 text-light fs-small'>
+                        {/* <p className='text-muted mb-0 text-light fs-small'>
                         {moment().format('MMMM Do YYYY')}
-                        </p>
+                        </p> */}
                     </div>
 
                     <div className='d-flex align-items-center panel-right'>
@@ -261,17 +297,16 @@ const RequestFinance = () => {
                         </div>
 
                         <div className="dropdown profile-dropdown">
-                        <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div className='d-flex align-items-center fs-small me-3'>
-                            <img src={user} alt="" />
-                            Mohammed
-                                        </div>
-                                    </button>
-                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                                                        <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
-
-                                        <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
-                                    </ul>
+                                    <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div className='d-flex align-items-center fs-small me-3'>
+                                    <img src={userPic} alt="" style={{maxWidth: '50px', maxheight : '50px', borderRadius : '50%' }} />
+                                        {userName}
+                                                </div>
+                                            </button>
+                                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
+                                                <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
+                                            </ul>
                         </div>
                     </div>
             </div>
@@ -320,15 +355,15 @@ const RequestFinance = () => {
                                 <div className="col-lg-6 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Owned/Rented</label>
                                     <select class="form-select text-muted" aria-label="Default select example" onChange={(e) => setQuoteData({...quoteDate , isOwned : e.target.value}) }>
-                                        <option selected></option>
-                                        <option value={true}>Yes</option>
-                                        <option value={false}>No</option>
+                                        <option selected disabled></option>
+                                        <option value={true}>Owned</option>
+                                        <option value={false}>Rented</option>
                                     </select>
                                 </div>
                                 <div className="col-lg-6 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Home Type</label>
                                     <select class="form-select text-muted" aria-label="Default select example" onChange={(e) => setQuoteData({...quoteDate , homeType : e.target.value}) }>
-                                        <option selected>Apartment / Villa / Duplex / Floor</option>
+                                        <option selected disabled></option>
                                         <option>Apartment</option>
                                         <option>Villa</option>
                                         <option>Duplex</option>
@@ -402,11 +437,11 @@ const RequestFinance = () => {
                                 </div>
                                 <div className="col-12 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Housing Allowance</label>
-                                    <input type="text" className='form-control' placeholder='Please your housing allowance here (SAR)' value={quoteDate?.housingAllowance} onChange={(e) => setQuoteData({...quoteDate , housingAllowance : e.target.value})} required  />
+                                    <input type="text" className='form-control' placeholder='Please your housing allowance here (SAR)' value={quoteDate?.housingAllowance} onChange={(e) => setQuoteData({...quoteDate , housingAllowance : e.target.value})} required  onBlur={addAmt} />
                                 </div>
                                 <div className="col-12 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Other Allowance(Optional)</label>
-                                    <input type="text" className='form-control' placeholder='Please your other allowance here (SAR)' value={quoteDate?.otherAllowance} onChange={(e) => setQuoteData({...quoteDate , otherAllowance : e.target.value})} required />
+                                    <input type="text" className='form-control' placeholder='Please your other allowance here (SAR)' value={quoteDate?.otherAllowance} onChange={(e) => setQuoteData({...quoteDate , otherAllowance : e.target.value})} required onBlur={addAmtOne} />
                                 </div>
 
                                 <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
@@ -443,8 +478,6 @@ const RequestFinance = () => {
                                             <div className='text-light fs-small'>
                                                 {
                                                     Number(quoteDate?.housingExpense) +
-                                                    Number(quoteDate?.housingAllowance) +
-                                                    Number(quoteDate?.otherAllowance) +
                                                     Number(quoteDate?.homeWorkerWageExpense) +
                                                     Number(quoteDate?.healthCareExpense) +
                                                     Number(quoteDate?.foodBeverageExpense) +
@@ -473,9 +506,9 @@ const RequestFinance = () => {
                                             <div className='text-darkBlue fs-small'>
                                                 {quoteDate?.housingExpense}.00 <span className='text-muted fw-normal'> SAR/month</span>
                                             </div>
-                                            <div className='text-darkBlue fs-small'>
+                                            {/* <div className='text-darkBlue fs-small'>
                                                 0.00 <span className='text-muted fw-normal'> SAR/month</span>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                 </div>
@@ -490,9 +523,9 @@ const RequestFinance = () => {
                                             <div className='text-darkBlue fs-small'>
                                                 {quoteDate?.homeWorkerWageExpense}.00 <span className='text-muted fw-normal'> SAR/month</span>
                                             </div>
-                                            <div className='text-darkBlue fs-small'>
+                                            {/* <div className='text-darkBlue fs-small'>
                                                 0.00<span className='text-muted fw-normal'> SAR/month</span>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                 </div>
@@ -507,9 +540,9 @@ const RequestFinance = () => {
                                             <div className='text-darkBlue fs-small'>
                                                 {quoteDate.foodBeverageExpense}.00 <span className='text-muted fw-normal'> SAR/month</span>
                                             </div>
-                                            <div className='text-darkBlue fs-small'>
+                                            {/* <div className='text-darkBlue fs-small'>
                                                 0.00 <span className='text-muted fw-normal'> SAR/month</span>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                 </div>
@@ -524,9 +557,9 @@ const RequestFinance = () => {
                                             <div className='text-darkBlue fs-small'>
                                                 {quoteDate?.healthCareExpense}.00 <span className='text-muted fw-normal'> SAR/month</span>
                                             </div>
-                                            <div className='text-darkBlue fs-small'>
+                                            {/* <div className='text-darkBlue fs-small'>
                                                 8,000 <span className='text-muted fw-normal'> SAR/month</span>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                 </div>
@@ -541,9 +574,9 @@ const RequestFinance = () => {
                                             <div className='text-darkBlue fs-small'>
                                                 {quoteDate?.transportationExpense}.00 <span className='text-muted fw-normal'> SAR/month</span>
                                             </div>
-                                            <div className='text-darkBlue fs-small'>
+                                            {/* <div className='text-darkBlue fs-small'>
                                                 0.00 <span className='text-muted fw-normal'> SAR/month</span>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                 </div>

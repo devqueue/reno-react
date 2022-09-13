@@ -22,6 +22,8 @@ const SignupForm = () => {
         password : '',
         email : '',
         dob : '',
+        firstName : '',
+        lastName : ''
     })
 
     // sending data
@@ -79,13 +81,13 @@ const SignupForm = () => {
                     <h3 className='my-3'>Customer Registration</h3>
 
                     <div className="form-group mb-4">
-                        <label className='form-label'>National ID/Iqama Number</label>
+                        <label className='form-label'>National ID/Iqama Number <span style={{color : 'crimson'}} >(*)</span> </label>
                         <div className="auth-input-container">
                             <input type="text" className='form-control px-3' placeholder='Enter Your National ID or Iqama Number' value={userData?.IDCardNo} onChange={(e) => setUserDate({...userData , IDCardNo : e.target.value})} required />
                         </div>
                     </div>
                     <div className="form-group mb-4">
-                        <label className='form-label'>Mobile Number</label>
+                        <label className='form-label'>Mobile Number <span style={{color : 'crimson'}} >(*)</span></label>
                         <div className="d-flex">
                             <select class="form-select shadow-none fs-small text-muted number-select me-2" aria-label="Default select example">
                                 <option selected>+966</option>
@@ -103,13 +105,25 @@ const SignupForm = () => {
                         </div>
                     </div>
                     <div className="form-group mb-4">
-                        <label className='form-label'>Email Address</label>
+                        <label className='form-label'>Email Address <span style={{color : 'crimson'}} >(*)</span></label>
                         <div className="auth-input-container">
                             <input type="text" className='form-control px-3' placeholder='Enter Your Email Address' value={userData?.email} onChange={(e) => setUserDate({...userData , email : e.target.value})} required />
                         </div>
                     </div>
                     <div className="form-group mb-4">
-                        <label className='form-label'>Password</label>
+                        <label className='form-label'>First Name</label>
+                        <div className="auth-input-container">
+                            <input type="text" className='form-control px-3' placeholder='Enter Your First Name' value={userData?.firstName} onChange={(e) => setUserDate({...userData , firstName : e.target.value})} required />
+                        </div>
+                    </div>
+                    <div className="form-group mb-4">
+                        <label className='form-label'>Last Name</label>
+                        <div className="auth-input-container">
+                            <input type="text" className='form-control px-3' placeholder='Enter Your Last Name' value={userData?.lastName} onChange={(e) => setUserDate({...userData , lastName : e.target.value})} required />
+                        </div>
+                    </div>
+                    <div className="form-group mb-4">
+                        <label className='form-label'>Password <span style={{color : 'crimson'}} >(*)</span></label>
                         <div className='pass-container'>
                             <div className="auth-input-container">
                                 <input type={`${pass1 ? 'text' : 'password'}`} className='form-control px-3' placeholder='Password'  value={userData?.password} onChange={(e) => setUserDate({...userData , password : e.target.value})} required  />

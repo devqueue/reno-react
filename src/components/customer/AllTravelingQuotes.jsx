@@ -24,11 +24,13 @@ import {getAllNotificationsOfCustomer ,markNotificationsOfMerchantRead , Approve
 const MainPage = () => {
     const [ allData , setData ] = useState([]);
     const [ isFetching , setIsFetching ] = useState(false)
+    const [ userName , setUserName ] = useState("");
+    const [ userPic , setUserPic ] = useState("");
 
     const TABLE_HEADERS = [
         {
             prop: "customer",
-            title: "Customer",
+            title: "Quote No",
         },
         {
             prop: "sent",
@@ -44,7 +46,7 @@ const MainPage = () => {
         },
         {
             prop: "isAdmin",
-            title: "Admin Response On Partner",
+            title: "Admin Response",
             cell: (prop) => {
                 return (
                         <>
@@ -125,10 +127,11 @@ const MainPage = () => {
             let allDataArr = [];
             if(data?.success === true){
                 for(let i = 0; i !== data?.AllQuotes.length; i++){
+                    let no = Math.floor(1000 + Math.random() * 9000)
                     let newArr = {
-                        customer: data?.AllQuotes[i]?.Partner,
-                        approvedDate: moment(data?.AllQuotes[i]?.CreatedAt).format('MMM Do YY, h:mm:ss a'),
-                        sent: moment(data?.AllQuotes[i]?.SentAt).format('MMMM Do YYYY, h:mm:ss a'),
+                        customer: no,
+                        approvedDate: moment(data?.AllQuotes[i]?.CreatedAt).format('MMM Do YY'),
+                        sent: moment(data?.AllQuotes[i]?.SentAt).format('MMMM Do YYYY'),
                         category: data?.AllQuotes[i]?.CustomerAndProductDetails?.productCategory,
                         isAdmin: data?.AllQuotes[i].isAdminMerchantApproved == true ? "Approved" : "Pending",
                         isWorking: data?.AllQuotes[i]?.personalInfo?.workingStatus === "true" ? "Employed" : "UnEmployed",
@@ -159,12 +162,27 @@ const MainPage = () => {
         if(!customerToken && !isSessionFound){
             navigate("/partner/auth/login");
         }
+        let name = JSON.parse(localStorage.getItem('reno-customerName'))
+        if(!name){
+            name = JSON.parse(sessionStorage.getItem("reno-customerName"));
+        }
+        setUserName(name)
+
+        let pic = JSON.parse(localStorage.getItem('reno-customerPhoto'))
+        if(!pic){
+            pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
+        }
+        setUserPic(pic)
     },[location])
 
     // logging out
     const logout = async () => {
         localStorage.removeItem("reno-customer-token")
         sessionStorage.removeItem('reno-customer-token');
+        localStorage.removeItem("reno-customerName")
+        sessionStorage.removeItem('reno-customerName');
+        localStorage.removeItem("reno-customerPhoto")
+        sessionStorage.removeItem('reno-customerPhoto');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
         navigate('/');
@@ -176,9 +194,7 @@ const MainPage = () => {
     // getting all notifications
     useEffect(() =>{
         const getAllNotifications = async () => {
-            console.log("calling")
             const {data} = await getAllNotificationsOfCustomer()
-            console.log("data : ", data)
             if(data?.success === true){
                 setAllNotifications(data?.Notifications)
                 let count = 0;
@@ -235,9 +251,9 @@ const MainPage = () => {
                 <div className="panel-top d-flex align-items-center justify-content-between">
                     <div className='panel-left'>
                         <h5 className='mb-0 fw-600'>All Quotes Approved By Partners</h5>
-                        <p className='text-muted mb-0 text-light fs-small'>
+                        {/* <p className='text-muted mb-0 text-light fs-small'>
                         {moment().format('MMMM Do YYYY')}
-                        </p>
+                        </p> */}
                     </div>
 
                     <div className='d-flex align-items-center panel-right'>
@@ -274,16 +290,16 @@ const MainPage = () => {
                         </div>
 
                         <div className="dropdown profile-dropdown">
-                        <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div className='d-flex align-items-center fs-small me-3'>
-                            <img src={user} alt="" />
-                            Mohammed
-                                        </div>
-                                    </button>
-                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><Link className="dropdown-item" to="#">Profile</Link></li>
-                                        <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
-                                    </ul>
+                                    <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div className='d-flex align-items-center fs-small me-3'>
+                                    <img src={userPic} alt="" style={{maxWidth: '50px', maxheight : '50px', borderRadius : '50%' }} />
+                                        {userName}
+                                                </div>
+                                            </button>
+                                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
+                                                <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
+                                            </ul>
                         </div>
                     </div>
                 </div>

@@ -44,6 +44,15 @@ const getResponseOfAnyTicket = (ticketId) => API.get(`/api/v1/issueTicketsRespon
 const changeStatusOfATicket = (ticketId ,status) => API.put(`/api/v1/issueTickets/changeStatusOfATicket/${ticketId}/${status}`);
 const checkUserPassword = (password) => API.get(`/api/v1/admins/checkPassword/${password}`);
 const updateUserPassword = (password) => API.put(`/api/v1/admins/updatePassword/${password}`);
+const sendMyCustomerForgetPassword = (email) => API.put(`/api/v1/admins/sendCustomerForgetPassword/${email}`);
+const verifyCustomerPIN = (email, pin) => API.put(`/api/v1/admins/verifyCustomerPIN/${email}/${pin}`);
+const updateCustomerPassword = (email, password) => API.put(`/api/v1/admins/updateCustomerPassword/${email}/${password}`);
+const sendMyMerchantForgetPassword = (email) => API.put(`/api/v1/admins/sendMerchantForgetPassword/${email}`);
+const verifyMerchantPIN = (email, pin) => API.put(`/api/v1/admins/verifyMerchantPIN/${email}/${pin}`);
+const updateMerchantPassword = (email, password) => API.put(`/api/v1/admins/updateMerchantPassword/${email}/${password}`);
+const getAdminDetails = () => API.get(`/api/v1/admins/getAdminDetails`);
+const updateAdminPic = (data) => API.put(`/api/v1/admins/updateProfilePic`, data);
+const updateAdminDetails = (data) => API.put(`/api/v1/admins/updateAdminProfile`, data);
 
 
 
@@ -65,5 +74,14 @@ module.exports = {
     getResponseOfAnyTicket,
     changeStatusOfATicket,
     checkUserPassword,
-    updateUserPassword
+    updateUserPassword,
+    sendMyCustomerForgetPassword,
+    verifyCustomerPIN,
+    updateCustomerPassword,
+    sendMyMerchantForgetPassword,
+    verifyMerchantPIN,
+    updateMerchantPassword,
+    getAdminDetails,
+    updateAdminPic,
+    updateAdminDetails
 }

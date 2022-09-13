@@ -15,13 +15,7 @@ const HomePage = () => {
     document.title = 'Reno | Admin Portal'
 
     // checking if user is signed in or not
-    useEffect(() =>{
-        const adminToken = JSON.parse(localStorage.getItem('reno-admin-token'))
-        const isSessionFound = sessionStorage.getItem("reno-admin-token");
-        if(!adminToken && !isSessionFound){
-            navigate("/admin/login");
-        }
-    },[])
+
 
     return (
         <div className='admin-panel-container'>

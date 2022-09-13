@@ -28,6 +28,8 @@ const QuotesReceived = () => {
         ticketId : "",
         desc : "",
     });
+    const [ userName , setUserName ] = useState("");
+    const [ userPic , setUserPic ] = useState("");
 
     //  adding new ticket
     const [addNewTicket, setAddNewTicket] = useState(false);
@@ -73,16 +75,7 @@ const QuotesReceived = () => {
         }
     }
 
-    // logging out
-    const logout = async () => {
-        localStorage.removeItem("reno-merchant-token")
-        sessionStorage.removeItem('reno-merchant-token');
-        localStorage.removeItem("reno-merchantId")
-        sessionStorage.removeItem('reno-merchantId');
-        toast.success("Signed Out SuccessFully");
-        await delay(2000);
-        navigate('/');
-    }
+    
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -93,14 +86,35 @@ const QuotesReceived = () => {
         const isSessionFound = sessionStorage.getItem("reno-merchant-token");
         if(!customerToken && !isSessionFound){
             navigate("/partner/auth/login");
-            toast.error("Please login to Continue");
         }
-        let userId = JSON.parse(sessionStorage.getItem("reno-merchantId"));
-        if(!userId){
-            userId = JSON.parse(localStorage.getItem("reno-merchantId"));
+        let name = JSON.parse(localStorage.getItem('reno-merchantName'))
+        if(!name){
+            name = JSON.parse(sessionStorage.getItem("reno-merchantName"));
         }
-        setUserId(userId)
-    },[])
+        setUserName(name)
+
+        let pic = JSON.parse(localStorage.getItem('reno-merchantPic'))
+        if(!pic){
+            pic = JSON.parse(sessionStorage.getItem("reno-merchantPic"));
+        }
+        setUserPic(pic)
+    },[location])
+
+    // logging out
+    const logout = async () => {
+        localStorage.removeItem("reno-merchant-token")
+        sessionStorage.removeItem('reno-merchant-token');
+        localStorage.removeItem("reno-merchantId")
+        sessionStorage.removeItem('reno-merchantId');
+        localStorage.removeItem("reno-merchantName")
+        sessionStorage.removeItem('reno-merchantName');
+        localStorage.removeItem("reno-merchantPic")
+        sessionStorage.removeItem('reno-merchantPic');
+        toast.success("Signed Out SuccessFully");
+        await delay(2000);
+        navigate('/');
+    }
+    // sleeping
 
     const [ allNotifications , setAllNotifications ] = useState([])
     const [ allNotificationsCount , setAllNotificationsCount ] = useState([])
@@ -252,14 +266,14 @@ const QuotesReceived = () => {
                                 </div>
 
                                 <div className="dropdown profile-dropdown">
-                                <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                     <div className='d-flex align-items-center fs-small me-3'>
-                                    <img src={user} alt="" />
-                                    Mohammed
+                                    <img src={userPic} alt="" style={{maxWidth: '50px', maxheight : '50px', borderRadius : '50%' }} />
+                                        {userName}
                                                 </div>
                                             </button>
                                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                <li><Link className="dropdown-item" to="/partner/dashboard/profile">Profile</Link></li>
+                                                <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
                                                 <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
                                             </ul>
                                 </div>
@@ -281,18 +295,18 @@ const QuotesReceived = () => {
                                             <Accordion.Item eventKey={index} style={{marginBottom : '20px'}} >
                                                 <div className="col-12 d-flex justify-content-between fs-small quote-card" style={{minHeight : '100%' , padding : 'none', minWidth : '100%'}} >
                                                     <ul>
-                                                <li className='mb-3'>
-                                                    <span className='text-muted'>Title</span>
-                                                    {item?.title}
-                                                </li>
-                                                <li className='mb-3'>
-                                                    <span className='text-muted'>Status</span>
-                                                    {item?.status == false ? (<span style={{color : 'crimson' , fontWeight : 600}} >Un Resolved</span>) : (<span style={{color : '#27ae60' , fontWeight : 600}} >Resolved</span>) }
-                                                </li>
-                                                <li>
-                                                    <span className='text-muted'>Last Updated</span>
-                                                    {moment(item?.updatedAt).format('MMM Do YYYY, h:mm:ss a')}
-                                                </li>
+                                                        <li className='mb-3'>
+                                                            <span className='text-muted'>Title</span>
+                                                            {item?.title}
+                                                        </li>
+                                                        <li className='mb-3'>
+                                                            <span className='text-muted'>Status</span>
+                                                            {item?.status == false ? (<span style={{color : 'crimson' , fontWeight : 600}} >Un Resolved</span>) : (<span style={{color : '#27ae60' , fontWeight : 600}} >Resolved</span>) }
+                                                        </li>
+                                                        <li>
+                                                            <span className='text-muted'>Last Updated</span>
+                                                            {moment(item?.updatedAt).format('MMM Do YYYY, h:mm:ss a')}
+                                                        </li>
                                                     </ul>
                                                     <CustomToggle eventKey={index} ticketId={item?._id} >View Details</CustomToggle>
                                                 </div>
@@ -312,10 +326,10 @@ const QuotesReceived = () => {
                                                             </div>
                                                         ) : (
                                                             <div className="row" key={item?._id} style={{paddingTop : '30px'}} >
-                                                                <div className="d-flex flex-column" style={{marginBottom : '20px'}} >
+                                                                <div className="d-flex flex-column justify-content-center align-content-center" style={{marginBottom : '20px'}} >
                                                                     <h6 style={{marginLeft : '15px', color : '#d35400'}} >Issue Description : </h6>
                                                                     <p style={{ padding : '10px' , borderRadius : '10px'}} >
-                                                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vel mi ac felis aliquet finibus eu sit amet leo. Praesent sed euismod nisi. In maximus facilisis tempor. Cras in cursus est, id feugiat mauris. Aenean sed sapien ligula. Fusce mattis, ipsum eu hendrerit sollicitudin, lectus lacus fermentum sapien, eu pretium orci est nec erat. Donec sit amet dictum magna. Ut vitae sem eu ligula consectetur volutpat vitae sit amet metus. Etiam imperdiet nec purus quis bibendum. Quisque aliquet diam aliquet lectus luctus molestie.
+                                                                        {item?.desc}
                                                                     </p>
                                                                 </div>
                                                                 <h4 style={{marginLeft : '15px', fontWeight : 600 , }} >Comments : </h4>

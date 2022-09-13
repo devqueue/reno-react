@@ -43,6 +43,9 @@ const addNewTicketResponse = (data) => API.post(`/api/v1/issueTicketsResponse/ad
 const getResponseOfAnyTicket = (ticketId) => API.get(`/api/v1/issueTicketsResponse/getAllResponseOnAnyTicketByMerchant/${ticketId}`);
 const checkUserPassword = (password) => API.get(`/api/v1/merchants/checkPassword/${password}`);
 const updateUserPassword = (password) => API.put(`/api/v1/merchants/updatePassword/${password}`);
+const getMerchantDetails = () => API.get(`/api/v1/merchants/getMerchantDetails`);
+const updateMerchantPic = (data) => API.put(`/api/v1/merchants/updateProfilePic`, data);
+const updateMerchantDetails = (data) => API.put(`/api/v1/merchants/updateMerchantProfile`, data);
 
 
 
@@ -63,5 +66,8 @@ module.exports = {
     addNewTicketResponse,
     getResponseOfAnyTicket,
     checkUserPassword,
-    updateUserPassword
+    updateUserPassword,
+    getMerchantDetails,
+    updateMerchantPic,
+    updateMerchantDetails
 }

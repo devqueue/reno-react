@@ -19,6 +19,8 @@ import axios from 'axios'
 
 const Applications = () => {
     const navigate = useNavigate()
+    const [ userName , setUserName ] = useState("");
+    const [ userPic , setUserPic ] = useState("");
     const [ filterData , setFilterData ] = useState({
         customerId : "",
         category : "",
@@ -35,11 +37,11 @@ const Applications = () => {
         .then(function (response) {
             console.log("response : ",response);
             if(response?.data?.success === true){
-                let newArr = response?.data?.AllQuotes.reverse()
+                let newArr = response?.data?.AllQuotes
                 let newarray = [];
                 newArr?.map((event, idx) => {
                     return newarray.push([
-                        event[0].CustomerAndProductDetails.IDCardNo,
+                        `${event[0].CustomerAndProductDetails.IDCardNo} ${event[0].CustomerAndProductDetails.email}`,
                         event[0].CustomerAndProductDetails.productCategory,
                         event[0].FinanceDetails.totalPurchaseAmt,
                         event[0].RepaymentAmount.totalMonths,
@@ -96,16 +98,6 @@ const Applications = () => {
         setIsFetching(false)
     }
 
-    // logging out
-    const logout = async () => {
-        localStorage.removeItem("reno-merchant-token")
-        sessionStorage.removeItem('reno-merchant-token');
-        localStorage.removeItem("reno-merchantId")
-        sessionStorage.removeItem('reno-merchantId');
-        toast.success("Signed Out SuccessFully");
-        await delay(2000);
-        navigate('/');
-    }
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
@@ -117,8 +109,36 @@ const Applications = () => {
         if(!customerToken && !isSessionFound){
             navigate("/partner/auth/login");
         }
-        setMerchantId(JSON.parse(localStorage.getItem('reno-merchantId')) || sessionStorage.getItem("reno-merchantId"))
+        let id = JSON.parse(localStorage.getItem('reno-merchantId'))
+        setMerchantId(id)
+        let name = JSON.parse(localStorage.getItem('reno-merchantName'))
+        if(!name){
+            name = JSON.parse(sessionStorage.getItem("reno-merchantName"));
+        }
+        setUserName(name)
+
+        let pic = JSON.parse(localStorage.getItem('reno-merchantPic'))
+        if(!pic){
+            pic = JSON.parse(sessionStorage.getItem("reno-merchantPic"));
+        }
+        setUserPic(pic)
     },[location])
+
+    // logging out
+    const logout = async () => {
+        localStorage.removeItem("reno-merchant-token")
+        sessionStorage.removeItem('reno-merchant-token');
+        localStorage.removeItem("reno-merchantId")
+        sessionStorage.removeItem('reno-merchantId');
+        localStorage.removeItem("reno-merchantName")
+        sessionStorage.removeItem('reno-merchantName');
+        localStorage.removeItem("reno-merchantPic")
+        sessionStorage.removeItem('reno-merchantPic');
+        toast.success("Signed Out SuccessFully");
+        await delay(2000);
+        navigate('/');
+    }
+    // sleeping
 
     const [ isFetching , setIsFetching ] = useState(false)
     const [ allData , setAllData ] = useState([]);
@@ -141,7 +161,7 @@ const Applications = () => {
                 let newarray = [];
                 newArr?.map((event, idx) => {
                     return newarray.push([
-                        event.CustomerAndProductDetails.IDCardNo,
+                        `${event.CustomerAndProductDetails.IDCardNo} ${event.CustomerAndProductDetails.email}` ,
                         event.CustomerAndProductDetails.productCategory,
                         event.FinanceDetails.totalPurchaseAmt,
                         event.RepaymentAmount.totalMonths,
@@ -199,9 +219,9 @@ const Applications = () => {
             <div className="panel-top d-flex align-items-center justify-content-between">
                 <div className='panel-left'>
                     <h5 className='mb-0 fw-600'>Applications</h5>
-                    <p className='text-muted mb-0 text-light fs-small'>
+                    {/* <p className='text-muted mb-0 text-light fs-small'>
                     {moment().format('MMMM Do YYYY')}
-                    </p>
+                    </p> */}
                 </div>
 
                 <div className='d-flex align-items-center panel-right'>
@@ -238,16 +258,16 @@ const Applications = () => {
                         </div>
 
                         <div className="dropdown profile-dropdown">
-                        <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div className='d-flex align-items-center fs-small me-3'>
-                            <img src={user} alt="" />
-                            Mohammed
-                                        </div>
-                                    </button>
-                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><Link className="dropdown-item" to="/partner/dashboard/profile">Profile</Link></li>
-                                        <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
-                                    </ul>
+                                    <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div className='d-flex align-items-center fs-small me-3'>
+                                    <img src={userPic} alt="" style={{maxWidth: '50px', maxheight : '50px', borderRadius : '50%' }} />
+                                        {userName}
+                                                </div>
+                                            </button>
+                                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
+                                                <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
+                                            </ul>
                         </div>
                     </div>
             </div>
@@ -298,7 +318,7 @@ const Applications = () => {
                                 data={allData}
                                 columns={[
                                     {
-                                        name : "Cust. ID",
+                                        name : "Custumer",
                                         minWidth : '150px',
                                     },
                                     {
@@ -340,16 +360,16 @@ const Applications = () => {
                                         ),
                                     },
                                     {
-                                        name : "is Paid",
+                                        name : "Payment status",
                                         formatter: (cell) =>
                                         _(
                                             <>
-                                                <Button variant="link" size="sm" onClick={handleInvoiceInvoice} >Download</Button>
+                                                <Button variant="link" size="sm" onClick={handleInvoiceInvoice} >Un Paid</Button>
                                             </>
                                         ),
                                     },
                                     {
-                                        name: "Action",
+                                        name: "View Invoice",
                                         minWidth : '150px',
                                         formatter: (cell) =>
                                         _(
@@ -375,6 +395,7 @@ const Applications = () => {
                                     },
                                     td: {
                                             textAlign: 'center',
+                                            fontSize : '14px'
                                         }
                                 }}
                             />

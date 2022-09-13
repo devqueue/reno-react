@@ -21,6 +21,8 @@ const NewApllication = () => {
     document.title = 'Reno | Partner Portal'
     const navigate = useNavigate()
     const location = useLocation()
+    const [ userName , setUserName ] = useState("");
+    const [ userPic , setUserPic ] = useState("");
 
     const [step, setStep] = useState(1)
     const [ isFetching , setIsFetching ] = useState(false)
@@ -28,6 +30,7 @@ const NewApllication = () => {
     const [ updateData , setUpdateData ] = useState(null)
     const [ transCount , setTransCount ] = useState(1)
     const [choice, setChoice] = useState(true)
+    const [ isDisabled , setIsDisabled] = useState(false)
     const [ quoteDate , setQuoteData ] = useState({
         totalPurchaseAmount : 0,
         depositAmount : 0,
@@ -57,11 +60,38 @@ const NewApllication = () => {
         if(!customerToken && !isSessionFound){
             navigate("/partner/auth/login");
         }
+        let name = JSON.parse(localStorage.getItem('reno-merchantName'))
+        if(!name){
+            name = JSON.parse(sessionStorage.getItem("reno-merchantName"));
+        }
+        setUserName(name)
+
+        let pic = JSON.parse(localStorage.getItem('reno-merchantPic'))
+        if(!pic){
+            pic = JSON.parse(sessionStorage.getItem("reno-merchantPic"));
+        }
+        setUserPic(pic)
     },[location])
+
+    // logging out
+    const logout = async () => {
+        localStorage.removeItem("reno-merchant-token")
+        sessionStorage.removeItem('reno-merchant-token');
+        localStorage.removeItem("reno-merchantId")
+        sessionStorage.removeItem('reno-merchantId');
+        localStorage.removeItem("reno-merchantName")
+        sessionStorage.removeItem('reno-merchantName');
+        localStorage.removeItem("reno-merchantPic")
+        sessionStorage.removeItem('reno-merchantPic');
+        toast.success("Signed Out SuccessFully");
+        await delay(2000);
+        navigate('/');
+    }
+    // sleeping
 
     // calculating value
     useEffect(() => {
-        if(quoteDate.totalPurchaseAmount !== 0 && quoteDate.depositAmount !== 0){
+        if(quoteDate.totalPurchaseAmount !== 0 ){
             let totalMonths = (quoteDate.totalPurchaseAmount - quoteDate.depositAmount) / transCount
             let AmtPerMnt = (quoteDate.totalPurchaseAmount - quoteDate.depositAmount) / transCount
             let n = AmtPerMnt.toFixed(2)
@@ -73,7 +103,7 @@ const NewApllication = () => {
 
     // checking all fields of step 01
     const checkStep01 = () => {
-        if(quoteDate?.totalPurchaseAmount === 0 || quoteDate?.depositAmount === 0 || quoteDate?.balanceOwning === 0  ){
+        if(quoteDate?.totalPurchaseAmount === 0  || quoteDate?.balanceOwning === 0  ){
             toast.error("Please Provide All Fields");
         }else{
             setStep(2)
@@ -82,7 +112,7 @@ const NewApllication = () => {
 
     // checking all fields of step 03
     const checkStep03 = () => {
-        if(quoteDate?.IDCardNo === '' || quoteDate?.email === '' || quoteDate?.phoneNo === '' || quoteDate?.productCategory === '' ){
+        if(quoteDate?.IDCardNo === '' || quoteDate?.email === '' || quoteDate?.productCategory === '' ){
             toast.error("Please Provide All Fields");
         }else{
             setStep(4)
@@ -98,7 +128,7 @@ const NewApllication = () => {
             emptyQuoteData();
             await delay(1500)
             setIsFetching(false)
-            navigate('/partner/dashboard/panel');
+            navigate('partner/dashboard/applications');
         }else{
             await delay(1500)
             setIsFetching(false)
@@ -184,25 +214,17 @@ const NewApllication = () => {
         }
     }
 
-    // logging out
-    const logout = async () => {
-        localStorage.removeItem("reno-merchant-token")
-        sessionStorage.removeItem('reno-merchant-token');
-        localStorage.removeItem("reno-merchantId")
-        sessionStorage.removeItem('reno-merchantId');
-        toast.success("Signed Out SuccessFully");
-        await delay(2000);
-        navigate('/');
-    }
-    // sleeping
-
     // find if customer exists on Reno or not
     const checkCustomer = async (value) => {
         const {data} = await checkCustomerExistsOrNot(value);
         if(data?.success === true){
             setIfCustomerExists(true)
+            setQuoteData({...quoteDate , email : data?.Details?.Email , phoneNo : data?.Details?.PhoneNo})
+            setIsDisabled(true)
         }else{
             setIfCustomerExists(false)
+            setQuoteData({...quoteDate , email : "" , phoneNo : ""})
+            setIsDisabled(false)
         }
     }
 
@@ -217,50 +239,50 @@ const NewApllication = () => {
                 </div>
 
                 <div className='d-flex align-items-center panel-right'>
-                        <div class="dropdown profile-dropdown">
-                            <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                <AiFillBell />
-                                <span>{allNotificationsCount}</span>
-                            </Link>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                {
-                                    allNotifications?.length > 0 ? (
-                                        allNotifications?.map((item) => (
-                                            item?.isRead === false ? (
-                                                <li style={{backgroundColor : '#ecf0f1'}} onClick={() => readNotification(item?._id)}>
-                                                    <Link class="dropdown-item" to="">
-                                                        <strong>{item?.message} </strong> <br />
-                                                        <span style={{ fontSize: '12px' , color : '#34495e' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
-                                                    </Link>
-                                                </li>
-                                            ) : (
-                                                <li style={{backgroundColor : 'transparent'}} >
+                    <div class="dropdown profile-dropdown">
+                        <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <AiFillBell />
+                            <span>{allNotificationsCount}</span>
+                        </Link>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            {
+                                allNotifications?.length > 0 ? (
+                                    allNotifications?.map((item) => (
+                                        item?.isRead === false ? (
+                                            <li style={{backgroundColor : '#ecf0f1'}} onClick={() => readNotification(item?._id)}>
                                                 <Link class="dropdown-item" to="">
-                                                        <strong>{item?.message} </strong> <br />
-                                                        <span className='text-muted' style={{ fontSize: '12px' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                                    <strong>{item?.message} </strong> <br />
+                                                    <span style={{ fontSize: '12px' , color : '#34495e' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
                                                 </Link>
-                                                </li>
-                                            )
-                                        ))
-                                    ) : (
-                                        <li style={{marginLeft : '15px'}} >Empty</li>
-                                    )
-                                }
-                            </ul>
-                        </div>
+                                            </li>
+                                        ) : (
+                                            <li style={{backgroundColor : 'transparent'}} >
+                                            <Link class="dropdown-item" to="">
+                                                    <strong>{item?.message} </strong> <br />
+                                                    <span className='text-muted' style={{ fontSize: '12px' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                            </Link>
+                                            </li>
+                                        )
+                                    ))
+                                ) : (
+                                    <li style={{marginLeft : '15px'}} >Empty</li>
+                                )
+                            }
+                        </ul>
+                    </div>
 
-                        <div className="dropdown profile-dropdown">
-                        <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <div className='d-flex align-items-center fs-small me-3'>
-                            <img src={user} alt="" />
-                            Mohammed
-                                        </div>
-                                    </button>
-                                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><Link className="dropdown-item" to="#">Profile</Link></li>
-                                        <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
-                                    </ul>
-                        </div>
+                    <div className="dropdown profile-dropdown">
+                                <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div className='d-flex align-items-center fs-small me-3'>
+                                <img src={userPic} alt="" style={{maxWidth: '50px', maxheight : '50px', borderRadius : '50%' }} />
+                                    {userName}
+                                            </div>
+                                        </button>
+                                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                            <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
+                                            <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
+                                        </ul>
+                    </div>
                 </div>
             </div>
 
@@ -330,7 +352,8 @@ const NewApllication = () => {
                                 <div className="col-12 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Select Tenure (Months)</label>
                                     <select class="form-select me-3 text-muted" style={{ width: '100%' }} aria-label="Default select example" onChange={(e) =>setTransCount(e.target.value)}  >
-                                        <option selected disabled></option>
+                                        <option selected disabled>1</option>
+                                        <option>2</option>
                                         <option>3</option>
                                         <option>4</option>
                                         <option>5</option>
@@ -417,8 +440,12 @@ const NewApllication = () => {
                             <div className="row finance-form mt-4">
 
                                 <div className="col-12 form-group mb-4">
-                                    <label className='form-label text-muted fs-small'>Customer ID Card/Iqama Number </label>
-                                    <br/><span style={{fontSize : '12px', color :"crimson"}} >(if customer is not found on reno, customer then will receive email for this quote)</span>
+                                    <label className='form-label text-muted fs-small'>Customer ID Card/Iqama Number </label><br/>
+                                    {
+                                        ifCustomerExists == false && (
+                                            <span style={{fontSize : '12px', color :"crimson"}} >if customer is not found on reno, customer then will receive email for this quote</span>
+                                        )
+                                    }
                                     <input type="text" className='form-control' placeholder='Enter your ID Card/Iqama Number' value={quoteDate?.IDCardNo} onChange={(e) => setQuoteData({...quoteDate , IDCardNo : e.target.value})} onBlur={(e) => checkCustomer(e.target.value)} autofocus={true} required />
                                     {
                                         ifCustomerExists == true ? (
@@ -437,13 +464,19 @@ const NewApllication = () => {
                                             <option>+966</option>
                                             <option>+966</option>
                                         </select>
-                                        <input type="number" className='form-control' placeholder='Enter your customer’s phone number'  value={quoteDate?.phoneNo} onChange={(e) => setQuoteData({...quoteDate , phoneNo : e.target.value})}  required  />
+                                        <input type="number" className='form-control' placeholder='Enter your customer’s phone number'  value={quoteDate?.phoneNo} onChange={(e) => setQuoteData({...quoteDate , phoneNo : e.target.value})}  required  disabled={isDisabled} />
                                     </div>
                                 </div>
                                 <div className="col-12 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Email</label>
-                                    <br/><span style={{fontSize : '12px', color :"crimson"}} >(Please provide a valid email, in case customer is not on reno)</span>
-                                    <input type="email" className='form-control' placeholder='Enter your customer’s email address' value={quoteDate?.email} onChange={(e) => setQuoteData({...quoteDate , email : e.target.value})}  required />
+                                    <br/><span style={{fontSize : '12px', color :"crimson"}} >
+                                    {
+                                        ifCustomerExists == false && (
+                                            "Please provide a valid email, in case customer is not on reno"
+                                        )
+                                    }
+                                        </span>
+                                    <input type="email" className='form-control' placeholder='Enter your customer’s email address' value={quoteDate?.email} onChange={(e) => setQuoteData({...quoteDate , email : e.target.value})}  required disabled={isDisabled} />
                                 </div>
                                 <div className="col-12 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Product Category</label>
