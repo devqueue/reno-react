@@ -16,6 +16,8 @@ const LoginForm = () => {
     const navigate = useNavigate();
     const [ isFetching , setIsFetching ] = useState(false)
     const [ isRemember , setRemember ] = useState(false)
+    const [ isEmailMatched , setIsEmailMatched ] = useState(true)
+    const [ isPasswordMatched , setIsPasswordMatched ] = useState(true)
     const [ userData , setUserDate ] = useState({
         email : '',
         password : '',
@@ -23,6 +25,14 @@ const LoginForm = () => {
 
     // sending data
     const sendData = async () => {
+        if(isEmailMatched == false){
+            toast.error("Please Provide valid Email Address to continue.");
+            return;
+        }
+        if(isPasswordMatched == false){
+            toast.error("Password must be of 8 digits Long.");
+            return;
+        }
         setIsFetching(true)
         const {data} = await signInAdmin(userData);
         if(data?.success === true){
@@ -62,6 +72,24 @@ const LoginForm = () => {
         }
     },[])
 
+    // checking email pattern
+    const matchEmail = (email) => {
+        if ( email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i) ) {
+            setIsEmailMatched(true)
+        } else {
+            setIsEmailMatched(false)
+        }
+    }
+
+    // checking password
+    const checkPassword = (value) => {
+        if ( value.match(/^(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$/i) ) {
+            setIsPasswordMatched(true)
+        } else {
+            setIsPasswordMatched(false)
+        }
+    }
+
   return (
     <>
     <Header />
@@ -73,17 +101,27 @@ const LoginForm = () => {
                 <div className="form-group mb-4">
                     <label className='form-label'>Email</label>
                     <div className="auth-input-container">
-                        <input type="email" className='form-control px-3' placeholder='Enter Your Email' value={userData?.email} onChange={(e) => setUserDate({...userData , email : e.target.value})} required  />
+                        <input type="email" className='form-control px-3' placeholder='Enter Your Email' value={userData?.email} onChange={(e) => setUserDate({...userData , email : e.target.value})} required onBlur={(e) => matchEmail(e.target.value)} />
                     </div>
+                    {
+                        isEmailMatched === false && (
+                            <span style={{color : 'crimson', fontSize : '12px'}} >Please provide a valid email address.</span>
+                        )
+                    }
                 </div>
                 <div className="form-group mb-2">
                     <label className='form-label'>Password</label>
                     <div className='pass-container'>
                         <div className="auth-input-container">
-                            <input type={`${pass1 ? 'text' : 'password'}`} className='form-control px-3' placeholder='Password' value={userData?.password} onChange={(e) => setUserDate({...userData , password : e.target.value})} required />
+                            <input type={`${pass1 ? 'text' : 'password'}`} className='form-control px-3' placeholder='Password' value={userData?.password} onChange={(e) => setUserDate({...userData , password : e.target.value})} required onBlur={(e) => checkPassword(e.target.value)} />
                         </div>
                         <img src={eye} onClick={() => setPass1(!pass1)} className='reveal-btn' alt="" />
                     </div>
+                    {
+                            isPasswordMatched === false && (
+                                <span style={{color : 'crimson', fontSize : '12px'}} >Password must contain minimum eight characters, at least one letter, one number and one special character.</span>
+                            )
+                        }
                 </div>
                 <h6 className='text-end mb-4'>
                 </h6>

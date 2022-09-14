@@ -8,6 +8,8 @@ import { ThreeDots } from  'react-loader-spinner'
 const SignupForm = () => {
     const navigate = useNavigate();
     const [ isFetching , setIsFetching ] = useState(false)
+    const [ isEmailMatched , setIsEmailMatched ] = useState(true)
+    const [ isPasswordMatched , setIsPasswordMatched ] = useState(true)
     const [ userData , setUserDate ] = useState({
         firstName : '',
         lastName : '',
@@ -20,6 +22,10 @@ const SignupForm = () => {
 
     // sending data
     const sendData = async () => {
+        if(isEmailMatched == false){
+            toast.error("Please Provide valid Email Address to continue.");
+            return;
+        }
         setIsFetching(true)
         const {data} = await signUpMerchant(userData);
         if(data?.success === true){
@@ -53,6 +59,15 @@ const SignupForm = () => {
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
+    // checking email pattern
+    const matchEmail = (email) => {
+        if ( email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i) ) {
+            setIsEmailMatched(true)
+        } else {
+            setIsEmailMatched(false)
+        }
+    }
+
 
     document.title = 'Reno | Partner Signup'
     return (
@@ -85,8 +100,13 @@ const SignupForm = () => {
                     <div className="form-group mb-4">
                         <label className='form-label'>Email Address <span style={{color : 'crimson'}} >(*)</span></label>
                         <div className="auth-input-container">
-                            <input type="email" className='form-control px-3' placeholder='Enter Your Email Address' value={userData?.email} onChange={(e) => setUserDate({...userData , email : e.target.value})} required />
+                            <input type="email" className='form-control px-3' placeholder='Enter Your Email Address' value={userData?.email} onChange={(e) => setUserDate({...userData , email : e.target.value})} required onBlur={(e) => matchEmail(e.target.value)} />
                         </div>
+                        {
+                                isEmailMatched === false && (
+                                    <span style={{color : 'crimson', fontSize : '12px'}} >Please provide a valid email address.</span>
+                                )
+                            }
                     </div>
                     <div className="form-group mb-4">
                         <label className='form-label'>Mobile Number <span style={{color : 'crimson'}} >(*)</span></label>

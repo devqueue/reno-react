@@ -13,10 +13,10 @@ import danger from '../../assets/icons/danger.png'
 import confirmation from '../../assets/images/confirmation.png'
 import paid from '../../assets/images/paid.png'
 import { ThreeDots } from  'react-loader-spinner'
-import {getRecentQuotesDeliveredToACustomer , deliveryConfirmationOfAQuote} from '../../api/CustomerApi'
+import {getRecentQuotesDeliveredToACustomer , deliveryConfirmationOfAQuote , makeNewPayment} from '../../api/CustomerApi'
 import {Button} from 'react-bootstrap'
 import moment from 'moment'
-import {getAllNotificationsOfCustomer ,markNotificationsOfMerchantRead } from '../../api/CustomerApi'
+import {getAllNotificationsOfCustomer ,markNotificationsOfMerchantRead , getAllPaymentsHistory } from '../../api/CustomerApi'
 
 
 
@@ -27,6 +27,13 @@ const PaidFinanceQuotes = () => {
     const [ itemId , setItemId ] = useState("")
     const [ userName , setUserName ] = useState("");
     const [ userPic , setUserPic ] = useState("");
+    const [ selectedId , setSelectedId] = useState("");
+    const [ cardDetails , setCardDetails ] = useState({
+        cardNo : "",
+        name : "",
+        expiryDate : "",
+        cvv : ""
+    });
 
     //getting all data
     useEffect(() => {
@@ -95,6 +102,8 @@ const PaidFinanceQuotes = () => {
     },[location])
 
     const [ allNotifications , setAllNotifications ] = useState([])
+    const [ allPaid , setAllPaid ] = useState([])
+    const [ allUnPaid , setAllUnPaid ] = useState([])
     const [ allNotificationsCount , setAllNotificationsCount ] = useState([])
     // getting all notifications
     useEffect(() =>{
@@ -126,6 +135,55 @@ const PaidFinanceQuotes = () => {
                 setAllNotificationsCount(prev => prev - 1)
             }
             }
+    }
+
+    // making payment
+    const makeMyPayment = async () => {
+        // if(isAgreed == false){
+        //     toast.warning("You must agree with terms and conditions.")
+        //     return;
+        // }
+        if(cardDetails?.name == "" || cardDetails?.cardNo == "" || cardDetails?.cvv == ""){
+            toast.warning("Please Fill All required Fields.")
+            return;
+        }
+        const {data} = await makeNewPayment(selectedId)
+        if(data?.success == true){
+            toast.success(data?.message)
+            setCardDetails({
+                cardNo : "",
+                name : "",
+                expiryDate : "",
+                cvv : ""
+            })
+            setSelectedId("")
+            await delay(2000);
+            window.location.reload();
+        }else{
+            toast.error(data?.message)
+        }
+    }
+
+    // getting payments details
+    const getAllPayments = async (id) => {
+        const {data} = await getAllPaymentsHistory(id);
+        if(data?.success === true){
+            setAllPaid(data?.History);
+            let newNo = data?.TotalMonths - data?.History.length;
+            let newArr = []
+            for(let i = 0; i !== newNo; i++){
+                let month = moment(data?.History[data?.History.length - 1].date).add(i +1, 'months').calendar();
+                let myDate = moment(month).format('MMM YY')
+                newArr.push({
+                    index : i + 1,
+                    date : myDate,
+                    amount : data?.Amount
+                })
+                setAllUnPaid(newArr)
+            }
+        }else{
+            toast.error(data?.message)
+        }
     }
 
     return (
@@ -208,50 +266,66 @@ const PaidFinanceQuotes = () => {
                                     allData.length > 0 ? (
                                         allData?.map((item) => (
                                             <div className="col-12 mt-3" key={item?._id} >
-                                                <div className='d-flex justify-content-between fs-small quote-card'>
-                                                    <ul>
-                                                        <li className='mb-3'>
-                                                            <span className='text-muted'>Company</span>
-                                                            {item?.Partner}
-                                                        </li>
-                                                        <li className='mb-3'>
-                                                            <span className='text-muted'>Phone</span>
-                                                            {item?.PhoneNo}
-                                                        </li>
-                                                        <li>
-                                                            <span className='text-muted'>Reference#</span>
-                                                            88748884
-                                                        </li>
-                                                    </ul>
+                                            <div className='d-flex justify-content-between fs-small quote-card'>
+                                                <ul>
+                                                    <li className='mb-3'>
+                                                        <span className='text-muted'>Company</span>
+                                                        {item?.Partner}
+                                                    </li>
+                                                    <li className='mb-3'>
+                                                        <span className='text-muted'>Phone</span>
+                                                        {item?.PhoneNo}
+                                                    </li>
+                                                    <li>
+                                                        <span className='text-muted'>Reference#</span>
+                                                        78445557
+                                                    </li>
+                                                </ul>
 
-                                                    <img src={line} alt="" />
+                                                <img src={line} alt="" />
 
-                                                    <ul>
-                                                        <li className='mb-3'>
-                                                            <span className='text-muted'>Product Category</span>
-                                                            {item?.ProductCategory?.productCategory}
-                                                        </li>
-                                                        <li className='mb-3'>
-                                                            <span className='text-muted'>Financed Amount</span>
-                                                            {item?.FirstInstallment?.totalPurchaseAmt} SAR
-                                                        </li>
-                                                        <li>
-                                                            <span className='text-muted'>First Installment</span>
-                                                            {item?.FirstInstallment?.depositAmt} SAR
-                                                        </li>
-                                                    </ul>
+                                                <ul>
+                                                    <li className='mb-3'>
+                                                        <span className='text-muted'>Product Category</span>
+                                                        {item?.ProductCategory?.productCategory}
+                                                    </li>
+                                                    <li className='mb-3'>
+                                                        <span className='text-muted'>Financed Amount</span>
+                                                        {item?.FirstInstallment?.totalPurchaseAmt} SAR
+                                                    </li>
+                                                    <li>
+                                                        <span className='text-muted'>First Installment</span>
+                                                        {item?.FirstInstallment?.depositAmt} SAR
+                                                    </li>
+                                                </ul>
 
-                                                    <div>
-                                                        <div className="request-status-container">
-                                                            <div className="request-status text-green bg-soft-green">
-                                                                Paid
-                                                                <img src={success} alt="" />
+                                                <div>
+                                                    <div className="request-status-container" style={{marginLeft : '25px'}} >
+                                                        <div className="request-status text-green bg-soft-green" style={{maxWidth: '300px' , maxHeight : '30px' , backgroundColor : 'white' , marginLeft : '30px' , display: 'flex' , alignItems : 'center' ,  marginBottom : '25px', justifyContent : 'space-between'  }} >
+                                                            {item?.quoteStatus}
+                                                            <img src={success} alt=""  style={{maxWidth: '80px' , maxHeight : '30px' , marginLeft : '10px' }}  />
+                                                        </div>
+                                                    </div>
+                                                    {
+                                                        item?.isFullyPaid === true ? (
+                                                            <div className="request-status-container d-flex justify-content-center"  >
+                                                                <div className="request-status text-green bg-soft-green" style={{maxWidth: '100px', maxHeight : '30px' , backgroundColor : 'white' , marginLeft : '30px' , display: 'flex' , alignItems : 'center' ,  marginBottom : '25px', justifyContent : 'space-between'  }} >
+                                                                    Fully Paid
+                                                                    <img src={success} alt=""  style={{maxWidth: '80px' , maxHeight : '30px'  }}  />
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <button className='btn text-darkBlue border border-color-darkBlue finance-btn hover-bg' data-bs-toggle="modal" data-bs-target="#paidModal" onClick={() => setItemId(item?._id)} >I confirm that I’ve received products and services from the merchant</button>
-                                                        </div>
+                                                        ) : (
+                                                            <div className="request-status-container" style={{marginLeft : 'auto'}} >
+                                                                <div className="request-status text-green bg-soft-green" data-bs-toggle="modal" data-bs-target="#payModal" onClick={() => setSelectedId(item?._id)} style={{maxWidth: '150px' , maxHeight : '30px' , cursor : 'pointer' , backgroundColor : 'white' , marginLeft : '30px' , display: 'flex' , alignItems : 'center' ,  marginBottom : '25px', justifyContent : 'space-between' , marginLeft : 'auto' }}  >
+                                                                    Make Next Payment
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    }
+                                                    <Button style={{color: 'white', margin : 'auto' }} variant="success" data-bs-toggle="modal" data-bs-target="#payModal01" onClick={() => getAllPayments(item?._id)} >View Payment History </Button>
                                                 </div>
                                             </div>
+                                        </div>
                                         ))
                                     ) : (
                                         <div className="quotes-null">
@@ -269,25 +343,129 @@ const PaidFinanceQuotes = () => {
 
         {/* modals */}
 
-        <div class="modal fade" id="paidModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="payModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <div class="modal-body">
+                <div class="modal-body pay-form">
 
-                        <div className="w-100 d-flex justify-content-end">
+                    <div className="d-flex justify-content-end">
+                    <span className='bg-soft-danger text-danger modal-close' data-bs-dismiss="modal"><IoMdClose /></span>
+                    </div>
+
+                    <h5 className='text-center'>Make Next Payment </h5>
+
+                    <div className="form-group mt-3">
+                    <label className="form-label text-muted">Select a credit card type</label>
+                    <select class="form-select text-muted" aria-label="Default select example">
+                        <option selected>MADA</option>
+                        {/* <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option> */}
+                    </select>
+                    </div>
+
+                    <div className="form-group mt-4">
+                    <label className="form-label text-muted">Credit Card Number</label>
+                    <input type="number" className='form-control' placeholder='XXXX-XXXX-XXXX-XXXX' value={cardDetails?.cardNo} onChange={(e) => setCardDetails({...cardDetails , cardNo : e.target.value})} />
+                    </div>
+
+                    <div className="form-group mt-4">
+                    <label className="form-label text-muted">Name of Card Holder</label>
+                    <input type="text" className='form-control' placeholder='Same as on credit card' value={cardDetails?.name} onChange={(e) => setCardDetails({...cardDetails , name : e.target.value})} />
+                    </div>
+
+                    <div className="row">
+                    <div className="form-group mt-4 col-lg-6">
+                        <label className="form-label text-muted">Expiry Date</label>
+                        <input type="text" className='form-control' placeholder='MM / YYYY' value={cardDetails?.expiryDate} onChange={(e) => setCardDetails({...cardDetails , expiryDate : e.target.value})} />
+                    </div>
+                    <div className="form-group mt-4 col-lg-6">
+                        <label className="form-label text-muted">Security Code</label>
+                        <input type="number" className='form-control' placeholder='CVV' value={cardDetails?.cvv} onChange={(e) => setCardDetails({...cardDetails , cvv : e.target.value})} />
+                    </div>
+                    </div>
+
+                    {/* <div class="form-check d-flex align-items-center mt-4">
+                        <input class="form-check-input pay-check me-3" style={{ border: '1.5px solid #3F3F3F', width: '25px', height: '25px', borderRadius: '30%' }} type="checkbox" value="" id="privacyPolicy" />
+                        <label class="form-check-label fs-small text-muted" for="privacyPolicy">
+                        I’ve read and accept the  <Link className='text-dark text-decoration-underline' to='' onClick={() => setIsAgreed(!isAgreed)} >Terms & Conditions</Link>.
+                        </label>
+                    </div> */}
+
+                    <button className="btn btn-success mt-4 w-100" style={{ height: '50px', borderRadius: '6px' }}  onClick={makeMyPayment} >Pay Now</button>
+
+                </div>
+                </div>
+            </div>
+        </div>
+
+        {/* getting all payment history */}
+        <div class="modal fade" id="payModal01" tabindex="-1" aria-labelledby="exampleModalLabel01" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body pay-form">
+
+                        <div className="d-flex justify-content-end">
                             <span className='bg-soft-danger text-danger modal-close' data-bs-dismiss="modal"><IoMdClose /></span>
                         </div>
-                        <img src={confirmation} alt="" />
 
-                        <h5 className='my-3 fw-600 text-darkBlue'>Confirmation</h5>
+                        <h5 className='text-center'>Payments History </h5>
+                        <div style={{border : '1px solid darkGray' , borderRadius: '10px', padding : '10px' }} >
+                            <div className='row d-flex mb-3' style={{border : '1px solid darkGray',  borderRadius: '10px' , paddingTop : '5px', margin: '1px'}} >
+                                <div className='col-sm-4' >
+                                    <h6>No.</h6>
+                                </div>
+                                <div className='col-sm-4' >
+                                    <h6>Month</h6>
+                                </div>
+                                <div className='col-sm-4' >
+                                    <h6>24 Aug 2022</h6>
+                                </div>
+                            </div>
+                            {
+                                allPaid?.length > 0 ? (
+                                    allPaid?.map((item , index) => (
+                                        <div className='row d-flex mb-3' >
+                                            <div className='col-sm-4' >
+                                                <h6>{index + 1}</h6>
+                                            </div>
+                                            <div className='col-sm-4' >
+                                                <h6>{moment(item?.date).format('MMM YY')}</h6>
+                                            </div>
+                                            <div className='col-sm-4' >
+                                                <h6>{moment(item?.date).format('MMM Do YY, h:mm:ss a')}</h6>
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p>No Payment History Found</p>
+                                )
+                            }
 
-                        <p className='text-muted mb-4'>
-                            Are you sure you want to confirm that “ I’ve received products and services from the merchant ”
-                        </p>
+                            <h5 className='text-center' style={{color: 'crimson', marginBottom: '35px' , marginTop : '25px'  }}>Payments Pending </h5>
+                            {
+                                allUnPaid?.length > 1 ? (
+                                    allUnPaid?.map((item, index) => (
+                                    <div className='row d-flex mb-3' >
+                                            <div className='col-sm-4' >
+                                                <h6>{index + 1}</h6>
+                                            </div>
+                                            <div className='col-sm-4' >
+                                                <h6>{item?.date}</h6>
+                                            </div>
+                                            <div className='col-sm-4' >
+                                                <h6>{item?.amount}</h6>
+                                            </div>
+                                    </div>
 
-                        <div className='d-flex'>
-                            <button className="btn text-light bg-darkBlue me-3" style={{backgroundColor : 'green' , color : 'white'}} data-bs-dismiss='modal' onClick={confirmDelivery} >Yes, Confirm</button>
+                                    ))
+                                ) : (
+                                    <p>No Pending Payments</p>
+                                )
+                            }
+                           
                         </div>
+
                     </div>
                 </div>
             </div>

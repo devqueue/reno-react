@@ -33,16 +33,15 @@ const ManageQuotes = () => {
     const returnHeader = (length) => {
       let pp = []
       for(let p = 0; p !== length; p++){
-              if(p == 0){
-                pp.push(
-                    <td>{length}</td>
-                );
-              }else{
-                <td>{p + 1}</td>
+              // if(p == 0){
+              //   pp.push(
+              //       <td>{1}</td>
+              //   );
+              // }else{
                 pp.push(
                     <td>{p + 1}</td>
                 );
-              }
+              //}
         }
         return pp;
     }
@@ -217,7 +216,7 @@ const ManageQuotes = () => {
                           <>
                           <div className="quote-card manage-quote mb-3" style={{ position: 'relative' }}>
                             <div className="row">
-        
+
                               <div className="col-lg-3">
                                 <h6 className='text-muted fs-small mb-1'>Customer ID Card No.</h6>
                                 <h6 className='text-darkBlue'>{item?.CustomerIDCardNo}</h6>

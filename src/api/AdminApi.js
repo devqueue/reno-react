@@ -28,7 +28,9 @@ API.interceptors.request.use((req) => {
 // Admin Routes
 const signInAdmin = (data) => API.post(`/api/v1/admins/signin`, data);
 const getAllMerchants = () => API.get(`/api/v1/admins/getAllMerchants`);
+const getAllMerchantsMatching = (text) => API.get(`/api/v1/admins/getAllMerchantsMatching/${text}`);
 const getAllCustomers = () => API.get(`/api/v1/admins/getAllCustomers`);
+const getAllCustomersMatching = (text) => API.get(`/api/v1/admins/getAllCustomersMatching/${text}`);
 const disApproveAnyMerchant = (merchantId) => API.put(`/api/v1/admins/DisApproveNewMerchant/${merchantId}`);
 const ApproveAnyMerchant = (merchantId) => API.put(`/api/v1/admins/ApproveNewMerchant/${merchantId}`);
 const getAllQuotes = () => API.get(`/api/v1/admins/getAllQuotes`);
@@ -83,5 +85,7 @@ module.exports = {
     updateMerchantPassword,
     getAdminDetails,
     updateAdminPic,
-    updateAdminDetails
+    updateAdminDetails,
+    getAllMerchantsMatching,
+    getAllCustomersMatching
 }

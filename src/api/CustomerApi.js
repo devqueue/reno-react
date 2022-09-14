@@ -52,6 +52,11 @@ const updateUserPassword = (password) => API.put(`/api/v1/customers/updatePasswo
 const getCustomerDetails = () => API.get(`/api/v1/customers/getCustomerDetails`);
 const updateCustomerPic = (data) => API.put(`/api/v1/customers/updateProfilePic`, data);
 const updateCustomerDetails = (data) => API.put(`/api/v1/customers/updateCustomerProfile`, data);
+const getSingleQuoteDetails = (quoteId) => API.get(`/api/v1/quotes/getSingleQuoteDetails/${quoteId}`);
+const makeNewPayment = (quoteId) => API.post(`/api/v1/quotesHistory/addNewPaymentHistoryToAQuoteHistory/${quoteId}`);
+const getAllPaymentsHistory = (quoteId) => API.get(`/api/v1/quotesHistory/getAllPaymentHistoryOfAQuote/${quoteId}`);
+
+
 
 
 module.exports = {
@@ -80,5 +85,8 @@ module.exports = {
     updateUserPassword,
     getCustomerDetails,
     updateCustomerPic,
-    updateCustomerDetails
+    updateCustomerDetails,
+    getSingleQuoteDetails,
+    makeNewPayment,
+    getAllPaymentsHistory
 }

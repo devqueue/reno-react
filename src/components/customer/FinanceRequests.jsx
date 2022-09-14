@@ -15,7 +15,7 @@ import paid from '../../assets/images/paid.png'
 import { ThreeDots } from  'react-loader-spinner'
 import {getAllTodayFinancialRequestSent , getAllFinancialRequestSent} from '../../api/CustomerApi'
 import moment from 'moment'
-import {getAllNotificationsOfCustomer ,markNotificationsOfMerchantRead } from '../../api/CustomerApi'
+import {getAllNotificationsOfCustomer ,markNotificationsOfMerchantRead , makeNewPayment } from '../../api/CustomerApi'
 
 
 
@@ -24,8 +24,16 @@ const FinanceRequests = () => {
     const [ isFetching , setIsFetching ] = useState(false)
     const [ allData , setAllData ] = useState([]);
     const [ allPreviousData , setAllPreviousData ] = useState([]);
+    const [ selectedId , setSelectedId] = useState("");
+    const [ cardDetails , setCardDetails ] = useState({
+        cardNo : "",
+        name : "",
+        expiryDate : "",
+        cvv : ""
+    });
     const [ userName , setUserName ] = useState("");
     const [ userPic , setUserPic ] = useState("");
+    const [isAgreed , setIsAgreed] = useState(false)
 
     const location = useLocation();
     // checking if user is signed in or not
@@ -53,6 +61,7 @@ const FinanceRequests = () => {
         const getAllRecord = async () => {
             setIsFetching(true)
             const {data} = await getAllTodayFinancialRequestSent();
+            console.log("responsedata?.AllQuotes : ",data?.AllQuotes)
             if(data?.success === true){
                 setAllData(data?.AllQuotes);
             }
@@ -115,6 +124,33 @@ const FinanceRequests = () => {
                 setAllNotificationsCount(prev => prev - 1)
             }
             }
+    }
+
+    // making payment
+    const makeMyPayment = async () => {
+        // if(isAgreed == false){
+        //     toast.warning("You must agree with terms and conditions.")
+        //     return;
+        // }
+        if(cardDetails?.name == "" || cardDetails?.cardNo == "" || cardDetails?.cvv == ""){
+            toast.warning("Please Fill All required Fields.")
+            return;
+        }
+        const {data} = await makeNewPayment(selectedId)
+        if(data?.success == true){
+            toast.success(data?.message)
+            setCardDetails({
+                cardNo : "",
+                name : "",
+                expiryDate : "",
+                cvv : ""
+            })
+            setSelectedId("")
+            await delay(2000);
+            window.location.reload();
+        }else{
+            toast.error(data?.message)
+        }
     }
 
     return (
@@ -216,7 +252,7 @@ const FinanceRequests = () => {
                                                     }
                                                     {
                                                         item?.isAdminApproved === true && (
-                                                                <Button style={{color: 'white' }} variant="success" data-bs-toggle="modal" data-bs-target="#payModal"  >Make payment </Button>
+                                                            <Button style={{color: 'white' }} variant="success" data-bs-toggle="modal" data-bs-target="#payModal" onClick={() => setSelectedId(item?._id)} >Make payment </Button>
                                                         )
                                                     }
                                                 </div>
@@ -341,57 +377,57 @@ const FinanceRequests = () => {
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                 <div class="modal-body pay-form">
-                    
+
                     <div className="d-flex justify-content-end">
                     <span className='bg-soft-danger text-danger modal-close' data-bs-dismiss="modal"><IoMdClose /></span>
                     </div>
 
-                    <h5 className='text-center'>Make First Payment </h5>
+                    <h5 className='text-center'>Make Payment </h5>
 
                     <div className="form-group mt-3">
                     <label className="form-label text-muted">Select a credit card type</label>
                     <select class="form-select text-muted" aria-label="Default select example">
                         <option selected>MADA</option>
-                        <option value="1">One</option>
+                        {/* <option value="1">One</option>
                         <option value="2">Two</option>
-                        <option value="3">Three</option>
+                        <option value="3">Three</option> */}
                     </select>
                     </div>
 
                     <div className="form-group mt-4">
                     <label className="form-label text-muted">Credit Card Number</label>
-                    <input type="text" className='form-control' placeholder='XXXX-XXXX-XXXX-XXXX' />
+                    <input type="number" className='form-control' placeholder='XXXX-XXXX-XXXX-XXXX' value={cardDetails?.cardNo} onChange={(e) => setCardDetails({...cardDetails , cardNo : e.target.value})} />
                     </div>
 
                     <div className="form-group mt-4">
                     <label className="form-label text-muted">Name of Card Holder</label>
-                    <input type="text" className='form-control' placeholder='Same as on credit card' />
+                    <input type="text" className='form-control' placeholder='Same as on credit card' value={cardDetails?.name} onChange={(e) => setCardDetails({...cardDetails , name : e.target.value})} />
                     </div>
 
                     <div className="row">
                     <div className="form-group mt-4 col-lg-6">
                         <label className="form-label text-muted">Expiry Date</label>
-                        <input type="text" className='form-control' placeholder='MM / YYYY' />
+                        <input type="text" className='form-control' placeholder='MM / YYYY' value={cardDetails?.expiryDate} onChange={(e) => setCardDetails({...cardDetails , expiryDate : e.target.value})} />
                     </div>
                     <div className="form-group mt-4 col-lg-6">
                         <label className="form-label text-muted">Security Code</label>
-                        <input type="text" className='form-control' placeholder='CVV' />
+                        <input type="number" className='form-control' placeholder='CVV' value={cardDetails?.cvv} onChange={(e) => setCardDetails({...cardDetails , cvv : e.target.value})} />
                     </div>
                     </div>
 
-                    <div class="form-check d-flex align-items-center mt-4">
+                    {/* <div class="form-check d-flex align-items-center mt-4">
                         <input class="form-check-input pay-check me-3" style={{ border: '1.5px solid #3F3F3F', width: '25px', height: '25px', borderRadius: '30%' }} type="checkbox" value="" id="privacyPolicy" />
                         <label class="form-check-label fs-small text-muted" for="privacyPolicy">
-                        I’ve read and accept the  <Link className='text-dark text-decoration-underline' to='/termsAndConditions'>Terms & Conditions</Link>.
+                        I’ve read and accept the  <Link className='text-dark text-decoration-underline' to='' onClick={() => setIsAgreed(!isAgreed)} >Terms & Conditions</Link>.
                         </label>
-                    </div>
+                    </div> */}
 
-                    <button className="btn btn-success mt-4 w-100" style={{ height: '50px', borderRadius: '6px' }} data-bs-toggle="modal" data-bs-target="#paidModal">Pay Now</button>
-                    
+                    <button className="btn btn-success mt-4 w-100" style={{ height: '50px', borderRadius: '6px' }}  onClick={makeMyPayment} >Pay Now</button>
+
                 </div>
                 </div>
             </div>
-            </div>
+        </div>
 
         {/* modals */}
 

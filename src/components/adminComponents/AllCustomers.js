@@ -11,12 +11,15 @@ import {
 } from "react-bs-datatable";
 import { toast } from 'react-toastify';
 import { ThreeDots } from  'react-loader-spinner'
-import {getAllCustomers , disApproveAnyMerchant, ApproveAnyMerchant} from '../../api/AdminApi'
+import {getAllCustomers , disApproveAnyMerchant, ApproveAnyMerchant ,getAllCustomersMatching} from '../../api/AdminApi'
 import user from '../../assets/images/user.jpg'
 import {useNavigate , Link , useLocation} from 'react-router-dom'
 import moment from 'moment'
 import { AiFillBell } from 'react-icons/ai'
 import {getAllNotificationsOfAdmin ,markNotificationsOfAdminRead} from '../../api/AdminApi'
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
+
 
 
 const MainPage = () => {
@@ -24,6 +27,7 @@ const MainPage = () => {
     const [ isFetching , setIsFetching ] = useState(false)
     const [ userName , setUserName ] = useState("");
     const [ userPic , setUserPic ] = useState("");
+    const [ text , setText ] = useState("");
 
     const changeStatus = async (id) => {
         let isFound = allData.find(item => item.Id === id);
@@ -104,7 +108,7 @@ const MainPage = () => {
         // }
     ];
 
-
+    // getting all data
     useEffect(() => {
         const getAllRecords = async () => {
             setIsFetching(true)
@@ -198,6 +202,58 @@ const MainPage = () => {
             setAllNotifications(newArr)
             setAllNotificationsCount(prev => prev - 1)
           }
+        }
+    }
+
+    // getting searched data
+    const getSearchedMerchants = async () => {
+        if(text.length < 5){
+            toast.error("Please provide at least 5 letters for searching.");
+            return;
+        }
+        const {data} = await getAllCustomersMatching(text);
+        let allDataArr = [];
+        if(data?.success === true){
+            for(let i = 0; i !== data?.AllMerchants.length; i++){
+                let newArr = {
+                    profilePic: data?.AllMerchants[i]?.profilePic,
+                    idCard: data?.AllMerchants[i]?.IDCardNo,
+                    email: data?.AllMerchants[i]?.email,
+                    phoneNo: data?.AllMerchants[i]?.phoneNo ? data?.AllMerchants[i]?.phoneNo : "N/A",
+                    joinedAt: moment(data?.AllMerchants[i]?.createdAt).format('MMMM Do YYYY, h:mm:ss a'),
+                    dob: data?.AllMerchants[i]?.dob ? data?.AllMerchants[i]?.dob : "N/A",
+                    Id: data?.AllMerchants[i]?._id,
+                }
+                allDataArr.push(newArr)
+            }
+            setData(allDataArr)
+        }else{
+            setData([])
+        }
+    }
+
+    // getting data of all if no text for searching
+    const getAllData = async () => {
+        if(text.length == 0){
+            setIsFetching(true)
+            const {data} = await getAllCustomers();
+            let allDataArr = [];
+            if(data?.success === true){
+            for(let i = 0; i !== data?.AllMerchants.length; i++){
+                let newArr = {
+                    profilePic: data?.AllMerchants[i]?.profilePic,
+                    idCard: data?.AllMerchants[i]?.IDCardNo,
+                    email: data?.AllMerchants[i]?.email,
+                    phoneNo: data?.AllMerchants[i]?.phoneNo ? data?.AllMerchants[i]?.phoneNo : "N/A",
+                    joinedAt: moment(data?.AllMerchants[i]?.createdAt).format('MMMM Do YYYY, h:mm:ss a'),
+                    dob: data?.AllMerchants[i]?.dob ? data?.AllMerchants[i]?.dob : "N/A",
+                    Id: data?.AllMerchants[i]?._id,
+                }
+                allDataArr.push(newArr)
+            }
+            setData(allDataArr)
+            }
+            setIsFetching(false)
         }
     }
 
@@ -311,7 +367,16 @@ const MainPage = () => {
                                             lg={4}
                                             className="d-flex flex-col justify-content-end align-items-end"
                                         >
-                                            <Filter />
+                                            <InputGroup className="mb-3">
+                                                <Form.Control
+                                                    placeholder="Search here..."
+                                                    aria-label="Recipient's username"
+                                                    aria-describedby="basic-addon2"
+                                                    onBlur = {() => getAllData()}
+                                                    onChange={(e) => setText(e.target.value)}
+                                                />
+                                                    <Button variant="info" onClick={getSearchedMerchants}>Search</Button>
+                                            </InputGroup>
                                         </Col>
                                     </Row>
                                     <Table>

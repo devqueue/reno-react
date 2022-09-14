@@ -8,29 +8,35 @@ import quotesSearch from '../../assets/icons/quotesSearch.png'
 import line from '../../assets/icons/line.png'
 import { toast } from 'react-toastify';
 import { ThreeDots } from  'react-loader-spinner'
-import {getTodayReceivedQuotes , getReceivedQuotesPrevious , denyAnyQuote , getAllNotificationsOfCustomer ,markNotificationsOfMerchantRead } from '../../api/CustomerApi'
+import {getTodayReceivedQuotes , getReceivedQuotesPrevious , denyAnyQuote , getAllNotificationsOfCustomer ,markNotificationsOfMerchantRead ,getSingleQuoteDetails } from '../../api/CustomerApi'
 import { Link , useNavigate , useLocation } from 'react-router-dom'
 import moment from 'moment'
+import Modal from 'react-bootstrap/Modal';
 
  
 const QuotesReceived = () => {
     const [ isFetching , setIsFetching ] = useState(false)
     const navigate = useNavigate();
     const [ allData , setAllData ] = useState([]);
+    const [ gotQuoteData , setGotQuoteData ] = useState({});
     const [ allPreviousData , setAllPreviousData ] = useState([]);
     const [ selectedId , setSelectedId ] = useState("");
     const [ userName , setUserName ] = useState("");
     const [ userPic , setUserPic ] = useState("");
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     //getting all data
     useEffect(() => {
         const getAllRecord = async () => {
             setIsFetching(true)
             const {data} = await getTodayReceivedQuotes();
+            console.log("responsedata?.AllQuotes : ",data?.AllQuotes)
             if(data?.success === true){
                 setAllData(data?.AllQuotes);
             }
-
+            
             // getting previous quotes
             const response = await getReceivedQuotesPrevious();
             if(response?.data?.success === true){
@@ -136,6 +142,17 @@ const QuotesReceived = () => {
                 setAllNotificationsCount(prev => prev - 1)
             }
             }
+    }
+
+    // getting single quote details
+    const getMyQuoteDetails = async (id) => {
+        const {data} = await getSingleQuoteDetails(id);
+        if(data?.success === true){
+            setGotQuoteData(data?.Quote);
+            handleShow()
+        }else{
+            toast.error(data?.message)
+        }
     }
 
     return (
@@ -251,10 +268,20 @@ const QuotesReceived = () => {
                                                         {item?.FirstInstallment?.depositAmt} SAR
                                                     </li>
                                                 </ul>
-
                                                 <div>
-                                                    <Link className='btn text-light fs-small mb-2' style={{backgroundColor : '#130f40' , color : 'white'}} to={`/customer/dashboard/quotesReceived/requestFinance/${item?._id}`} >Make First Payment</Link>
-                                                    <Button className='btn close-btn fs-small' variant="danger" data-bs-toggle="modal" data-bs-target="#denyModal1" onClick={() => setSelectedId(item?._id)} >Deny </Button>
+                                                    <Button className=' mb-2' variant="primary"  onClick={() => getMyQuoteDetails(item?._id)} >View Details</Button>
+                                                    {
+                                                        item?.isFinanceReqSent == false ? (
+                                                            <Link className='btn text-light fs-small mb-2' style={{backgroundColor : '#130f40' , color : 'white'}} to={`/customer/dashboard/quotesReceived/requestFinance/${item?._id}`} >Send Finance Request</Link>
+                                                        ) : (
+                                                            <Button className='btn close-btn fs-small' variant="success"  > Finance Request Sent </Button>
+                                                        )
+                                                    }
+                                                    {
+                                                        item?.isFirstPaymentDone == false && (
+                                                            <Button className='btn close-btn fs-small mt-2' variant="danger" data-bs-toggle="modal" data-bs-target="#denyModal1" onClick={() => setSelectedId(item?._id)} >Deny </Button>
+                                                        )
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -312,8 +339,19 @@ const QuotesReceived = () => {
                                                 </ul>
 
                                                 <div>
-                                                    <Link className='btn text-light fs-small mb-2' style={{backgroundColor : '#130f40' , color : 'white'}} to={`/customer/dashboard/quotesReceived/requestFinance/${item?._id}`} >Make First Payment</Link>
-                                                    <Button className='btn close-btn fs-small' variant="danger" data-bs-toggle="modal" data-bs-target="#denyModal" onClick={() => setSelectedId(item?._id)} >Deny </Button>
+                                                    <Button className=' mb-2' variant="primary"  onClick={() => getMyQuoteDetails(item?._id)} >View Details</Button>
+                                                    {
+                                                        item?.isFinanceReqSent == false ? (
+                                                            <Link className='btn text-light fs-small mb-2' style={{backgroundColor : '#130f40' , color : 'white'}} to={`/customer/dashboard/quotesReceived/requestFinance/${item?._id}`} >Send Finance Request</Link>
+                                                        ) : (
+                                                            <Button className='btn close-btn fs-small' variant="success"  > Finance Request Sent </Button>
+                                                        )
+                                                    }
+                                                    {
+                                                        item?.isFirstPaymentDone == false && (
+                                                            <Button className='btn close-btn fs-small mt-2' variant="danger" data-bs-toggle="modal" data-bs-target="#denyModal1" onClick={() => setSelectedId(item?._id)} >Deny </Button>
+                                                        )
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -380,6 +418,44 @@ const QuotesReceived = () => {
                 </div>
             </div>
         </div>
+
+        {/*  quote details */}
+        <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Quote Details</Modal.Title>
+            </Modal.Header>
+                <Modal.Body style={{marginLeft : '20px' }} >
+                        <div className='row col-lg-12 mb-3' >
+                            <h6>Total Amount</h6>
+                            <input value={gotQuoteData?.financeDetails?.totalPurchaseAmt} disabled style={{paddingLeft : '10px', minHeight : '35px' }} />
+                        </div>
+                        <div className='row col-lg-12 mb-3' >
+                            <h6>Deposit Amount</h6>
+                            <input value={gotQuoteData?.financeDetails?.depositAmt} disabled style={{paddingLeft : '10px' ,minHeight : '35px'  }} />
+                        </div>
+                        <div className='row col-lg-12 mb-3' >
+                            <h6>Total Tenure</h6>
+                            <input value={gotQuoteData?.RepaymentAmount?.totalMonths} disabled style={{paddingLeft : '10px' ,minHeight : '35px'  }} />
+                        </div>
+                        <div className='row col-lg-12 mb-3' >
+                            <h6>Amount Per Month</h6>
+                            <input value={gotQuoteData?.RepaymentAmount?.amountPerMonth} disabled style={{paddingLeft : '10px' ,minHeight : '35px'  }} />
+                        </div>
+                        <div className='row col-lg-12 mb-3' >
+                            <h6>Total Balance Remaining</h6>
+                            <input value={gotQuoteData?.financeDetails?.balanceOwning} disabled style={{paddingLeft : '10px' ,minHeight : '35px'  }} />
+                        </div>
+                        <div className='row col-lg-12 mb-3' >
+                            <h6>Category</h6>
+                            <input value={gotQuoteData?.customerAndProductDetails?.productCategory} disabled style={{paddingLeft : '10px' ,minHeight : '35px'  }} />
+                        </div>
+                </Modal.Body>
+            <Modal.Footer>
+                <Button variant="danger" onClick={handleClose}>
+                    Close
+                </Button>
+            </Modal.Footer>
+        </Modal>
 
         {/* modals */}
 
