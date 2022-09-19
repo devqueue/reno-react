@@ -1,5 +1,5 @@
 import React, { useState , useEffect } from 'react'
-import { Link , useNavigate , useParams , useLocation } from 'react-router-dom'
+import { Link , useNavigate , useParams , useLocation , } from 'react-router-dom'
 import { AiFillBell } from 'react-icons/ai'
 import { toast } from 'react-toastify';
 import user from '../../assets/images/user.jpg'
@@ -9,11 +9,14 @@ import quoteStep2 from '../../assets/images/quoteStep2.png'
 import quoteStep3 from '../../assets/images/quoteStep3.png'
 import quoteStep4 from '../../assets/images/quoteStep4.png'
 import tick from '../../assets/images/tick.png'
-import {sendResponseOnQuote ,getAllNotificationsOfCustomer ,markNotificationsOfMerchantRead  } from '../../api/CustomerApi'
+//import {getSingleQuoteDetails } from '../../api/CustomerApi'
+import {approveAnyFinancialRequest , getSingleQuoteDetails} from '../../api/AdminApi'
 import { ThreeDots } from  'react-loader-spinner'
 import moment from 'moment'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Dropdown from 'react-bootstrap/Dropdown';
 
 
 const RequestFinance = () => {
@@ -26,26 +29,22 @@ const RequestFinance = () => {
 
     const [ isFetching , setIsFetching ] = useState(false)
     const [ updateData , setUpdateData ] = useState(null)
-    const [ quoteDate , setQuoteData ] = useState({
-        isOwned : false,
-        homeType : "",
-        martialStatus: "",
-        homeSize : 0,
-        familyMembersCount : 0,
-        workingStatus : false,
-        familyMembersFees : 0,
-        basicSalary : 0,
-        housingAllowance : 0,
-        otherAllowance : 0,
-        housingExpense : 0,
-        homeWorkerWageExpense : 0,
-        healthCareExpense : 0,
-        homeLocation : "",
-        foodBeverageExpense : 0,
-        additionalMonthlyExpense : 0,
-        transportationExpense : 0,
-        additionalLoansExpense : 0,
-    })
+    const [ quoteDate , setQuoteData ] = useState()
+
+    // getting details of quote
+    useEffect(() => {
+        const getData = async () => {
+            setIsFetching(true)
+            const {data} = await getSingleQuoteDetails(id);
+            if(data?.success === true){
+                setQuoteData(data?.Quote)
+            }else{
+                toast.error(data?.message)
+            }
+            setIsFetching(false)
+        }
+        getData()
+    },[id])
 
     const [personalInfo, setPersonalInfo] = useState(false);
     const handlePersonalInfoClose = () => {
@@ -88,52 +87,34 @@ const RequestFinance = () => {
 
     // checking all fields of step 01
     const checkStep01 = () => {
-        console.log("quoteDate: ",quoteDate)
-        if(quoteDate?.homeType === "" || quoteDate?.martialStatus === "" || quoteDate?.homeSize === 0 || quoteDate?.familyMembersCount === 0 || quoteDate?.familyMembersFees === 0 || quoteDate?.workingStatus === 0 ){
-            toast.error("Please Provide All Fields");
-        }else{
+        // console.log("quoteDate: ",quoteDate)
+        // if(quoteDate?.homeType === "" || quoteDate?.martialStatus === "" || quoteDate?.homeSize === 0 || quoteDate?.familyMembersCount === 0 || quoteDate?.familyMembersFees === 0 || quoteDate?.workingStatus === 0 ){
+        //     toast.error("Please Provide All Fields");
+        // }else{
             setStep(2)
-        }
+        //}
     }
 
     // checking all fields of step 02
     const checkStep02 = () => {
-        if(quoteDate?.basicSalary === 0 || quoteDate?.housingAllowance === '' ){
-            toast.error("Please Provide All Fields");
-        }else{
-            let previous = Number(quoteDate?.basicSalary);
-            previous -= Number(quoteDate?.familyMembersFees);
-            setQuoteData({...quoteDate , basicSalary : previous})
+        // if(quoteDate?.basicSalary === 0 || quoteDate?.housingAllowance === '' ){
+        //     toast.error("Please Provide All Fields");
+        // }else{
+        //     let previous = Number(quoteDate?.basicSalary);
+        //     previous -= Number(quoteDate?.familyMembersFees);
+        //     setQuoteData({...quoteDate , basicSalary : previous})
             setStep(3)
-        }
+        //}
     }
 
     // checking all fields of step 03
     const checkStep03 = () => {
-        if(quoteDate?.housingExpense === 0 || quoteDate?.homeWorkerWageExpense === 0 || quoteDate?.healthCareExpense === 0 || quoteDate?.foodBeverageExpense === 0 || quoteDate?.transportationExpense === 0   ){
-            toast.error("Please Provide All Fields");
-        }else{
+        // if(quoteDate?.housingExpense === 0 || quoteDate?.homeWorkerWageExpense === 0 || quoteDate?.healthCareExpense === 0 || quoteDate?.foodBeverageExpense === 0 || quoteDate?.transportationExpense === 0   ){
+        //     toast.error("Please Provide All Fields");
+        // }else{
             setStep(4)
-        }
+        //}
     }
-
-    // sending data
-    const sendQuote = async () => {
-        setIsFetching(true)
-        const {data} = await sendResponseOnQuote(id , quoteDate);
-        if(data?.success === true){
-            toast.success("Financial Request Sent SuccessFully");
-            emptyQuoteData();
-            await delay(1500)
-            setIsFetching(false)
-            navigate('customer/dashboard/financeRequests');
-        }else{
-            await delay(1500)
-            setIsFetching(false)
-            toast.error(data?.message);
-        }
-    }
-
     // empty quote data
     const emptyQuoteData = () => {
         setUpdateData({
@@ -205,37 +186,7 @@ const RequestFinance = () => {
 
     const [ allNotifications , setAllNotifications ] = useState([])
     const [ allNotificationsCount , setAllNotificationsCount ] = useState([])
-    // getting all notifications
-    useEffect(() =>{
-        const getAllNotifications = async () => {
-            const {data} = await getAllNotificationsOfCustomer()
-            if(data?.success === true){
-                setAllNotifications(data?.Notifications)
-                let count = 0;
-                data?.Notifications?.map((item) => (
-                item?.isRead === false && (
-                    count += 1
-                )
-                ))
-                setAllNotificationsCount(count)
-            }
-            }
-        getAllNotifications();
-    },[])
-    // marking notification as read
-    const readNotification = async (id) => {
-        const {data} = await markNotificationsOfMerchantRead(id);
-        if(data?.success === true){
-            let newArr = allNotifications;
-            let isFound = newArr.find(item => item._id == id);
-            if(isFound){
-                isFound.isRead = true
-                newArr.filter(item => item._id == id ? isFound : item)
-                setAllNotifications(newArr)
-                setAllNotificationsCount(prev => prev - 1)
-            }
-            }
-    }
+
 
     // changing home allownce
     const addAmt = () => {
@@ -253,62 +204,53 @@ const RequestFinance = () => {
         }
     }
 
+    // approving merchant request for quote
+    const changeStatus = async (id , status) => {
+        const {data} = await approveAnyFinancialRequest(id , status);
+        if(data?.success === true){
+            if(status == false){
+                toast.success("Quote DisApproved SuccessFully")
+                setQuoteData({...quoteDate , status : false})
+            }else{
+                toast.success("Quote Approved SuccessFully")
+                setQuoteData({...quoteDate , status : true})
+            }
+        }else{
+            toast.error(data?.message)
+        }
+    }
+
     return (
         <div className='container-fluid p-4 dashboard-content'>
             <div className="panel-top d-flex align-items-center justify-content-between">
                     <div className='panel-left'>
-                        <h5 className='mb-0 fw-600'>Finance Requests</h5>
+                        <h5 className='mb-0 fw-600'>View Finance Request</h5>
                         {/* <p className='text-muted mb-0 text-light fs-small'>
                         {moment().format('MMMM Do YYYY')}
                         </p> */}
                     </div>
 
-                    <div className='d-flex align-items-center panel-right'>
-                        <div class="dropdown profile-dropdown">
-                            <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                <AiFillBell />
-                                <span>{allNotificationsCount}</span>
-                            </Link>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                {
-                                    allNotifications?.length > 0 ? (
-                                        allNotifications?.map((item) => (
-                                            item?.isRead === false ? (
-                                                <li style={{backgroundColor : '#ecf0f1'}} onClick={() => readNotification(item?._id)}>
-                                                    <Link class="dropdown-item" to="">
-                                                        <strong>{item?.message} </strong> <br />
-                                                        <span style={{ fontSize: '12px' , color : '#34495e' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
-                                                    </Link>
-                                                </li>
-                                            ) : (
-                                                <li style={{backgroundColor : 'transparent'}} >
-                                                <Link class="dropdown-item" to="">
-                                                        <strong>{item?.message} </strong> <br />
-                                                        <span className='text-muted' style={{ fontSize: '12px' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
-                                                </Link>
-                                                </li>
-                                            )
-                                        ))
-                                    ) : (
-                                        <li style={{marginLeft : '15px'}} >Empty</li>
-                                    )
-                                }
-                            </ul>
-                        </div>
+                    
+            </div>
 
-                        <div className="dropdown profile-dropdown">
-                                    <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <div className='d-flex align-items-center fs-small me-3'>
-                                    <img src={userPic} alt="" style={{maxWidth: '50px', maxheight : '50px', borderRadius : '50%' }} />
-                                        {userName}
-                                                </div>
-                                            </button>
-                                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
-                                                <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
-                                            </ul>
-                        </div>
-                    </div>
+            <div className="d-flex justify-content-center" >
+                <span style={{color : '#6c5ce7', fontSize : '20px', fontWeight : 600 , marginRight : '20px'  }}>Status :</span>
+                <Dropdown as={ButtonGroup}>
+                {
+                    quoteDate?.status == true ? (
+                        <Button variant="success">Approved</Button>
+                    ) : (
+                        <Button variant="danger">Not Approved</Button>
+                    )
+                }
+
+                    <Dropdown.Toggle split variant="info" id="dropdown-split-basic" />
+
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={() => changeStatus(id , true)} style={{backgroundColor : '#6ab04c', color : 'white'}} >Approve Now</Dropdown.Item>
+                        <Dropdown.Item onClick={() => changeStatus(id , false)} style={{backgroundColor : 'crimson', color : 'white'}} >DisApprove Now</Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
             </div>
 
             <div className="row mt-4">
@@ -343,82 +285,96 @@ const RequestFinance = () => {
             </div>
 
             {
-                step == 1 ? (
-                    <div className="row mt-5">
-                        <div className="col-lg-10 m-auto">
-
-                            <h5 className='text-center fw-600'>Personal Information</h5>
-                            <h6 className='text-center text-muted fw-normal'>Please fill in your personal information below.</h6>
-
-                            <div className="row finance-form mt-4">
-
-                                <div className="col-lg-6 form-group mb-4">
-                                    <label className='form-label text-muted fs-small'>Property</label>
-                                    <select class="form-select text-muted" aria-label="Default select example" onChange={(e) => setQuoteData({...quoteDate , isOwned : e.target.value}) }>
-                                        <option selected disabled></option>
-                                        <option value={true}>Owned</option>
-                                        <option value={false}>Rented</option>
-                                    </select>
-                                </div>
-                                <div className="col-lg-6 form-group mb-4">
-                                    <label className='form-label text-muted fs-small'>Home Type</label>
-                                    <select class="form-select text-muted" aria-label="Default select example" onChange={(e) => setQuoteData({...quoteDate , homeType : e.target.value}) }>
-                                        <option selected disabled></option>
-                                        <option>Apartment</option>
-                                        <option>Villa</option>
-                                        <option>Duplex</option>
-                                        <option>Floor</option>
-                                    </select>
-                                </div>
-                                <div className="col-lg-6 form-group mb-4">
-                                    <label className='form-label text-muted fs-small'>Home Location</label>
-                                    <input type="text" className='form-control' placeholder='Enter your home location here' value={quoteDate?.homeLocation} onChange={(e) => setQuoteData({...quoteDate , homeLocation : e.target.value})} required />
-                                </div>
-                                <div className="col-lg-6 form-group mb-4">
-                                    <label className='form-label text-muted fs-small'>Home Size (sqr meter)</label>
-                                    <input type="text" className='form-control' placeholder='Enter your home size' value={quoteDate?.homeSize} onChange={(e) => setQuoteData({...quoteDate , homeSize : e.target.value})} required />
-                                </div>
-                                <div className="col-lg-6 form-group mb-4">
-                                    <label className='form-label text-muted fs-small'>Marital status</label>
-                                    <select class="form-select text-muted" aria-label="Default select example" onChange={(e) => setQuoteData({...quoteDate , martialStatus : e.target.value}) }>
-                                        <option selected></option>
-                                        <option >Married</option>
-                                        <option >Un-Married</option>
-                                        <option >Divorced</option>
-                                    </select>
-                                </div>
-                                <div className="col-lg-6 form-group mb-4">
-                                    <label className='form-label text-muted fs-small'>Number of family Members</label>
-                                    <select class="form-select text-muted" aria-label="Default select example"  onChange={(e) => setQuoteData({...quoteDate , familyMembersCount : e.target.value}) }>
-                                        <option selected>Select Number of family Members</option>
-                                        <option>3</option>
-                                        <option>5</option>
-                                        <option>10</option>
-                                    </select>
-                                </div>
-                                <div className="col-lg-6 form-group mb-4">
-                                    <label className='form-label text-muted fs-small'>Family member education fees (SAR)</label>
-                                    <input type="text" className='form-control' placeholder='Enter your family member education fees' value={quoteDate?.familyMembersFees} onChange={(e) => setQuoteData({...quoteDate , familyMembersFees : e.target.value})} required />
-                                </div>
-                                <div className="col-lg-6 form-group mb-4">
-                                    <label className='form-label text-muted fs-small'>Working status</label>
-                                    <select class="form-select text-muted" aria-label="Default select example" onChange={(e) => setQuoteData({...quoteDate , workingStatus : e.target.value}) }>
-                                        <option selected>Select your working status</option>
-                                        <option value={true}>Yes</option>
-                                        <option value={false}>No</option>
-                                    </select>
-                                </div>
-
-                                <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
-                                    <Link to='/customer/dashboard/quotesReceived' className="btn finance-form-cancel me-3" style={{backgroundColor : 'crimson' , color : 'white'}} onClick={emptyQuoteData} >Cancel</Link>
-                                    <button className="btn bg-darkBlue text-light " style={{backgroundColor : '#130f40' , color : 'white'}} onClick={checkStep01 }>Save and Continue</button>
-                                </div>
-
-                            </div>
-
+                isFetching === true ? (
+                        <div style={{display : 'flex' , justifyContent: 'center' , margin: 'auto'}}>
+                            <ThreeDots
+                                height = "60"
+                                width = "60"
+                                radius = "9"
+                                color = 'green'
+                                ariaLabel = 'three-dots-loading'
+                                wrapperStyle
+                                wrapperClass
+                            />
                         </div>
-                    </div>
-                ) : ''
+                    ) : (
+                        step == 1 ? (
+                            <div className="row mt-5">
+                                <div className="col-lg-10 m-auto">
+
+                                    <h5 className='text-center fw-600'>Personal Information</h5>
+                                    <h6 className='text-center text-muted fw-normal'>Please fill in your personal information below.</h6>
+
+                                    <div className="row finance-form mt-4">
+
+                                        <div className="col-lg-6 form-group mb-4">
+                                            <label className='form-label text-muted fs-small'>Property</label>
+                                            <select class="form-select text-muted" aria-label="Default select example">
+                                                <option selected disabled>{quoteDate?.personalInfo?.isOwned == true ? "Own House" : "Rented"}</option>
+                                                {/* <option value={true}>Owned</option>
+                                                <option value={false}>Rented</option> */}
+                                            </select>
+                                        </div>
+                                        <div className="col-lg-6 form-group mb-4">
+                                            <label className='form-label text-muted fs-small'>Home Type</label>
+                                            <select class="form-select text-muted" aria-label="Default select example" >
+                                                <option selected disabled>{quoteDate?.personalInfo?.homeType}</option>
+                                                {/* <option>Apartment</option>
+                                                <option>Villa</option>
+                                                <option>Duplex</option>
+                                                <option>Floor</option> */}
+                                            </select>
+                                        </div>
+                                        <div className="col-lg-6 form-group mb-4">
+                                            <label className='form-label text-muted fs-small'>Home Location</label>
+                                            <input type="text" className='form-control' placeholder='Enter your home location here' value={quoteDate?.personalInfo?.homeLocation}  />
+                                        </div>
+                                        <div className="col-lg-6 form-group mb-4">
+                                            <label className='form-label text-muted fs-small'>Home Size (sqr meter)</label>
+                                            <input type="text" className='form-control' placeholder='Enter your home size' value={quoteDate?.personalInfo?.homeSize} />
+                                        </div>
+                                        <div className="col-lg-6 form-group mb-4">
+                                            <label className='form-label text-muted fs-small'>Marital status</label>
+                                            <select class="form-select text-muted" aria-label="Default select example" >
+                                                <option selected>{quoteDate?.personalInfo?.martialStatus}</option>
+                                                {/* <option >Married</option>
+                                                <option >Un-Married</option>
+                                                <option >Divorced</option> */}
+                                            </select>
+                                        </div>
+                                        <div className="col-lg-6 form-group mb-4">
+                                            <label className='form-label text-muted fs-small'>Number of family Members</label>
+                                            <select class="form-select text-muted" aria-label="Default select example" >
+                                                <option selected>{quoteDate?.personalInfo?.familyMembersCount}</option>
+                                                {/* <option>3</option>
+                                                <option>5</option>
+                                                <option>10</option> */}
+                                            </select>
+                                        </div>
+                                        <div className="col-lg-6 form-group mb-4">
+                                            <label className='form-label text-muted fs-small'>Family member education fees (SAR)</label>
+                                            <input type="text" className='form-control' placeholder='Enter your family member education fees' value={quoteDate?.personalInfo?.familyMembersFees}  />
+                                        </div>
+                                        <div className="col-lg-6 form-group mb-4">
+                                            <label className='form-label text-muted fs-small'>Working status</label>
+                                            <select class="form-select text-muted" aria-label="Default select example">
+                                                <option selected>{quoteDate?.personalInfo?.workingStatus == "true" ? "Working" : "Not Working"}</option>
+                                                {/* <option value={true}>Yes</option>
+                                                <option value={false}>No</option> */}
+                                            </select>
+                                        </div>
+
+                                        <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
+                                            {/* <Link to='/customer/dashboard/quotesReceived' className="btn finance-form-cancel me-3" style={{backgroundColor : 'crimson' , color : 'white'}} onClick={emptyQuoteData} >Cancel</Link> */}
+                                            <button className="btn bg-darkBlue text-light " style={{backgroundColor : '#130f40' , color : 'white'}} onClick={checkStep01 }>Next</button>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        ) : ''
+                    )
             }
 
             {
@@ -433,20 +389,20 @@ const RequestFinance = () => {
 
                                 <div className="col-12 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Basic Salary</label>
-                                    <input type="text" className='form-control' placeholder='Please your basic salary here (SAR)' value={quoteDate?.basicSalary} onChange={(e) => setQuoteData({...quoteDate , basicSalary : e.target.value})} required />
+                                    <input type="text" className='form-control' placeholder='Please your basic salary here (SAR)' value={quoteDate?.monthlyIncome?.basicSalary} />
                                 </div>
                                 <div className="col-12 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Housing Allowance</label>
-                                    <input type="text" className='form-control' placeholder='Please your housing allowance here (SAR)' value={quoteDate?.housingAllowance} onChange={(e) => setQuoteData({...quoteDate , housingAllowance : e.target.value})} required  onBlur={addAmt} />
+                                    <input type="text" className='form-control' placeholder='Please your housing allowance here (SAR)' value={quoteDate?.monthlyIncome?.housingAllowance}  />
                                 </div>
                                 <div className="col-12 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Other Allowance(Optional)</label>
-                                    <input type="text" className='form-control' placeholder='Please your other allowance here (SAR)' value={quoteDate?.otherAllowance} onChange={(e) => setQuoteData({...quoteDate , otherAllowance : e.target.value})} required onBlur={addAmtOne} />
+                                    <input type="text" className='form-control' placeholder='Please your other allowance here (SAR)' value={quoteDate?.monthlyIncome?.otherAllowances} />
                                 </div>
 
                                 <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
-                                    <Link to='/customer/dashboard/quotesReceived' className="btn finance-form-cancel me-3"  style={{flex: '1' , backgroundColor : 'crimson' , color : 'white'}} onClick={emptyQuoteData}>Cancel</Link>
-                                    <button className="btn bg-darkBlue text-light" style={{ flex: '1' , backgroundColor : '#130f40' , color : 'white'  }} onClick={() => checkStep02()}>Save and Continue</button>
+                                    {/* <Link to='/customer/dashboard/quotesReceived' className="btn finance-form-cancel me-3"  style={{flex: '1' , backgroundColor : 'crimson' , color : 'white'}} onClick={emptyQuoteData}>Cancel</Link> */}
+                                    <button className="btn bg-darkBlue text-light" style={{ flex: '1' , backgroundColor : '#130f40' , color : 'white'  }} onClick={() => checkStep02()}>Next</button>
                                 </div>
 
                                 <div className="col-12 mt-4 d-flex justify-content-center">
@@ -477,19 +433,17 @@ const RequestFinance = () => {
                                         <div className="d-flex justify-content-between">
                                             <div className='text-light fs-small'>
                                                 {
-                                                    Number(quoteDate?.housingExpense) +
-                                                    Number(quoteDate?.homeWorkerWageExpense) +
-                                                    Number(quoteDate?.healthCareExpense) +
-                                                    Number(quoteDate?.foodBeverageExpense) +
-                                                    Number(quoteDate?.additionalMonthlyExpense) +
-                                                    Number(quoteDate?.transportationExpense) +
-                                                    Number(quoteDate?.additionalLoansExpense)
+                                                    Number(quoteDate?.expensesAndObligations?.housing) +
+                                                    Number(quoteDate?.expensesAndObligations?.homeWorkerWage) +
+                                                    Number(quoteDate?.expensesAndObligations?.healthCare) +
+                                                    Number(quoteDate?.expensesAndObligations?.foodBeverage) +
+                                                    Number(quoteDate?.expensesAndObligations?.transportation)
                                                 }.00
                                                 <span className='text-muted'> SAR/month</span>
                                             </div>
                                             <div className="text-light fs-small">
                                                 <span className='text-color-primary me-2'>Total income</span>
-                                                {quoteDate?.basicSalary}.00
+                                                {quoteDate?.monthlyIncome?.basicSalary}.00
                                                 <span className="text-muted"> SAR/month</span>
                                             </div>
                                         </div>
@@ -500,11 +454,11 @@ const RequestFinance = () => {
                                     <div className="expense-card">
                                         <h6 className='text-darkBlue fw-600 mb-4 text-center'>Housing</h6>
 
-                                        <input type="range" class="form-range" id="customRange1" value={quoteDate?.housingExpense} onChange={(e) => setQuoteData({...quoteDate , housingExpense : e.target.value})} required />
+                                        <input type="range" class="form-range" id="customRange1" value={quoteDate?.expensesAndObligations?.housing}  />
 
                                         <div className="d-flex fw-600 justify-content-between">
                                             <div className='text-darkBlue fs-small'>
-                                                {quoteDate?.housingExpense}.00 <span className='text-muted fw-normal'> SAR/month</span>
+                                                {quoteDate?.expensesAndObligations?.housing}.00 <span className='text-muted fw-normal'> SAR/month</span>
                                             </div>
                                             {/* <div className='text-darkBlue fs-small'>
                                                 0.00 <span className='text-muted fw-normal'> SAR/month</span>
@@ -517,11 +471,11 @@ const RequestFinance = () => {
                                     <div className="expense-card">
                                         <h6 className='text-darkBlue fw-600 mb-4 text-center'>Homeworkers wage</h6>
 
-                                        <input type="range" class="form-range" id="customRange1" value={quoteDate?.homeWorkerWageExpense} onChange={(e) => setQuoteData({...quoteDate , homeWorkerWageExpense : e.target.value})} required />
+                                        <input type="range" class="form-range" id="customRange1" value={quoteDate?.expensesAndObligations?.homeWorkerWage}  />
 
                                         <div className="d-flex fw-600 justify-content-between">
                                             <div className='text-darkBlue fs-small'>
-                                                {quoteDate?.homeWorkerWageExpense}.00 <span className='text-muted fw-normal'> SAR/month</span>
+                                                {quoteDate?.expensesAndObligations?.homeWorkerWage}.00 <span className='text-muted fw-normal'> SAR/month</span>
                                             </div>
                                             {/* <div className='text-darkBlue fs-small'>
                                                 0.00<span className='text-muted fw-normal'> SAR/month</span>
@@ -534,11 +488,11 @@ const RequestFinance = () => {
                                     <div className="expense-card">
                                         <h6 className='text-darkBlue fw-600 mb-4 text-center'>Food & beverage expenses</h6>
 
-                                        <input type="range" class="form-range" id="customRange1" value={quoteDate?.foodBeverageExpense} onChange={(e) => setQuoteData({...quoteDate , foodBeverageExpense : e.target.value})} required />
+                                        <input type="range" class="form-range" id="customRange1" value={quoteDate?.expensesAndObligations?.foodBeverage} />
 
                                         <div className="d-flex fw-600 justify-content-between">
                                             <div className='text-darkBlue fs-small'>
-                                                {quoteDate.foodBeverageExpense}.00 <span className='text-muted fw-normal'> SAR/month</span>
+                                                {quoteDate?.expensesAndObligations?.foodBeverage} .00 <span className='text-muted fw-normal'> SAR/month</span>
                                             </div>
                                             {/* <div className='text-darkBlue fs-small'>
                                                 0.00 <span className='text-muted fw-normal'> SAR/month</span>
@@ -551,11 +505,11 @@ const RequestFinance = () => {
                                     <div className="expense-card">
                                         <h6 className='text-darkBlue fw-600 mb-4 text-center'>Health Care & Insurance</h6>
 
-                                        <input type="range" class="form-range" id="customRange1" value={quoteDate?.healthCareExpense} onChange={(e) => setQuoteData({...quoteDate , healthCareExpense : e.target.value})} required />
+                                        <input type="range" class="form-range" id="customRange1" value={quoteDate?.expensesAndObligations?.healthCare} />
 
                                         <div className="d-flex fw-600 justify-content-between">
                                             <div className='text-darkBlue fs-small'>
-                                                {quoteDate?.healthCareExpense}.00 <span className='text-muted fw-normal'> SAR/month</span>
+                                                {quoteDate?.expensesAndObligations?.healthCare}.00 <span className='text-muted fw-normal'> SAR/month</span>
                                             </div>
                                             {/* <div className='text-darkBlue fs-small'>
                                                 8,000 <span className='text-muted fw-normal'> SAR/month</span>
@@ -568,11 +522,11 @@ const RequestFinance = () => {
                                     <div className="expense-card">
                                         <h6 className='text-darkBlue fw-600 mb-4 text-center'>Transportation & Communication</h6>
 
-                                        <input type="range" class="form-range" id="customRange1" value={quoteDate?.transportationExpense} onChange={(e) => setQuoteData({...quoteDate , transportationExpense : e.target.value})} required />
+                                        <input type="range" class="form-range" id="customRange1" value={quoteDate?.expensesAndObligations?.transportation}  />
 
                                         <div className="d-flex fw-600 justify-content-between">
                                             <div className='text-darkBlue fs-small'>
-                                                {quoteDate?.transportationExpense}.00 <span className='text-muted fw-normal'> SAR/month</span>
+                                                {quoteDate?.expensesAndObligations?.transportation}.00 <span className='text-muted fw-normal'> SAR/month</span>
                                             </div>
                                             {/* <div className='text-darkBlue fs-small'>
                                                 0.00 <span className='text-muted fw-normal'> SAR/month</span>
@@ -593,8 +547,8 @@ const RequestFinance = () => {
                                 </div>
 
                                 <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
-                                    <Link to='/customer/dashboard/quotesReceived' className="btn finance-form-cancel me-3" style={{ flex: '1' ,backgroundColor : 'crimson' , color : 'white' }} onClick={emptyQuoteData}>Cancel</Link>
-                                    <button className="btn bg-darkBlue text-light" style={{ flex: '1',  backgroundColor : '#130f40' , color : 'white' }} onClick={() => checkStep03()}>Save and Continue</button>
+                                    {/* <Link to='/customer/dashboard/quotesReceived' className="btn finance-form-cancel me-3" style={{ flex: '1' ,backgroundColor : 'crimson' , color : 'white' }} onClick={emptyQuoteData}>Cancel</Link> */}
+                                    <button className="btn bg-darkBlue text-light" style={{ flex: '1',  backgroundColor : '#130f40' , color : 'white' }} onClick={() => checkStep03()}>Next</button>
                                 </div>
 
                                 <div className="col-12 mt-4 d-flex justify-content-center">
@@ -622,40 +576,40 @@ const RequestFinance = () => {
                                     <div className="review-card">
                                         <div className="review-heading d-flex justify-content-between align-items-center p-3">
                                             <h6 className='mb-0'>Personal Information</h6>
-                                            <img src={pen} alt="" onClick={handlePersonalInfoShow} />
+                                            {/* <img src={pen} alt="" onClick={handlePersonalInfoShow} /> */}
                                         </div>
                                         <ul className='fs-small mb-0 p-3'>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Owned/Rented</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.isOwned === true ? "Owned" : "Rented"}</span>
+                                                <span className='fw-600 text-end'>{quoteDate?.personalInfo?.isOwned === true ? "Owned" : "Rented"}</span>
                                             </li>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Home type</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.homeType}</span>
+                                                <span className='fw-600 text-end'>{quoteDate?.personalInfo?.homeType}</span>
                                             </li>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Home location</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.homeLocation}</span>
+                                                <span className='fw-600 text-end'>{quoteDate?.personalInfo?.homeLocation}</span>
                                             </li>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Home Size(Sqm) </span>
-                                                <span className='fw-600 text-end'>{quoteDate?.homeSize}</span>
+                                                <span className='fw-600 text-end'>{quoteDate?.personalInfo?.homeSize}</span>
                                             </li>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Marital status</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.martialStatus}</span>
+                                                <span className='fw-600 text-end'>{quoteDate?.personalInfo?.martialStatus}</span>
                                             </li>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Number of family members</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.familyMembersCount}</span>
+                                                <span className='fw-600 text-end'>{quoteDate?.personalInfo?.familyMembersCount}</span>
                                             </li>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Family member education fees</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.familyMembersFees} <span className='text-muted fw-normal'> SAR</span></span>
+                                                <span className='fw-600 text-end'>{quoteDate?.personalInfo?.familyMembersFees} <span className='text-muted fw-normal'> SAR</span></span>
                                             </li>
                                             <li className='d-flex py-2 align-items-center justify-content-between'>
                                                 <span className='text-muted'>Working status</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.workingStatus === "true" ? "Employed" : "UnEmployed"}</span>
+                                                <span className='fw-600 text-end'>{quoteDate?.personalInfo?.workingStatus === "true" ? "Employed" : "UnEmployed"}</span>
                                             </li>
                                         </ul>
                                     </div>
@@ -665,20 +619,20 @@ const RequestFinance = () => {
                                     <div className="review-card">
                                         <div className="review-heading d-flex justify-content-between align-items-center p-3">
                                             <h6 className='mb-0'>Monthly Income</h6>
-                                            <img src={pen} alt="" onClick={handleMonthlyIncomeShow} />
+                                            {/* <img src={pen} alt="" onClick={handleMonthlyIncomeShow} /> */}
                                         </div>
                                         <ul className='fs-small mb-0 p-3'>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Basic Salary</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.basicSalary} <span className='text-muted fw-normal'> SAR</span></span>
+                                                <span className='fw-600 text-end'>{quoteDate?.monthlyIncome?.basicSalary} <span className='text-muted fw-normal'> SAR</span></span>
                                             </li>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Housing Allowance</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.housingAllowance}<span className='text-muted fw-normal'> SAR</span></span>
+                                                <span className='fw-600 text-end'>{quoteDate?.monthlyIncome?.housingAllowance}<span className='text-muted fw-normal'> SAR</span></span>
                                             </li>
                                             <li className='d-flex py-2 align-items-center justify-content-between'>
                                                 <span className='text-muted'>Other Allowance</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.otherAllowance} <span className='text-muted fw-normal'> SAR</span></span>
+                                                <span className='fw-600 text-end'>{quoteDate?.monthlyIncome?.otherAllowances} <span className='text-muted fw-normal'> SAR</span></span>
                                             </li>
                                         </ul>
                                     </div>
@@ -688,44 +642,40 @@ const RequestFinance = () => {
                                     <div className="review-card">
                                         <div className="review-heading d-flex justify-content-between align-items-center p-3">
                                             <h6 className='mb-0'>Expenses and obligations </h6>
-                                            <img src={pen} alt="" onClick={handleExpenseShow} />
+                                            {/* <img src={pen} alt="" onClick={handleExpenseShow} /> */}
                                         </div>
                                         <ul className='fs-small mb-0 p-3'>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Current Monthly Expenses</span>
                                                 <span className='fw-600 text-end'>
                                                     {
-                                                        Number(quoteDate?.housingExpense) +
-                                                        Number(quoteDate?.housingAllowance) +
-                                                        Number(quoteDate?.otherAllowance) +
-                                                        Number(quoteDate?.homeWorkerWageExpense) +
-                                                        Number(quoteDate?.healthCareExpense) +
-                                                        Number(quoteDate?.foodBeverageExpense) +
-                                                        Number(quoteDate?.additionalMonthlyExpense) +
-                                                        Number(quoteDate?.transportationExpense) +
-                                                        Number(quoteDate?.additionalLoansExpense)
+                                                        Number(quoteDate?.expensesAndObligations?.housing) +
+                                                        Number(quoteDate?.expensesAndObligations?.homeWorkerWage) +
+                                                        Number(quoteDate?.expensesAndObligations?.healthCare) +
+                                                        Number(quoteDate?.expensesAndObligations?.foodBeverage) +
+                                                        Number(quoteDate?.expensesAndObligations?.transportation)
                                                     }
                                                 <span className='text-muted fw-normal'> SAR</span></span>
                                             </li>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Housing</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.housingExpense}<span className='text-muted fw-normal'> SAR</span></span>
+                                                <span className='fw-600 text-end'>{quoteDate?.expensesAndObligations?.housing}<span className='text-muted fw-normal'> SAR</span></span>
                                             </li>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Homeworkers wage</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.homeWorkerWageExpense}<span className='text-muted fw-normal'> SAR</span></span>
+                                                <span className='fw-600 text-end'>{quoteDate?.expensesAndObligations?.homeWorkerWage}<span className='text-muted fw-normal'> SAR</span></span>
                                             </li>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Food & beverage expenses</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.foodBeverageExpense} <span className='text-muted fw-normal'> SAR</span></span>
+                                                <span className='fw-600 text-end'>{quoteDate?.expensesAndObligations?.foodBeverage} <span className='text-muted fw-normal'> SAR</span></span>
                                             </li>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Health Care & Insurance</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.healthCareExpense} <span className='text-muted fw-normal'> SAR</span></span>
+                                                <span className='fw-600 text-end'>{quoteDate?.expensesAndObligations?.healthCare} <span className='text-muted fw-normal'> SAR</span></span>
                                             </li>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Transportation & Communication</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.transportationExpense} <span className='text-muted fw-normal'> SAR</span></span>
+                                                <span className='fw-600 text-end'>{quoteDate?.expensesAndObligations?.transportation} <span className='text-muted fw-normal'> SAR</span></span>
                                             </li>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Any addition monthly expense </span>
@@ -753,10 +703,15 @@ const RequestFinance = () => {
                                             />
                                         </div>
                                     ) : (
-                                        <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
-                                            <Link to='/customer/dashboard/quotesReceived' className="btn finance-form-cancel me-3" style={{backgroundColor: 'crimson' , color : 'white' }} onClick={emptyQuoteData} >Cancel</Link>
-                                            <button className="btn bg-darkBlue text-light"  style={{backgroundColor: '#130f40' , color : 'white' }} onClick={sendQuote} >Submit Request</button>
-                                        </div>
+                                        <>
+                                            <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
+                                                <Link to='/admin/financialRequestsData' className="btn finance-form-cancel me-3" style={{backgroundColor: 'crimson' , color : 'white' }} onClick={emptyQuoteData} >View All Financial Requests</Link>
+                                                {/* <button className="btn bg-darkBlue text-light"  style={{backgroundColor: '#130f40' , color : 'white' }} onClick={sendQuote} >Submit Request</button> */}
+                                            </div>
+                                            <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
+                                            <Link to='' className="btn border border-color-darkBlue text-darkBlue" style={{backgroundColor: '#0B0A31' , color : 'white' }} onClick={() => setStep(3)} >Go Back</Link>
+                                            </div>
+                                        </>
                                     )
                                 }
 

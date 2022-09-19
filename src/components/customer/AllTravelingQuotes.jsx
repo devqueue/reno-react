@@ -72,7 +72,6 @@ const MainPage = () => {
                     return (
                         <>
                             <Button size="sm" variant="link" style={{fontSize : '11px' , fontWeight : 600 , textDecoration : 'none'}} >{prop?.quoteStatus}</Button>
-                            
                         </>
                     )
                 },

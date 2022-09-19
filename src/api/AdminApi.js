@@ -55,6 +55,7 @@ const updateMerchantPassword = (email, password) => API.put(`/api/v1/admins/upda
 const getAdminDetails = () => API.get(`/api/v1/admins/getAdminDetails`);
 const updateAdminPic = (data) => API.put(`/api/v1/admins/updateProfilePic`, data);
 const updateAdminDetails = (data) => API.put(`/api/v1/admins/updateAdminProfile`, data);
+const getSingleQuoteDetails = (quoteId) => API.get(`/api/v1/admins/getSingleQuoteDetails/${quoteId}`);
 
 
 
@@ -87,5 +88,6 @@ module.exports = {
     updateAdminPic,
     updateAdminDetails,
     getAllMerchantsMatching,
-    getAllCustomersMatching
+    getAllCustomersMatching,
+    getSingleQuoteDetails
 }

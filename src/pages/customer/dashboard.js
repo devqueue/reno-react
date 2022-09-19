@@ -33,6 +33,7 @@ const CustomerDashboard = () => {
             <Route path='/getAllTravelingQuotes' element={<AllTravelingQuotes />} />
             <Route path='/customer-support' element={<UserTickets />} />
             <Route path='/profile' element={<Profile />} />
+            
         </Routes>
     </div>
   )

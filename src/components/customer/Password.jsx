@@ -15,6 +15,7 @@ const Password = () => {
     const location = useLocation()
     const [ isFetching , setIsFetching ] = useState(false)
     const [isMatched, setIsMatched] = useState(false)
+    const [allowUpdate, setAllowUpdate ] = useState(false)
     const [ oldPass , setOldPass ] = useState("")
     const [ newPass , setNewPass ] = useState("")
     const [msg , setMsg ] = useState("")
@@ -166,10 +167,10 @@ const Password = () => {
                 toast.error(data?.message)
             }
         }
-        // checking if passowrd is changed
-        if(newPass !== ""){
-            await updateMyPassword()
-        }
+        // // checking if passowrd is changed
+        // if(newPass !== ""){
+        //     await updateMyPassword()
+        // }
         // checking if image is changed
         if(uploadImage !== ""){
             let formData = new FormData();
@@ -188,6 +189,15 @@ const Password = () => {
         setIsFetching(false)
         await delay(1500);
         window.location.reload();
+    }
+
+    // allowing to change password
+    const changeBtn = (value) => {
+        if(value?.length > 0){
+            setAllowUpdate(true)
+        }else{
+            setAllowUpdate(false)
+        }
     }
 
     return (
@@ -323,6 +333,32 @@ const Password = () => {
                                 </div>
                             </div>
 
+                            <div className="d-flex">
+                                <div className='col-lg-3' >
+                                </div>
+                                <div className='col-lg-4' >
+                                    {
+                                        isFetching === true ? (
+                                            <div style={{display : 'flex' , justifyContent: 'center' , margin: 'auto'}}>
+                                                <ThreeDots
+                                                    height = "60"
+                                                    width = "60"
+                                                    radius = "9"
+                                                    color = 'green'
+                                                    ariaLabel = 'three-dots-loading'
+                                                    wrapperStyle
+                                                    wrapperClass
+                                                />
+                                            </div>
+                                        ) : (
+                                            <Link to='' className='auth-btn text-light' style={{marginTop : '15px'}} onClick={updateMyData}>Update Profile</Link>
+                                        )
+                                    }
+                                </div>
+                                <div className='col-lg-2' >
+                                </div>
+                            </div>
+
                             <h5 style={{marginBottom : '15px', marginTop : '20px'}}>Update Password</h5>
                             <div className="d-flex" >
                                 <div className="form-group mb-4 col-lg-5">
@@ -343,34 +379,9 @@ const Password = () => {
                                 <div className="form-group mb-4 col-lg-6" style={{marginLeft : '15px'}}>
                                     <label className='form-label'>New Password</label>
                                     <div className='pass-container' >
-                                        <input type={`${pass2 ? 'text' : 'password'}`} className='form-control px-3' placeholder='Confirm Password' disabled={!isMatched} onChange={(e) => setNewPass(e.target.value)} value={newPass} />
+                                        <input type={`${pass2 ? 'text' : 'password'}`} className='form-control px-3' placeholder='Confirm Password' disabled={!isMatched} onChange={(e) => setNewPass(e.target.value)} value={newPass} onBlur={(e) =>changeBtn(e.target.value)} />
                                         <img src={eye} onClick={() => setPass2(!pass2)} className='reveal-btn' alt="" />
                                     </div>
-                                    {/* {
-                                        isFetching === true ? (
-                                            <div style={{display : 'flex' , justifyContent: 'center' , margin: 'auto'}}>
-                                                <ThreeDots
-                                                    height = "60"
-                                                    width = "60"
-                                                    radius = "9"
-                                                    color = 'green'
-                                                    ariaLabel = 'three-dots-loading'
-                                                    wrapperStyle
-                                                    wrapperClass
-                                                />
-                                            </div>
-                                        ) : (
-                                            isMatched === true && (
-                                                <Link to='' className='auth-btn text-light' style={{marginTop : '15px'}} onClick={updateMyPassword}>Update Now</Link>
-                                            )
-                                        )
-                                    } */}
-                                </div>
-                            </div>
-                            <div className="d-flex">
-                                <div className='col-lg-4' >
-                                </div>
-                                <div className='col-lg-4' >
                                     {
                                         isFetching === true ? (
                                             <div style={{display : 'flex' , justifyContent: 'center' , margin: 'auto'}}>
@@ -385,13 +396,14 @@ const Password = () => {
                                                 />
                                             </div>
                                         ) : (
-                                            <Link to='' className='auth-btn text-light' style={{marginTop : '15px'}} onClick={updateMyData}>Update Now</Link>
+                                                allowUpdate === true && (
+                                                <Link to='' className='auth-btn text-light' style={{marginTop : '15px'}} onClick={updateMyPassword}>Update Password</Link>
+                                            )
                                         )
                                     }
                                 </div>
-                                <div className='col-lg-4' >
-                                </div>
                             </div>
+                            
                         </div>
                     </div>
                 </div>

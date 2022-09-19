@@ -290,7 +290,7 @@ const QuotesReceived = () => {
                                                 </div>
                                             </button>
                                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
+                                                <li><Link className="dropdown-item" to="/admin/profile">Profile</Link></li>
                                                 <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
                                             </ul>
                                 </div>

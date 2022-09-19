@@ -192,7 +192,7 @@ const LoginForm = () => {
                     <h3 className='my-3'>Customer Login</h3>
 
                     <div className="form-group mb-4">
-                        <label className='form-label'>Email</label>
+                        <label className='form-label'>Email <span style={{color : 'white'}} >(*)</span></label>
                         <div className="auth-input-container">
                             <input type="email" className='form-control px-3' placeholder='Enter Your Email' value={userData?.email} onChange={(e) => setUserDate({...userData , email : e.target.value})} required onBlur={(e) => matchEmail(e.target.value)} />
                         </div>
@@ -203,7 +203,7 @@ const LoginForm = () => {
                             }
                     </div>
                     <div className="form-group mb-2">
-                        <label className='form-label'>Password</label>
+                        <label className='form-label'>Password <span style={{color : 'white'}} >(*)</span></label>
                         <div className='pass-container'>
                             <div className="auth-input-container">
                                 <input type={`${pass1 ? 'text' : 'password'}`} className='form-control px-3' placeholder='Password' value={userData?.password} onChange={(e) => setUserDate({...userData , password : e.target.value})} required onBlur={(e) => checkPassword(e.target.value)} />

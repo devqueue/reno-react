@@ -15,7 +15,7 @@ import {getRecentFinancialRequests , approveAnyFinancialRequest } from '../../ap
 import user from '../../assets/images/user.jpg'
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
-import {useNavigate , Link , useLocation} from 'react-router-dom'
+import {useNavigate , Link , NavLink, useLocation} from 'react-router-dom'
 import moment from 'moment'
 import { AiFillBell } from 'react-icons/ai'
 import {getAllNotificationsOfAdmin ,markNotificationsOfAdminRead} from '../../api/AdminApi'
@@ -54,29 +54,54 @@ const MainPage = () => {
 
     const TABLE_HEADERS = [
         {
-            prop: "isOwned",
-            title: "Home",
+            prop: "customer",
+            title: "Customer",
+            cell: (prop) => {
+                return (
+                        <div className="d-flex flex-column" >
+                            <span>{prop.customerId}</span>
+                            <span>{prop.customerEmail}</span>
+                        </div>
+                    )
+            },
+            ignoreRowClick: true,
+            allowOverflow: true,
+            button: true,
         },
         {
-            prop: "homeType",
-            title: "Home Type"
-        },
-        {
-            prop: "address",
-            title: "Address"
-        },
-        {
-            prop: "homeSize",
-            title: "Home Area",
+            prop: "quoteNo",
+            title: "Quote No",
         },
         {
             prop: "martialStatus",
-            title: "Martial Status "
+            title: "Martial Status"
         },
         {
-            prop: "isWorking",
-            title: "Employment"
+            prop: "employeement",
+            title: "Employement"
         },
+        {
+            prop: "View",
+            title: "View Details",
+            cell: (prop) => {
+                return (
+                        <NavLink activeClassName='active' className='text-darkGray fs-small' target="_blank" style={{textDecoration: 'none'}} to={`/view-finance-request/${prop.Id}`}>
+                            <span>View Details</span>
+                        </NavLink>
+                    )
+            },
+            ignoreRowClick: true,
+            allowOverflow: true,
+            button: true,
+        },
+        // {
+        //     prop: "martialStatus",
+        //     title: "Martial Status "
+        // },
+        // {
+        //     prop: "isWorking",
+        //     title: "Employment"
+        // },
         {
             prop : "_id",
             title: "Approve Request",
@@ -101,7 +126,7 @@ const MainPage = () => {
                             </Dropdown.Menu>
                         </Dropdown>
                     )
-                },
+            },
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
@@ -117,14 +142,13 @@ const MainPage = () => {
             if(data?.success === true){
                 for(let i = 0; i !== data?.AllQuotes.length; i++){
                     let newArr = {
-                        isOwned: data?.AllQuotes[i]?.personalInfo?.isOwned === true ? "Owner" : "Rented",
-                        homeType: data?.AllQuotes[i]?.personalInfo?.homeType,
-                        address: data?.AllQuotes[i]?.personalInfo?.homeLocation,
-                        homeSize: data?.AllQuotes[i]?.personalInfo?.homeSize,
+                        customerId: data?.AllQuotes[i]?.ProductCategory?.IDCardNo,
+                        customerEmail: data?.AllQuotes[i]?.ProductCategory?.email,
+                        quoteNo: 8745885 + i,
                         martialStatus: data?.AllQuotes[i]?.personalInfo?.martialStatus,
-                        isWorking: data?.AllQuotes[i]?.personalInfo?.workingStatus === "true" ? "Employed" : "UnEmployed",
+                        Status: data?.AllQuotes[i]?.Status,
                         quoteStatus: data?.AllQuotes[i]?.quoteStatus,
-                        Status: data?.AllQuotes[i]?.isAdminApproved,
+                        employeement: data?.AllQuotes[i]?.personalInfo?.workingStatus === "true" ? "Employed" : "UnEmployed",
                         Id: data?.AllQuotes[i]?._id,
                     }
                     allDataArr.push(newArr)
@@ -272,7 +296,7 @@ const MainPage = () => {
                                                 </div>
                                             </button>
                                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
+                                                <li><Link className="dropdown-item" to="/admin/profile">Profile</Link></li>
                                                 <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
                                             </ul>
                                     </div>

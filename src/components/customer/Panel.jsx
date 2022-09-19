@@ -62,10 +62,10 @@ const Panel = () => {
             navigate("/partner/auth/login");
         }
         let name = JSON.parse(localStorage.getItem('reno-customerName'))
-        if(!name){
-            name = JSON.parse(sessionStorage.getItem("reno-customerName"));
+        console.log("name : ", name);
+        if(name){
+          setUserName(name)
         }
-        setUserName(name)
 
         let pic = JSON.parse(localStorage.getItem('reno-customerPhoto'))
         if(!pic){
@@ -300,7 +300,6 @@ const Panel = () => {
                       <thead>
                         <tr className='text-muted'>
                           <th scope="col">Reference Number</th>
-                          <th scope="col">Finance Product</th>
                           <th scope="col">Purchase Total</th>
                           <th scope="col">Deposit Amount</th>
                           <th scope="col">Monthly Payment</th>
@@ -327,7 +326,6 @@ const Panel = () => {
                                 allRecords?.map((item , index) => (
                                   <tr key={item?._id}>
                                     <td>{874557 + index}</td>
-                                    <td>0% interest payment plan</td>
                                     <td>{item?.FinancedAmount?.totalPurchaseAmt}</td>
                                     <td>{item?.FinancedAmount?.depositAmt}</td>
                                     <td>{item?.FinancedAmount?.depositAmt}</td>

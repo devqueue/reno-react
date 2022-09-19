@@ -15,6 +15,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import axios from 'axios'
+import Badge from 'react-bootstrap/Badge';
 
 
 const Applications = () => {
@@ -290,7 +291,7 @@ const Applications = () => {
                     <div className="d-flex table-filters mt-4">
                         <input type="text" style={{maxWidth : "120px"}} className='text-muted fs-small' placeholder='Customer ID' value={filterData?.customerId} onChange={(e) => setFilterData({...filterData , customerId : e.target.value}) } />
                         <select className="form-select text-muted" aria-label="Default select example" onChange={(e) => setFilterData({...filterData , category : e.target.value}) } >
-                            <option selected></option>
+                            <option selected>select any category</option>
                             <option>Lighting</option>
                             <option >Cooling/Heating</option>
                             <option >Smart Home technology System</option>
@@ -364,17 +365,17 @@ const Applications = () => {
                                         formatter: (cell) =>
                                         _(
                                             <>
-                                                <Button variant="link" size="sm" onClick={handleInvoiceInvoice} >Un Paid</Button>
+                                                <Badge bg="danger" text="light">Un Paid </Badge>
                                             </>
                                         ),
                                     },
                                     {
-                                        name: "View Invoice",
+                                        name: "Action",
                                         minWidth : '150px',
                                         formatter: (cell) =>
                                         _(
                                             <>
-                                                <Button variant="danger" size="sm" onClick={handleRefund} >Refund Now</Button>
+                                                <Button variant="danger" size="sm" onClick={handleRefund} >View Invoice</Button>
                                             </>
                                         ),
                                     },
@@ -387,7 +388,8 @@ const Applications = () => {
                                 style= {{
                                     th  : {
                                         backgroundColor : '#bdc3c7',
-                                        color : '#2f3542'
+                                        color : '#2f3542',
+                                        fontSize : '14px'
                                     },
                                     table  : {
                                         backgroundColor : 'white',

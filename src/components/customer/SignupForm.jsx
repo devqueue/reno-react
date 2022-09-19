@@ -109,13 +109,13 @@ const SignupForm = () => {
                     <h3 className='my-3'>Customer Registration</h3>
 
                     <div className="form-group mb-4">
-                        <label className='form-label'>National ID/Iqama Number <span style={{color : 'crimson'}} >(*)</span> </label>
+                        <label className='form-label'>National ID/Iqama Number <span style={{color : 'white'}} >(*)</span> </label>
                         <div className="auth-input-container">
                             <input type="text" className='form-control px-3' placeholder='Enter Your National ID or Iqama Number' value={userData?.IDCardNo} onChange={(e) => setUserDate({...userData , IDCardNo : e.target.value})} required />
                         </div>
                     </div>
                     <div className="form-group mb-4">
-                        <label className='form-label'>Mobile Number <span style={{color : 'crimson'}} >(*)</span></label>
+                        <label className='form-label'>Mobile Number <span style={{color : 'white'}} >(*)</span></label>
                         <div className="d-flex">
                             <select class="form-select shadow-none fs-small text-muted number-select me-2" aria-label="Default select example">
                                 <option selected>+966</option>
@@ -133,7 +133,7 @@ const SignupForm = () => {
                         </div>
                     </div>
                     <div className="form-group mb-4">
-                        <label className='form-label'>Email Address <span style={{color : 'crimson'}} >(*)</span></label>
+                        <label className='form-label'>Email Address <span style={{color : 'white'}} >(*)</span></label>
                         <div className="auth-input-container">
                             <input type="text" className='form-control px-3' placeholder='Enter Your Email Address' value={userData?.email} onChange={(e) => setUserDate({...userData , email : e.target.value})} required onBlur={(e) => matchEmail(e.target.value)} />
                         </div>
@@ -156,7 +156,7 @@ const SignupForm = () => {
                         </div>
                     </div>
                     <div className="form-group mb-4">
-                        <label className='form-label'>Password <span style={{color : 'crimson'}} >(*)</span></label>
+                        <label className='form-label'>Password <span style={{color : 'white'}} >(*)</span></label>
                         <div className='pass-container'>
                             <div className="auth-input-container">
                                 <input type={`${pass1 ? 'text' : 'password'}`} className='form-control px-3' placeholder='Password'  value={userData?.password} onChange={(e) => setUserDate({...userData , password : e.target.value})} required  onBlur={(e) => checkPassword(e.target.value)} />

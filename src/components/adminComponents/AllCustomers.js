@@ -81,14 +81,14 @@ const MainPage = () => {
             title: "Phone No.",
             isFilterable: true
         },
-        // {
-        //     prop: "joinedAt",
-        //     title: "Joined At"
-        // },
-        // {
-        //     prop: "dob",
-        //     title: "Date of Birth"
-        // },
+        {
+            prop: "joinedAt",
+            title: "Joined At"
+        },
+        {
+            prop: "dob",
+            title: "Date of Birth"
+        },
         // {
         //     prop : "_id",
         //     title: "Change Status",
@@ -121,8 +121,8 @@ const MainPage = () => {
                         idCard: data?.AllMerchants[i]?.IDCardNo,
                         email: data?.AllMerchants[i]?.email,
                         phoneNo: data?.AllMerchants[i]?.phoneNo ? data?.AllMerchants[i]?.phoneNo : "N/A",
-                        joinedAt: moment(data?.AllMerchants[i]?.createdAt).format('MMMM Do YYYY, h:mm:ss a'),
-                        dob: data?.AllMerchants[i]?.dob ? data?.AllMerchants[i]?.dob : "N/A",
+                        joinedAt: moment(data?.AllMerchants[i]?.createdAt).format('MMM Do YY'),
+                        dob: data?.AllMerchants[i]?.dob ? moment(data?.AllMerchants[i]?.dob).format('MMM Do YY')  : "N/A",
                         Id: data?.AllMerchants[i]?._id,
                     }
                     allDataArr.push(newArr)
@@ -245,7 +245,7 @@ const MainPage = () => {
                     idCard: data?.AllMerchants[i]?.IDCardNo,
                     email: data?.AllMerchants[i]?.email,
                     phoneNo: data?.AllMerchants[i]?.phoneNo ? data?.AllMerchants[i]?.phoneNo : "N/A",
-                    joinedAt: moment(data?.AllMerchants[i]?.createdAt).format('MMMM Do YYYY, h:mm:ss a'),
+                    joinedAt: moment(data?.AllMerchants[i]?.createdAt).format('MMM Do YY'),
                     dob: data?.AllMerchants[i]?.dob ? data?.AllMerchants[i]?.dob : "N/A",
                     Id: data?.AllMerchants[i]?._id,
                 }
@@ -323,7 +323,7 @@ const MainPage = () => {
                                                 </div>
                                             </button>
                                             <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
+                                                <li><Link className="dropdown-item" to="/admin/profile">Profile</Link></li>
                                                 <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
                                             </ul>
                                 </div>

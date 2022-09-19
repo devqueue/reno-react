@@ -220,6 +220,7 @@ const ManageQuotes = () => {
                               <div className="col-lg-3">
                                 <h6 className='text-muted fs-small mb-1'>Customer ID Card No.</h6>
                                 <h6 className='text-darkBlue'>{item?.CustomerIDCardNo}</h6>
+                                <h6 className='text-darkBlue'>Email: {item?.CustomerAndProductDetails?.email}</h6>
                               </div>
                               <div className="col-lg-3">
                                 <h6 className='text-muted fs-small mb-1'>Date</h6>
