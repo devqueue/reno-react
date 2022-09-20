@@ -78,7 +78,8 @@ const Password = () => {
         if(!pic){
             pic = JSON.parse(sessionStorage.getItem("reno-merchantPic"));
         }
-        setUserPic(pic)
+        console.log("pic ", pic) 
+        setUserPic( process.env.REACT_APP_API_SERVER_URL + "/merchantsProfilePics/" + pic)
     },[location])
 
     // logging out
@@ -177,7 +178,7 @@ const Password = () => {
             const res = await updateMerchantPic(formData)
             if(res?.data?.success === true){
                 toast.success("Profile Image Updated Successfully")
-                localStorage.setItem("reno-merchantPic", JSON.stringify(process.env.REACT_APP_API_SERVER_URL + "/merchantsProfilePics/" + res?.data?.UpdatedImage));
+                localStorage.setItem("reno-merchantPic", JSON.stringify(res?.data?.UpdatedImage));
                 setIsFetching(false)
                 await delay(1500);
                 window.location.reload();

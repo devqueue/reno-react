@@ -14,6 +14,7 @@ import { useAccordionButton } from 'react-bootstrap/AccordionButton';
 
 const QuotesReceived = () => {
     const [ isFetching , setIsFetching ] = useState(false)
+    const location = useLocation();
     const [ isSending , setIsSending ] = useState(false)
     const [ isResFetching , setIsResFetching ] = useState(false)
     const [ userId , setUserId ] = useState("")
@@ -110,7 +111,7 @@ const QuotesReceived = () => {
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
-    const location = useLocation();
+    
     // checking if user is signed in or not
     useEffect(() =>{
         const customerToken = JSON.parse(localStorage.getItem('reno-customer-token'))

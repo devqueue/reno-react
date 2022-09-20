@@ -107,7 +107,7 @@ const QuotesReceived = () => {
         if(!pic){
             pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
         }
-        setUserPic(pic)
+        setUserPic( process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + pic)
     },[])
 
     const [ allNotifications , setAllNotifications ] = useState([])

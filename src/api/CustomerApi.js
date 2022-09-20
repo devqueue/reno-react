@@ -54,7 +54,8 @@ const updateCustomerPic = (data) => API.put(`/api/v1/customers/updateProfilePic`
 const updateCustomerDetails = (data) => API.put(`/api/v1/customers/updateCustomerProfile`, data);
 const getSingleQuoteDetails = (quoteId) => API.get(`/api/v1/quotes/getSingleQuoteDetails/${quoteId}`);
 const makeNewPayment = (quoteId) => API.post(`/api/v1/quotesHistory/addNewPaymentHistoryToAQuoteHistory/${quoteId}`);
-const getAllPaymentsHistory = (quoteId) => API.get(`/api/v1/quotesHistory/getAllPaymentHistoryOfAQuote/${quoteId}`);
+//const getAllPaymentsHistory = (quoteId) => API.get(`/api/v1/quotesHistory/getAllPaymentHistoryOfAQuote/${quoteId}`);
+const getAllPaymentsHistoryOfAnyCustomer = () => API.get(`/api/v1/quotesHistory/getAllUpcomingPaymentsOfCustomer`);
 
 
 
@@ -88,5 +89,5 @@ module.exports = {
     updateCustomerDetails,
     getSingleQuoteDetails,
     makeNewPayment,
-    getAllPaymentsHistory
+    getAllPaymentsHistoryOfAnyCustomer,
 }

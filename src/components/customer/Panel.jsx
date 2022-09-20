@@ -15,7 +15,7 @@ import { toast } from 'react-toastify';
 import { Link , useNavigate , useLocation } from 'react-router-dom'
 import { ThreeDots } from  'react-loader-spinner'
 import moment from 'moment'
-import {getAllRecentQuotesForHomeScreen , getDashboardData , getUpcomingPaymentsOfQuotes , getAllNotificationsOfCustomer ,markNotificationsOfMerchantRead } from '../../api/CustomerApi'
+import {getAllRecentQuotesForHomeScreen , getDashboardData , getUpcomingPaymentsOfQuotes , getAllNotificationsOfCustomer ,markNotificationsOfMerchantRead , getAllPaymentsHistoryOfAnyCustomer } from '../../api/CustomerApi'
 
 const Panel = () => {
   const navigate = useNavigate();
@@ -42,9 +42,10 @@ const Panel = () => {
         }
 
         // getting all due payments
-        const res = await getUpcomingPaymentsOfQuotes();
+        const res = await getAllPaymentsHistoryOfAnyCustomer();
+        console.log("data of upcoming ", res?.data?.PaymentsDue);
         if(res?.data?.success === true){
-          setAllDuePayments(res?.data?.allRecords);
+          setAllDuePayments(res?.data?.PaymentsDue);
         }
 
         setIsFetching(false)
@@ -71,7 +72,7 @@ const Panel = () => {
         if(!pic){
             pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
         }
-        setUserPic(pic)
+        setUserPic( process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + pic)
     },[location])
 
   const options = {
@@ -405,19 +406,18 @@ const Panel = () => {
           <div className="col-12">
 
             <div className="table-container bg-color-light">
-              <h5 className="fw-600">Payment Due Date</h5>
+              <h5 className="fw-600">Payments Due</h5>
 
               <div className="table-responsive mt-3">
                 <table class="table border-top">
                   <thead>
                     <tr className='text-muted'>
-                      <th scope="col">Bill Number</th>
-                      <th scope="col">Date</th>
-                      <th scope="col">Amount(SAR)</th>
+                      <th scope="col">Reference Number</th>
+                      <th scope="col">Due Date</th>
+                      <th scope="col">Total Amount(SAR)</th>
                       <th scope="col">Paid Amount(SAR)</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">Show Bill</th>
-                      <th scope="col">Pay Bill</th>
+                      <th scope="col">Pending Amount</th>
+                      {/* <th scope="col">Status</th> */}
                     </tr>
                   </thead>
                   {
@@ -438,12 +438,10 @@ const Panel = () => {
                               allDuePayments?.map((item, index) => (
                                 <tr key={item?._id}>
                                   <td>{87422 + index}</td>
-                                  <td>{moment(item?.startingMonth).format("MMM Do YYYY")}</td>
-                                  <td>{item?.remainingAmount}</td>
-                                  <td>{item?.perMonthAmount}</td>
-                                  <td className='text-color-primary'>Pending</td>
-                                  <td><span className='text-decoration-underline table-modal-btn' data-bs-toggle="modal" data-bs-target="#invoiceModal">Show</span></td>
-                                  <td><span className='text-decoration-underline table-modal-btn' data-bs-toggle="modal" data-bs-target="#payModal">Pay Now</span></td>
+                                  <td>{item?.dueDate}</td>
+                                  <td>{item?.totalAmount}</td>
+                                  <td>{item?.amountPaid}</td>
+                                  <td>{item?.pendingAmount}</td>
                                 </tr>
                               ))
                             ) : (

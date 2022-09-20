@@ -11,7 +11,7 @@ import {
 } from "react-bs-datatable";
 import { toast } from 'react-toastify';
 import { ThreeDots } from  'react-loader-spinner'
-import {getAllCustomers , disApproveAnyMerchant, ApproveAnyMerchant ,getAllCustomersMatching} from '../../api/AdminApi'
+import {getAllCustomers, changeStatusOfAnyCustomer ,getAllCustomersMatching} from '../../api/AdminApi'
 import user from '../../assets/images/user.jpg'
 import {useNavigate , Link , useLocation} from 'react-router-dom'
 import moment from 'moment'
@@ -19,6 +19,9 @@ import { AiFillBell } from 'react-icons/ai'
 import {getAllNotificationsOfAdmin ,markNotificationsOfAdminRead} from '../../api/AdminApi'
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
+import Dropdown from 'react-bootstrap/Dropdown';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+
 
 
 
@@ -32,28 +35,20 @@ const MainPage = () => {
     const changeStatus = async (id) => {
         let isFound = allData.find(item => item.Id === id);
         if(isFound){
-            if(isFound.status == "Pending"){
-                isFound.status = "Approved"
-                const {data} = await ApproveAnyMerchant(id);
-                if(data?.success === true){
-                    let newData = allData;
-                    let finalData = newData.filter(item => item.Id === id ? isFound : item );
-                    toast.success("Merchant Approved Successfully");
-                    setData(finalData)
+            const {data} = await changeStatusOfAnyCustomer(id);
+            if(data?.success === true){
+                if(isFound.Status == false){
+                    isFound.Status = true
+                    toast.success("Customer Approved Successfully");
                 }else{
-                    toast.success(data?.message);
+                    isFound.Status = false
+                    toast.success("Customer DisApproved Successfully");
                 }
+                let newData = allData;
+                let finalData = newData.filter(item => item.Id === id ? isFound : item );
+                setData(finalData)
             }else{
-                isFound.status = "Pending"
-                const {data} = await disApproveAnyMerchant(id);
-                if(data?.success === true){
-                    let newData = allData;
-                    let finalData = newData.filter(item => item.Id === id ? isFound : item );
-                    toast.success("Merchant DisApproved Successfully");
-                    setData(finalData)
-                }else{
-                    toast.success(data?.message);
-                }
+                toast.success(data?.message);
             }
         }
     }
@@ -89,23 +84,35 @@ const MainPage = () => {
             prop: "dob",
             title: "Date of Birth"
         },
-        // {
-        //     prop : "_id",
-        //     title: "Change Status",
-        //     name: "Actions",
-        //     cell: (prop) => {
-        //         return (
-        //             prop?.status === "Pending" ? (
-        //                 <Button size="sm" variant="primary" onClick={() => changeStatus(prop?.Id)} >{prop?.status}</Button>
-        //             ) : (
-        //                 <Button size="sm" variant="success" onClick={() => changeStatus(prop?.Id)} >{prop?.status}</Button>
-        //             )
-        //         )
-        //         },
-        //     ignoreRowClick: true,
-        //     allowOverflow: true,
-        //     button: true,
-        // }
+        {
+            prop : "_id",
+            title: "Approve Request",
+            name: "Actions",
+            cell: (prop) => {
+                return (
+                        <Dropdown as={ButtonGroup}>
+                            {
+                                prop?.Status == false && (
+                                    <Button size="sm" variant="danger" style={{fontSize : '11px' , fontWeight : 600}} >Not Approved</Button>
+                                )
+                            }
+                            {
+                                prop?.Status == true && (
+                                    <Button size="sm" variant="success" style={{fontSize : '11px' , fontWeight : 600}} >Approved</Button>
+                                )
+                            }
+                            <Dropdown.Toggle split size="sm" variant="primary" id="dropdown-split-basic" />
+                            <Dropdown.Menu style={{backgroundColor : 'transparent'}} >
+                                <Dropdown.Item onClick={() => changeStatus(prop?.Id)} style={{backgroundColor : '#c23616', color : 'white'}} >Declined</Dropdown.Item>
+                                <Dropdown.Item onClick={() => changeStatus(prop?.Id)} style={{backgroundColor : '#10ac84', color : 'white'}} >Approved</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    )
+            },
+            ignoreRowClick: true,
+            allowOverflow: true,
+            button: true,
+        }
     ];
 
     // getting all data
@@ -120,6 +127,7 @@ const MainPage = () => {
                         profilePic: data?.AllMerchants[i]?.profilePic,
                         idCard: data?.AllMerchants[i]?.IDCardNo,
                         email: data?.AllMerchants[i]?.email,
+                        Status: data?.AllMerchants[i]?.status,
                         phoneNo: data?.AllMerchants[i]?.phoneNo ? data?.AllMerchants[i]?.phoneNo : "N/A",
                         joinedAt: moment(data?.AllMerchants[i]?.createdAt).format('MMM Do YY'),
                         dob: data?.AllMerchants[i]?.dob ? moment(data?.AllMerchants[i]?.dob).format('MMM Do YY')  : "N/A",
@@ -156,7 +164,7 @@ const MainPage = () => {
         if(!pic){
             pic = JSON.parse(sessionStorage.getItem("reno-adminPic"));
         }
-        setUserPic(pic)
+        setUserPic( process.env.REACT_APP_API_SERVER_URL + "/adminProfileImages/" + pic)
     },[location])
     // logging out
     const logout = async () => {
@@ -214,17 +222,20 @@ const MainPage = () => {
         const {data} = await getAllCustomersMatching(text);
         let allDataArr = [];
         if(data?.success === true){
-            for(let i = 0; i !== data?.AllMerchants.length; i++){
-                let newArr = {
-                    profilePic: data?.AllMerchants[i]?.profilePic,
-                    idCard: data?.AllMerchants[i]?.IDCardNo,
-                    email: data?.AllMerchants[i]?.email,
-                    phoneNo: data?.AllMerchants[i]?.phoneNo ? data?.AllMerchants[i]?.phoneNo : "N/A",
-                    joinedAt: moment(data?.AllMerchants[i]?.createdAt).format('MMMM Do YYYY, h:mm:ss a'),
-                    dob: data?.AllMerchants[i]?.dob ? data?.AllMerchants[i]?.dob : "N/A",
-                    Id: data?.AllMerchants[i]?._id,
+            if(data?.success === true){
+                for(let i = 0; i !== data?.AllMerchants.length; i++){
+                    let newArr = {
+                        profilePic: data?.AllMerchants[i]?.profilePic,
+                        idCard: data?.AllMerchants[i]?.IDCardNo,
+                        email: data?.AllMerchants[i]?.email,
+                        Status: data?.AllMerchants[i]?.status,
+                        phoneNo: data?.AllMerchants[i]?.phoneNo ? data?.AllMerchants[i]?.phoneNo : "N/A",
+                        joinedAt: moment(data?.AllMerchants[i]?.createdAt).format('MMM Do YY'),
+                        dob: data?.AllMerchants[i]?.dob ? moment(data?.AllMerchants[i]?.dob).format('MMM Do YY')  : "N/A",
+                        Id: data?.AllMerchants[i]?._id,
+                    }
+                    allDataArr.push(newArr)
                 }
-                allDataArr.push(newArr)
             }
             setData(allDataArr)
         }else{
@@ -239,19 +250,20 @@ const MainPage = () => {
             const {data} = await getAllCustomers();
             let allDataArr = [];
             if(data?.success === true){
-            for(let i = 0; i !== data?.AllMerchants.length; i++){
-                let newArr = {
-                    profilePic: data?.AllMerchants[i]?.profilePic,
-                    idCard: data?.AllMerchants[i]?.IDCardNo,
-                    email: data?.AllMerchants[i]?.email,
-                    phoneNo: data?.AllMerchants[i]?.phoneNo ? data?.AllMerchants[i]?.phoneNo : "N/A",
-                    joinedAt: moment(data?.AllMerchants[i]?.createdAt).format('MMM Do YY'),
-                    dob: data?.AllMerchants[i]?.dob ? data?.AllMerchants[i]?.dob : "N/A",
-                    Id: data?.AllMerchants[i]?._id,
+                for(let i = 0; i !== data?.AllMerchants.length; i++){
+                    let newArr = {
+                        profilePic: data?.AllMerchants[i]?.profilePic,
+                        idCard: data?.AllMerchants[i]?.IDCardNo,
+                        email: data?.AllMerchants[i]?.email,
+                        Status: data?.AllMerchants[i]?.status,
+                        phoneNo: data?.AllMerchants[i]?.phoneNo ? data?.AllMerchants[i]?.phoneNo : "N/A",
+                        joinedAt: moment(data?.AllMerchants[i]?.createdAt).format('MMM Do YY'),
+                        dob: data?.AllMerchants[i]?.dob ? moment(data?.AllMerchants[i]?.dob).format('MMM Do YY')  : "N/A",
+                        Id: data?.AllMerchants[i]?._id,
+                    }
+                    allDataArr.push(newArr)
                 }
-                allDataArr.push(newArr)
-            }
-            setData(allDataArr)
+                setData(allDataArr)
             }
             setIsFetching(false)
         }

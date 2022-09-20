@@ -51,7 +51,7 @@ const Password = () => {
             pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
         }
         if(pic){
-            setUserPic(pic)
+            setUserPic( process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + pic)
         }
     },[location])
     // getting all notifications
@@ -178,7 +178,7 @@ const Password = () => {
             const res = await updateCustomerPic(formData)
             if(res?.data?.success === true){
                 toast.success("Profile Image Updated Successfully")
-                localStorage.setItem("reno-customerPhoto", JSON.stringify(process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + res?.data?.UpdatedImage));
+                localStorage.setItem("reno-customerPhoto", JSON.stringify( res?.data?.UpdatedImage));
                 setIsFetching(false)
                 await delay(1500);
                 window.location.reload();

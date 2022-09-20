@@ -77,7 +77,7 @@ const Password = () => {
         if(!pic){
             pic = JSON.parse(sessionStorage.getItem("reno-adminPic"));
         }
-        setUserPic(pic)
+        setUserPic( process.env.REACT_APP_API_SERVER_URL + "/adminProfileImages/" + pic)
     },[location])
     // logging out
     const logout = async () => {
@@ -171,7 +171,7 @@ const Password = () => {
             const res = await updateAdminPic(formData)
             if(res?.data?.success === true){
                 toast.success("Profile Image Updated Successfully")
-                localStorage.setItem("reno-adminPic", JSON.stringify(process.env.REACT_APP_API_SERVER_URL + "/adminProfileImages/" + res?.data?.UpdatedImage));
+                localStorage.setItem("reno-adminPic", JSON.stringify(res?.data?.UpdatedImage));
                 setIsFetching(false)
                 await delay(1500);
                 window.location.reload();

@@ -19,6 +19,8 @@ import { AiFillBell } from 'react-icons/ai'
 import {getAllNotificationsOfAdmin ,markNotificationsOfAdminRead} from '../../api/AdminApi'
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 
 
 const MainPage = () => {
@@ -155,7 +157,7 @@ const MainPage = () => {
         if(!pic){
             pic = JSON.parse(sessionStorage.getItem("reno-adminPic"));
         }
-        setUserPic(pic)
+        setUserPic( process.env.REACT_APP_API_SERVER_URL + "/adminProfileImages/" + pic)
     },[location])
     // logging out
     const logout = async () => {
@@ -259,6 +261,13 @@ const MainPage = () => {
             setIsFetching(false)
         }
     }
+
+    // tooltip function
+    const renderTooltip = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Change Status
+        </Tooltip>
+    );
 
     return (
         <>

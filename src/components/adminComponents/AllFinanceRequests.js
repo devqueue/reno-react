@@ -180,7 +180,7 @@ const MainPage = () => {
         if(!pic){
             pic = JSON.parse(sessionStorage.getItem("reno-adminPic"));
         }
-        setUserPic(pic)
+        setUserPic( process.env.REACT_APP_API_SERVER_URL + "/adminProfileImages/" + pic)
     },[location])
     // logging out
     const logout = async () => {

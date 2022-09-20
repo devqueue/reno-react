@@ -171,7 +171,7 @@ const MainPage = () => {
         if(!pic){
             pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
         }
-        setUserPic(pic)
+        setUserPic( process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + pic)
     },[location])
 
     // logging out

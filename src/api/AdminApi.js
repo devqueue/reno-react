@@ -56,6 +56,7 @@ const getAdminDetails = () => API.get(`/api/v1/admins/getAdminDetails`);
 const updateAdminPic = (data) => API.put(`/api/v1/admins/updateProfilePic`, data);
 const updateAdminDetails = (data) => API.put(`/api/v1/admins/updateAdminProfile`, data);
 const getSingleQuoteDetails = (quoteId) => API.get(`/api/v1/admins/getSingleQuoteDetails/${quoteId}`);
+const changeStatusOfAnyCustomer = (customerId) => API.put(`/api/v1/customers/changeStatusOfAnyCustomer/${customerId}`);
 
 
 
@@ -89,5 +90,5 @@ module.exports = {
     updateAdminDetails,
     getAllMerchantsMatching,
     getAllCustomersMatching,
-    getSingleQuoteDetails
+    changeStatusOfAnyCustomer
 }
