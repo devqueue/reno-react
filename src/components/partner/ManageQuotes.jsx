@@ -84,7 +84,7 @@ const ManageQuotes = () => {
         if(!pic){
             pic = JSON.parse(sessionStorage.getItem("reno-merchantPic"));
         }
-        setUserPic(pic)
+        setUserPic(process.env.REACT_APP_API_SERVER_URL + "/merchantsProfilePics/" + pic)
     },[location])
 
     // logging out
