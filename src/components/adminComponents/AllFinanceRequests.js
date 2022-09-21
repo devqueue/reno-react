@@ -192,7 +192,7 @@ const MainPage = () => {
         sessionStorage.removeItem('reno-adminPic');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
-        navigate('/admin');
+        navigate('/admin/login');
     }
 
     const [ allNotifications , setAllNotifications ] = useState([])

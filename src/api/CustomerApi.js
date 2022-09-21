@@ -28,6 +28,7 @@ API.interceptors.request.use((req) => {
 // Customer Routes
 const signUpCustomer = (data) => API.post(`/api/v1/customers/register`, data);
 const signInCustomer = (data) => API.post(`/api/v1/customers/signin`, data);
+const signInCustomerWithCode = (data) => API.post(`/api/v1/customers/signinWithCode`, data);
 const getTodayReceivedQuotes = () => API.get(`/api/v1/quotes/getAllQuotesOfACustomerOfToday`);
 const getReceivedQuotesPrevious = () => API.get(`/api/v1/quotes/getAllQuotesOfACustomer`);
 const denyAnyQuote = (quoteId) => API.put(`/api/v1/quotes/quoteDenyByCustomer/${quoteId}`);
@@ -90,4 +91,5 @@ module.exports = {
     getSingleQuoteDetails,
     makeNewPayment,
     getAllPaymentsHistoryOfAnyCustomer,
+    signInCustomerWithCode
 }

@@ -77,6 +77,10 @@ const MainPage = () => {
             isFilterable: true
         },
         {
+            prop: "code",
+            title: "Login Code"
+        },
+        {
             prop: "joinedAt",
             title: "Joined At"
         },
@@ -132,6 +136,7 @@ const MainPage = () => {
                         joinedAt: moment(data?.AllMerchants[i]?.createdAt).format('MMM Do YY'),
                         dob: data?.AllMerchants[i]?.dob ? moment(data?.AllMerchants[i]?.dob).format('MMM Do YY')  : "N/A",
                         Id: data?.AllMerchants[i]?._id,
+                        code : data?.AllMerchants[i]?.code ? data?.AllMerchants[i]?.code : "N/A"
                     }
                     allDataArr.push(newArr)
                 }
@@ -176,7 +181,7 @@ const MainPage = () => {
         sessionStorage.removeItem('reno-adminPic');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
-        navigate('/admin');
+        navigate('/admin/login');
     }
 
     const [ allNotifications , setAllNotifications ] = useState([])
@@ -260,6 +265,7 @@ const MainPage = () => {
                         joinedAt: moment(data?.AllMerchants[i]?.createdAt).format('MMM Do YY'),
                         dob: data?.AllMerchants[i]?.dob ? moment(data?.AllMerchants[i]?.dob).format('MMM Do YY')  : "N/A",
                         Id: data?.AllMerchants[i]?._id,
+                        code : data?.AllMerchants[i]?.code ? data?.AllMerchants[i]?.code : "N/A"
                     }
                     allDataArr.push(newArr)
                 }

@@ -99,7 +99,7 @@ const ManageQuotes = () => {
         sessionStorage.removeItem('reno-merchantPic');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
-        navigate('/');
+        navigate('/partner/auth/login');
     }
     // sleeping
 
@@ -230,10 +230,7 @@ const ManageQuotes = () => {
                                 <h6 className='text-muted fs-small mb-1'>Time</h6>
                                 <h6 className='text-darkBlue'>{ moment(item?.CreatedAt).format('h:mm:ss a')}</h6>
                               </div>
-                              <div className="col-lg-3">
-                                <h6 className='text-muted fs-small mb-1 '>User Email</h6>
-                                <h6 className='text-darkBlue mt-3'>{item?.CustomerAndProductDetails?.email}</h6>
-                              </div>
+                              
         
                             </div>
                             <div className="row mt-3">

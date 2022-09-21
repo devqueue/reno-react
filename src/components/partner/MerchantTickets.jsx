@@ -113,7 +113,7 @@ const QuotesReceived = () => {
         sessionStorage.removeItem('reno-merchantPic');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
-        navigate('/');
+        navigate('/partner/auth/login');
     }
     // sleeping
 

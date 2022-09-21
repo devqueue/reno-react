@@ -90,5 +90,6 @@ module.exports = {
     updateAdminDetails,
     getAllMerchantsMatching,
     getAllCustomersMatching,
-    changeStatusOfAnyCustomer
+    changeStatusOfAnyCustomer,
+    getSingleQuoteDetails
 }

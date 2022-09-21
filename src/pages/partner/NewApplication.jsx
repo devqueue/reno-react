@@ -128,7 +128,7 @@ const NewApllication = () => {
             emptyQuoteData();
             await delay(1500)
             setIsFetching(false)
-            navigate('partner/dashboard/applications');
+            navigate('/partner/dashboard/applications');
         }else{
             await delay(1500)
             setIsFetching(false)

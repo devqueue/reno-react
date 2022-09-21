@@ -159,7 +159,7 @@ const MainPage = () => {
         const customerToken = JSON.parse(localStorage.getItem('reno-customer-token'))
         const isSessionFound = sessionStorage.getItem("reno-customer-token");
         if(!customerToken && !isSessionFound){
-            navigate("/partner/auth/login");
+            navigate("/customer/auth/login");
         }
         let name = JSON.parse(localStorage.getItem('reno-customerName'))
         if(!name){
@@ -184,7 +184,7 @@ const MainPage = () => {
         sessionStorage.removeItem('reno-customerPhoto');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
-        navigate('/');
+        navigate('/customer/auth/login');
     }
     // sleeping
 

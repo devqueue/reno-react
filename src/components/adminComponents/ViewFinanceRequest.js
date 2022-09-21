@@ -76,14 +76,6 @@ const RequestFinance = () => {
         setExpense(true);
     }
 
-    // checking if partner is signed in or not
-    useEffect(() => {
-        const customerToken = JSON.parse(localStorage.getItem('reno-customer-token'))
-        const isSessionFound = sessionStorage.getItem("reno-customer-token");
-        if(!customerToken && !isSessionFound){
-            navigate("/customer/auth/login");
-        }
-    }, [])
 
     // checking all fields of step 01
     const checkStep01 = () => {
@@ -149,7 +141,7 @@ const RequestFinance = () => {
         sessionStorage.removeItem('reno-customerPhoto');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
-        navigate('/');
+        navigate('/admin/login');
     }
 
     // sleeping
@@ -158,23 +150,23 @@ const RequestFinance = () => {
     const location = useLocation();
     // checking if user is signed in or not
     useEffect(() =>{
-        const customerToken = JSON.parse(localStorage.getItem('reno-customer-token'))
-        const isSessionFound = sessionStorage.getItem("reno-customer-token");
+        const customerToken = JSON.parse(localStorage.getItem('reno-admin-token'))
+        const isSessionFound = sessionStorage.getItem("reno-admin-token");
         if(!customerToken && !isSessionFound){
-            navigate("/partner/auth/login");
+            navigate("/admin/login");
         }
-        let name = JSON.parse(localStorage.getItem('reno-customerName'))
+        let name = JSON.parse(localStorage.getItem('reno-adminName'))
         if(!name){
-            name = JSON.parse(sessionStorage.getItem("reno-customerName"));
+            name = JSON.parse(sessionStorage.getItem("reno-adminName"));
         }
         setUserName(name)
 
-        let pic = JSON.parse(localStorage.getItem('reno-customerPhoto'))
+        let pic = JSON.parse(localStorage.getItem('reno-adminPic'))
         if(!pic){
-            pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
+            pic = JSON.parse(sessionStorage.getItem("reno-adminPic"));
         }
         setUserPic( process.env.REACT_APP_API_SERVER_URL + "/adminProfileImages/" + pic)
-    },[location])
+    },[])
 
     // updating data
     const saveChanges = () => {

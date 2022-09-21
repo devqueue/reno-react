@@ -104,7 +104,7 @@ const MainPage = () => {
                     let newArr = {
                         createdAt: moment(data?.AllQuotes[i]?.createdAt).format('MMM Do YY, h:mm'),
                         totalAmt: data?.AllQuotes[i]?.financeDetails?.totalPurchaseAmt,
-                        per_month: data?.AllQuotes[i]?.financeDetails?.depositAmt,
+                        per_month: data?.AllQuotes[i]?.RepaymentAmount?.amountPerMonth,
                         total_Months: data?.AllQuotes[i]?.RepaymentAmount?.totalMonths,
                         IdCard: data?.AllQuotes[i]?.customerAndProductDetails?.IDCardNo,
                         phoneNo: data?.AllQuotes[i]?.customerAndProductDetails?.phoneNo,
@@ -153,7 +153,7 @@ const MainPage = () => {
         sessionStorage.removeItem('reno-adminPic');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
-        navigate('/admin');
+        navigate('/admin/login');
     }
 
     const [ allNotifications , setAllNotifications ] = useState([])

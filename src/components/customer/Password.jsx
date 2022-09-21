@@ -35,10 +35,9 @@ const Password = () => {
         const customerToken = JSON.parse(localStorage.getItem('reno-customer-token'))
         const isSessionFound = sessionStorage.getItem("reno-customer-token");
         if(!customerToken && !isSessionFound){
-            navigate("/partner/auth/login");
+            navigate("/customer/auth/login");
         }
         let name = JSON.parse(localStorage.getItem('reno-customerName'))
-        console.log("name : ",name)
         if(!name){
             name = JSON.parse(sessionStorage.getItem("reno-customerName"));
         }
@@ -96,7 +95,7 @@ const Password = () => {
         sessionStorage.removeItem('reno-customerPhoto');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
-        navigate('/');
+        navigate('/customer/auth/login');
     }
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -263,7 +262,7 @@ const Password = () => {
                         <div className="col-lg-12">
                             <div className="d-flex justify-content-between mb-4" >
                                 <div className="form-group mb-4 col-lg-4">
-                                    <img style={{maxWidth: '100px', maxHeight : '100px', borderRadius : '50%' }} alt="user image" src={process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + userDetails?.profilePic} />
+                                    <img style={{maxWidth: '100px', maxHeight : '100px', borderRadius : '50%' }} alt="user imag" src={process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + userDetails?.profilePic} />
                                 </div>
                                 <div className="form-group mb-4 col-lg-4">
                                     {
@@ -307,7 +306,7 @@ const Password = () => {
                                 <div className="form-group mb-4 col-lg-5">
                                     <label className='form-label' >Your Phone Number</label>
                                     <div className='pass-container'  >
-                                        <input type="number" className='form-control px-3' onChange={(e) => setUserDetails({...userDetails, phoneNo : e.target.value})} value={userDetails?.phoneNo} />
+                                        <input type="number" className='form-control px-3' disabled={true}  value={userDetails?.phoneNo} />
                                     </div>
                                 </div>
                                 <div className="form-group mb-4 col-lg-6" style={{marginLeft: '15px' }} >

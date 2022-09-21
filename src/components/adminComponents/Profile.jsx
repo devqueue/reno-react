@@ -89,7 +89,7 @@ const Password = () => {
         sessionStorage.removeItem('reno-adminPic');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
-        navigate('/admin');
+        navigate('/admin/login');
     }
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));

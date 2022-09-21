@@ -5,6 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import Verification from '../../components/customer/Verification';
 import Password from '../../components/customer/Password';
 import LoginForm from '../../components/customer/LoginForm';
+import LoginWithCode from '../../components/customer/SignInWithCode';
 
 const CustomerAuth = () => {
 
@@ -14,6 +15,7 @@ const CustomerAuth = () => {
           <Routes>
             <Route path="/signup" element={<SignupForm />} />
             <Route path="/login" element={<LoginForm />} />
+            <Route path="/login-with-code" element={<LoginWithCode />} />
             <Route path="/verification" element={<Verification />} />
             <Route path="/password" element={<Password />} />
           </Routes>

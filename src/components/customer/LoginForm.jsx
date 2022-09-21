@@ -192,7 +192,7 @@ const LoginForm = () => {
                     <h3 className='my-3'>Customer Login</h3>
 
                     <div className="form-group mb-4">
-                        <label className='form-label'>Email <span style={{color : 'white'}} >(*)</span></label>
+                        <label className='form-label'>Email <span style={{color : 'white'}} >*</span></label>
                         <div className="auth-input-container">
                             <input type="email" className='form-control px-3' placeholder='Enter Your Email' value={userData?.email} onChange={(e) => setUserDate({...userData , email : e.target.value})} required onBlur={(e) => matchEmail(e.target.value)} />
                         </div>
@@ -203,7 +203,7 @@ const LoginForm = () => {
                             }
                     </div>
                     <div className="form-group mb-2">
-                        <label className='form-label'>Password <span style={{color : 'white'}} >(*)</span></label>
+                        <label className='form-label'>Password <span style={{color : 'white'}} >*</span></label>
                         <div className='pass-container'>
                             <div className="auth-input-container">
                                 <input type={`${pass1 ? 'text' : 'password'}`} className='form-control px-3' placeholder='Password' value={userData?.password} onChange={(e) => setUserDate({...userData , password : e.target.value})} required onBlur={(e) => checkPassword(e.target.value)} />
@@ -243,6 +243,9 @@ const LoginForm = () => {
                         )
                     }
 
+                    <h6 className='text-center mb-0 mt-4'>
+                        <Link to='/customer/auth/login-with-code' className='text-light fs-small fw-light' style={{textDecoration: 'none'}}>Login with Code</Link>
+                    </h6>
                     <h6 className='text-center mb-0 mt-4'>
                         <Link to='/partner/auth/login' className='text-light fs-small fw-light' style={{textDecoration: 'none'}}>Login as Merchant</Link>
                     </h6>

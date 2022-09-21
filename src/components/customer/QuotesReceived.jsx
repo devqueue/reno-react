@@ -36,7 +36,7 @@ const QuotesReceived = () => {
             if(data?.success === true){
                 setAllData(data?.AllQuotes);
             }
-            
+
             // getting previous quotes
             const response = await getReceivedQuotesPrevious();
             if(response?.data?.success === true){
@@ -84,7 +84,7 @@ const QuotesReceived = () => {
         sessionStorage.removeItem('reno-customerPhoto');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
-        navigate('/');
+        navigate('/customer/auth/login');
     }
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));

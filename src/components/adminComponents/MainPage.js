@@ -21,6 +21,9 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
+import Dropdown from 'react-bootstrap/Dropdown';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+
 
 
 const MainPage = () => {
@@ -32,31 +35,22 @@ const MainPage = () => {
     const location = useLocation()
 
     const changeStatus = async (id) => {
-        let isFound = allData.find(item => item.Id === id);
-        if(isFound){
-            if(isFound.status == "Pending"){
-                isFound.status = "Approved"
-                const {data} = await ApproveAnyMerchant(id);
-                if(data?.success === true){
-                    let newData = allData;
-                    let finalData = newData.filter(item => item.Id === id ? isFound : item );
-                    toast.success("Merchant Approved Successfully");
-                    setData(finalData)
+        const {data} = await ApproveAnyMerchant(id);
+        if(data?.success === true){
+            toast.success(data?.message);
+            let isFound = allData.find(item => item.Id === id);
+            if(isFound){
+                if(isFound.status === "Pending"){
+                    isFound.status = "Approved"
                 }else{
-                    toast.error(data?.message);
+                    isFound.status = "Pending"
                 }
-            }else{
-                isFound.status = "Pending"
-                const {data} = await disApproveAnyMerchant(id);
-                if(data?.success === true){
-                    let newData = allData;
-                    let finalData = newData.filter(item => item.Id === id ? isFound : item );
-                    toast.success("Merchant DisApproved Successfully");
-                    setData(finalData)
-                }else{
-                    toast.success(data?.message);
-                }
+                let newData = allData;
+                let finalData = newData.filter(item => item.Id === id ? isFound : item );
+                setData(finalData)
             }
+        }else{
+            toast.error(data?.message);
         }
     }
 
@@ -96,13 +90,22 @@ const MainPage = () => {
             name: "Actions",
             cell: (prop) => {
                 return (
-                    prop?.status === "Pending" ? (
-                        <Button size="sm" variant="primary" onClick={() => changeStatus(prop?.Id)} >{prop?.status}</Button>
-                    ) : (
-                        <Button size="sm" variant="success" onClick={() => changeStatus(prop?.Id)} >{prop?.status}</Button>
+                        <Dropdown as={ButtonGroup}>
+                            {
+                                prop?.status === "Pending" ? (
+                                    <Button size="sm" variant="primary" onClick={() => changeStatus(prop?.Id)} >{prop?.status}</Button>
+                                ) : (
+                                    <Button size="sm" variant="success" onClick={() => changeStatus(prop?.Id)} >{prop?.status}</Button>
+                                )
+                            }
+                            <Dropdown.Toggle split size="sm" variant="primary" id="dropdown-split-basic" />
+                            <Dropdown.Menu style={{backgroundColor : 'transparent'}} >
+                                <Dropdown.Item onClick={() => changeStatus(prop?.Id)} style={{backgroundColor : '#c23616', color : 'white'}} >Declined</Dropdown.Item>
+                                <Dropdown.Item onClick={() => changeStatus(prop?.Id)} style={{backgroundColor : '#10ac84', color : 'white'}} >Approved</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
                     )
-                )
-                },
+            },
             ignoreRowClick: true,
             allowOverflow: true,
             button: true,
@@ -158,7 +161,7 @@ const MainPage = () => {
             pic = JSON.parse(sessionStorage.getItem("reno-adminPic"));
         }
         setUserPic( process.env.REACT_APP_API_SERVER_URL + "/adminProfileImages/" + pic)
-    },[location])
+    },[location,navigate])
     // logging out
     const logout = async () => {
         localStorage.removeItem("reno-admin-token")
@@ -169,7 +172,7 @@ const MainPage = () => {
         sessionStorage.removeItem('reno-adminPic');
         toast.success("Signed Out SuccessFully");
         await delay(2000);
-        navigate('/admin');
+        navigate('/admin/login');
     }
 
     const [ allNotifications , setAllNotifications ] = useState([])
