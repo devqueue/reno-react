@@ -65,6 +65,10 @@ const MainPage = () => {
             title: "LastName"
         },
         {
+            prop: "code",
+            title: "Login Code"
+        },
+        {
             prop: "email",
             title: "Email"
         },
@@ -130,6 +134,7 @@ const MainPage = () => {
                         //city: data?.AllMerchants[i]?.city,
                         status: data?.AllMerchants[i]?.status,
                         Id: data?.AllMerchants[i]?._id,
+                        code: data?.AllMerchants[i]?.code ? data?.AllMerchants[i]?.code : "N/A",
                     }
                     allDataArr.push(newArr)
                 }
@@ -229,6 +234,7 @@ const MainPage = () => {
                     //city: data?.AllMerchants[i]?.city,
                     status: data?.AllMerchants[i]?.status,
                     Id: data?.AllMerchants[i]?._id,
+                    code: data?.AllMerchants[i]?.code ? data?.AllMerchants[i]?.code : "N/A",
                 }
                 allDataArr.push(newArr)
             }

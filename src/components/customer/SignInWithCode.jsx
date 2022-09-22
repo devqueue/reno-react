@@ -166,11 +166,12 @@ const LoginForm = () => {
                     </div>
 
                     <h3 className='my-3' >Customer Login with 4 Digits Code</h3>
+                    <span style={{marginLeft: "30%"}} >(Develeopment Only)</span>
                     <div className="form-group mb-2" >
                         <label className='form-label'>Code <span style={{color : 'white'}} >*</span></label>
                         <div className='pass-container'>
                             <div className="auth-input-container">
-                                <input type="number"  className='form-control px-3' placeholder='Please enter your 4 digits Code...' value={userData?.code} onChange={(e) => setUserDate({...userData , code : e.target.value})} required  />
+                                <input type="number" maxlength="4" className='form-control px-3' placeholder='Please enter your 4 digits Code...' value={userData?.code} onChange={(e) => setUserDate({...userData , code : e.target.value})} required  />
                             </div>
                         </div>
                     </div>
