@@ -173,7 +173,7 @@ const LoginForm = () => {
 
     // checking password
     const checkPassword = (value) => {
-        if ( value.match(/^(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$/i) ) {
+        if ( value.match(/^(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,30}$/i) ) {
             setIsPasswordMatched(true)
         } else {
             setIsPasswordMatched(false)

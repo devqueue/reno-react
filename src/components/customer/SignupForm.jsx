@@ -102,7 +102,7 @@ const SignupForm = () => {
 
     // checking password
     const checkPassword = (value) => {
-        if ( value.match(/^(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,}$/i) ) {
+        if ( value.match(/^(?=(.*[a-z]){1,})(?=(.*[\d]){1,})(?=(.*[\W]){1,})(?!.*\s).{8,30}$/i) ) {
             setIsPasswordMatched(true)
         } else {
             setIsPasswordMatched(false)
@@ -236,8 +236,9 @@ const SignupForm = () => {
                 <div className="modal-dialog modal-dialog-centered"  style={{border: '2px solid white' ,  marginTop : '-10px', marginBottom : '0px'}} >
                     <div className="modal-content p-3">
                         <div className="modal-body">
-                            <h4 style={{marginBottom : '60px'}} >
-                                You Code for Sign in is ({code}). You can use this also to Login in.
+                            <span style={{marginLeft: "25%", fontSize : '18px', marginBottom : '100px', fontWeight : 600 , color : "#e74c3c"}} >(Develeopment Only)</span>
+                            <h4 style={{marginBottom : '30px', marginTop : '30px'}} >
+                                Your Code for Sign in is ({code}).
                             </h4>
                             {
                                 isFetching === true ? (
@@ -254,7 +255,7 @@ const SignupForm = () => {
                                     </div>
                                 ) : (
                                     <>
-                                        <button className="btn  btn-danger border modal-cancel border-color-darkBlue w-100 rounded-3 text-darkBlue " onClick={handleShowLoginCodeClose}>OK</button>
+                                        <button className="btn  btn-success border modal-cancel border-color-darkBlue w-100 rounded-3 text-darkBlue " style={{marginTop : '40px'}} onClick={handleShowLoginCodeClose}>OK</button>
                                     </>
                                 )
                             }
