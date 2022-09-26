@@ -244,9 +244,9 @@ const LoginForm = () => {
                             <Link to='' className='auth-btn text-light' style={{textDecoration: 'none'}} onClick={sendData}>Log in</Link>
                         )
                     }
-                    <h6 className='text-center mb-0 mt-4'>
+                    {/* <h6 className='text-center mb-0 mt-4'>
                         <Link to='/partner/auth/login-with-code' className='text-light fs-small fw-light' style={{textDecoration: 'none'}}>Login with Code</Link>
-                    </h6>
+                    </h6> */}
                     <h6 className='text-center mb-0 mt-4'>
                         <Link to='/customer/auth/login' className='text-light fs-small fw-light' style={{textDecoration: 'none'}}>Login as Customer</Link>
                     </h6>
@@ -418,9 +418,9 @@ const LoginForm = () => {
                                         Please enter your New Password.
                                     </p>
                                     <h6>Enter New Password : </h6>
-                                    <input type="text" className='form-control fs-small text-dark' placeholder='Enter email here' style={{marginBottom : '15px'}} value={custPasswordOne} onChange={(e) => setCustPasswordOne(e.target.value)} />
+                                    <input type="text" className='form-control fs-small text-dark' placeholder='Enter Password here' style={{marginBottom : '15px'}} value={custPasswordOne} onChange={(e) => setCustPasswordOne(e.target.value)} />
                                     <h6>Re-Enter Password : </h6>
-                                    <input type="text" className='form-control fs-small text-dark' placeholder='Enter email here' style={{marginBottom : '15px'}} value={custPasswordTwo} onChange={(e) => setCustPasswordTwo(e.target.value)} />
+                                    <input type="text" className='form-control fs-small text-dark' placeholder='Re-Enter Password here' style={{marginBottom : '15px'}} value={custPasswordTwo} onChange={(e) => setCustPasswordTwo(e.target.value)} />
                                     {
                                         isMyFetching === true ? (
                                             <div style={{display : 'flex' , justifyContent: 'center' , margin: 'auto'}}>

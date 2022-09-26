@@ -35,7 +35,7 @@ const Sidebar = ({ isActive }) => {
                 </NavLink>
                 <NavLink activeClassName='active' className='text-lightGray fs-small' to='/customer/dashboard/getAllTravelingQuotes' style={{textDecoration : "none"}}>
                     <BsClipboardCheck />
-                    <span>All Partner Approved Quotes</span>
+                    <span>Services Delivered</span>
                 </NavLink>
                 {/* <NavLink activeClassName='active' className='text-lightGray fs-small' to='/customer/dashboard/customer-support' style={{textDecoration : "none"}}>
                     <BsClipboardCheck />

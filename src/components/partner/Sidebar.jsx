@@ -39,7 +39,7 @@ const Sidebar = ({ isActive }) => {
                     </NavLink>
                     <NavLink activeClassName='active' className='text-lightGray fs-small' to='/partner/dashboard/quotes-approved-by-customers' style={{textDecoration: 'none'}}>
                         <BsChatLeftQuote />
-                        <span>Service Delivered</span>
+                        <span>Service Pending</span>
                     </NavLink>
                     {/* <NavLink activeClassName='active' className='text-lightGray fs-small' to='/partner/dashboard/customer-support' style={{textDecoration: 'none'}}>
                         <BsChatLeftQuote />

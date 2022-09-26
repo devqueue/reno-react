@@ -27,14 +27,15 @@ const Applications = () => {
         category : "",
         totalAmount : "",
         terms: "",
-        date : ""
+        date : "",
+        quoteStatus : ""
     })
 
     const [ merchantId , setMerchantId ] = useState("")
 
     // getting searched data
     const getFilteredResults = async () => {
-        await axios.get(process.env.REACT_APP_API_SERVER_URL + `/api/v1/quotes/getAllFilteredRecords/${merchantId}?customerId=${filterData?.customerId}&category=${filterData?.category}&totalAmount=${filterData?.totalAmount}&terms=${filterData?.terms}&date=${filterData?.date}`)
+        await axios.get(process.env.REACT_APP_API_SERVER_URL + `/api/v1/quotes/getAllFilteredRecords/${merchantId}?customerId=${filterData?.customerId}&category=${filterData?.category}&totalAmount=${filterData?.totalAmount}&terms=${filterData?.terms}&date=${filterData?.date}&quoteStatus=${filterData?.quoteStatus}`)
         .then(function (response) {
             console.log("response : ",response);
             if(response?.data?.success === true){
@@ -226,12 +227,12 @@ const Applications = () => {
                 </div>
 
                 <div className='d-flex align-items-center panel-right'>
-                        <div class="dropdown profile-dropdown">
+                        <div className="dropdown profile-dropdown"  >
                             <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                 <AiFillBell />
                                 <span>{allNotificationsCount}</span>
                             </Link>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style={{maxHeight : '400px', overflowY: 'scroll'}}>
                                 {
                                     allNotifications?.length > 0 ? (
                                         allNotifications?.map((item) => (
@@ -296,13 +297,25 @@ const Applications = () => {
                             <option >Cooling/Heating</option>
                             <option >Smart Home technology System</option>
                             <option >Solar & Battery System</option>
-                            <option >Plumbing</option>
+                            <option >Reno Has Declined Merchant.</option>
                             <option >Electrical </option>
                             <option >Blinds, curtains & Shutters</option>
                             <option >Flooring & Wallpaper</option>
                             <option >Garage Doors</option>
                         </select>
-                        <input type="number" className='text-muted fs-small' placeholder='Enter Amount' value={filterData?.totalAmount} onChange={(e) => setFilterData({...filterData , totalAmount : e.target.value}) } />
+                        <select className="form-select text-muted" aria-label="Default select example" onChange={(e) => setFilterData({...filterData , quoteStatus : e.target.value}) } >
+                            <option selected>select any Status</option>
+                            <option>Quote Sent To Customer</option>
+                            <option >Financial Details Accepted By Reno</option>
+                            <option >Order Cancelled By Customer</option>
+                            <option >Pending</option>
+                            <option >Delivered By Partner</option>
+                            <option >Approved By Customer </option>
+                            <option >Delivered</option>
+                            <option >Delivery Confirmed By Customer</option>
+                            <option >Quote Has Been Deny By Customer</option>
+                        </select>
+                        {/* <input type="number" className='text-muted fs-small' placeholder='Enter Amount' value={filterData?.totalAmount} onChange={(e) => setFilterData({...filterData , totalAmount : e.target.value}) } /> */}
                         <input type="number" className='text-muted fs-small' placeholder='Enter Terms' value={filterData?.terms} onChange={(e) => setFilterData({...filterData , terms : e.target.value}) } />
                         <input type="date" className='text-muted fs-small' placeholder='Enter Terms' value={filterData?.date} onChange={(e) => setFilterData({...filterData , date : e.target.value}) } />
                     </div>

@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import { Link , useNavigate } from "react-router-dom";
 import {signInCustomer} from '../../api/CustomerApi'
 import {sendMyCustomerForgetPassword , verifyCustomerPIN, updateCustomerPassword} from '../../api/AdminApi'
+import {verifyCodeForSignIn} from '../../api/CustomerApi'
 import { ThreeDots } from  'react-loader-spinner'
 import eye from '../../assets/icons/eye.png'
 import lock from '../../assets/images/lock.png'
@@ -31,6 +32,8 @@ const LoginForm = () => {
     const handleEnterPasswordClose = () => setEnterPassword(false);
     const handleEnterPassword = () => setEnterPassword(true);
 
+    
+
     document.title = 'Reno | Partner Login'
 
     const navigate = useNavigate();
@@ -43,6 +46,22 @@ const LoginForm = () => {
         email : '',
         password : '',
     })
+
+    // getting sent code
+    const [codeGot, setCodGot] = useState({
+        code : ""
+    });
+    const [userId , setUserId] = useState("");
+    const [codeSent, setCodeSent] = useState(false);
+    const handleCodeSentClose = () => {
+        setCodeSent(false);
+        setCodGot({
+            code : ""
+        })
+    }
+    const handleCodeSent = () => {
+        setCodeSent(true);
+    }
 
     // sending data
     const sendData = async () => {
@@ -58,15 +77,17 @@ const LoginForm = () => {
         const {data} = await signInCustomer(userData);
         if(data?.success === true){
             toast.success("Signed In SuccessFully");
-            setUserDate({
-                email : '',
-                password : '',
-            })
+            setUserId(data?.Id)
+            handleCodeSent()
+            // setUserDate({
+            //     email : '',
+            //     password : '',
+            // })
             //if(isRemember === true){
-                localStorage.setItem("reno-customer-token", JSON.stringify(data?.Token));
-                localStorage.setItem("reno-customerName", JSON.stringify(data?.User?.IdCardNo));
-                localStorage.setItem("reno-customerPhoto", JSON.stringify(data?.User?.ProfilePic));
-                localStorage.setItem("reno-customerId", JSON.stringify(data?.User?.Id));
+                // localStorage.setItem("reno-customer-token", JSON.stringify(data?.Token));
+                // localStorage.setItem("reno-customerName", JSON.stringify(data?.User?.IdCardNo));
+                // localStorage.setItem("reno-customerPhoto", JSON.stringify(data?.User?.ProfilePic));
+                // localStorage.setItem("reno-customerId", JSON.stringify(data?.User?.Id));
             // }else{
             //     sessionStorage.setItem("reno-customer-token", JSON.stringify(data?.Token));
             //     sessionStorage.setItem("reno-customerId", JSON.stringify(data?.User?.Id));
@@ -75,7 +96,6 @@ const LoginForm = () => {
             // }
             await delay(1500)
             setIsFetching(false)
-            navigate('/customer/dashboard/panel');
         }else{
             await delay(1500)
             setIsFetching(false)
@@ -178,6 +198,28 @@ const LoginForm = () => {
         }
     }
 
+    // matching code
+    const matchCode = async () => {
+        const {data} = await verifyCodeForSignIn(userId , codeGot.code);
+        if(data?.success === true){
+            toast.success(data?.message)
+            setCodGot({
+                code : ""
+            })
+            setUserDate({
+                email : '',
+                password : '',
+            })
+            localStorage.setItem("reno-customer-token", JSON.stringify(data?.Token));
+            localStorage.setItem("reno-customerName", JSON.stringify(data?.User?.IdCardNo));
+            localStorage.setItem("reno-customerPhoto", JSON.stringify(data?.User?.ProfilePic));
+            localStorage.setItem("reno-customerId", JSON.stringify(data?.User?.Id));
+            navigate('/customer/dashboard/panel');
+        }else{
+            toast.error(data?.message)
+        }
+    }
+
     return (
         <div className='auth-container py-5'>
             <div className="container">
@@ -243,9 +285,9 @@ const LoginForm = () => {
                         )
                     }
 
-                    <h6 className='text-center mb-0 mt-4'>
+                    {/* <h6 className='text-center mb-0 mt-4'>
                         <Link to='/customer/auth/login-with-code' className='text-light fs-small fw-light' style={{textDecoration: 'none'}}>Login with Code</Link>
-                    </h6>
+                    </h6> */}
                     <h6 className='text-center mb-0 mt-4'>
                         <Link to='/partner/auth/login' className='text-light fs-small fw-light' style={{textDecoration: 'none'}}>Login as Merchant</Link>
                     </h6>
@@ -439,9 +481,9 @@ const LoginForm = () => {
                                         Please enter your New Password.
                                     </p>
                                     <h6>Enter New Password : </h6>
-                                    <input type="text" className='form-control fs-small text-dark' placeholder='Enter email here' style={{marginBottom : '15px'}} value={custPasswordOne} onChange={(e) => setCustPasswordOne(e.target.value)} onBlur={(e) => checkPassword(e.target.value)} />
+                                    <input type="text" className='form-control fs-small text-dark' placeholder='Enter Password here' style={{marginBottom : '15px'}} value={custPasswordOne} onChange={(e) => setCustPasswordOne(e.target.value)} onBlur={(e) => checkPassword(e.target.value)} />
                                     <h6>Re-Enter Password : </h6>
-                                    <input type="text" className='form-control fs-small text-dark' placeholder='Enter email here' style={{marginBottom : '15px'}} value={custPasswordTwo} onChange={(e) => setCustPasswordTwo(e.target.value)} onBlur={(e) => checkPassword(e.target.value)} />
+                                    <input type="text" className='form-control fs-small text-dark' placeholder='Re-Enter Password here' style={{marginBottom : '15px'}} value={custPasswordTwo} onChange={(e) => setCustPasswordTwo(e.target.value)} onBlur={(e) => checkPassword(e.target.value)} />
                                     {
                                         isPasswordMatched === false && (
                                             <span style={{color : 'crimson', fontSize : '12px'}} >Password must contain minimum eight characters, at least one letter, one number and one special character.</span>
@@ -472,6 +514,57 @@ const LoginForm = () => {
                         </div>
                     </Modal.Body>
                 </Modal>
+
+                {/* getting code */}
+            <Modal
+                show={codeSent}
+                onHide={handleCodeSentClose}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header>
+                    <Modal.Title>
+                        <h4 className='text-dark fw-600'>Verify Code Sent to You</h4>
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="modal-dialog modal-dialog-centered"  style={{border: '2px solid white' ,  marginTop : '-10px', marginBottom : '0px'}} >
+                        <div className="modal-content p-3">
+                            <div className="modal-body">
+                                <span style={{marginLeft: "25%", fontSize : '18px', marginBottom : '100px', fontWeight : 600 , color : "#e74c3c"}} >(Development Only)</span>
+                                {/* <h4 style={{marginBottom : '30px', marginTop : '30px'}} >
+                                    Your Code for Sign in is ({code}).
+                                </h4> */}
+                                <div className="form-group mb-4">
+                                <label className='form-label'>Please enter code sent to your email <span style={{color : 'white'}} >*</span> </label>
+                                    <input type="number" className='form-control px-3' placeholder='Enter 4 digits Code' value={codeGot?.code} onChange={(e) => setCodGot({...codeGot , code : e.target.value})} required />
+                                </div>
+                                {
+                                    isFetching === true ? (
+                                        <div style={{display : 'flex' , justifyContent: 'center' , margin: 'auto'}}>
+                                            <ThreeDots
+                                                height = "60"
+                                                width = "60"
+                                                radius = "9"
+                                                color = 'green'
+                                                ariaLabel = 'three-dots-loading'
+                                                wrapperStyle
+                                                wrapperClass
+                                            />
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <button className="btn  btn-success border modal-cancel border-color-darkBlue w-100 rounded-3 text-darkBlue " style={{marginTop : '20px'}} onClick={matchCode}>Verify</button>
+                                            <button className="btn  btn-danger border modal-cancel border-color-darkBlue w-100 rounded-3 text-darkBlue " style={{marginTop : '20px'}} onClick={handleCodeSentClose}>Cancel</button>
+                                        </>
+                                    )
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
+            {/* getting code end */}
 
 
             {/* Modals */}

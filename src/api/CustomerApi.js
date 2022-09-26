@@ -57,6 +57,10 @@ const getSingleQuoteDetails = (quoteId) => API.get(`/api/v1/quotes/getSingleQuot
 const makeNewPayment = (quoteId) => API.post(`/api/v1/quotesHistory/addNewPaymentHistoryToAQuoteHistory/${quoteId}`);
 //const getAllPaymentsHistory = (quoteId) => API.get(`/api/v1/quotesHistory/getAllPaymentHistoryOfAQuote/${quoteId}`);
 const getAllPaymentsHistoryOfAnyCustomer = () => API.get(`/api/v1/quotesHistory/getAllUpcomingPaymentsOfCustomer`);
+const verifyCodeForSignUp = (phoneNo , code) => API.put(`/api/v1/customers/verifyCodeForSignUp/${phoneNo}/${code}`);
+const removeUserForWrongCode = (phoneNo) => API.delete(`/api/v1/customers/removeUserForWrongCode/${phoneNo}`);
+const verifyCodeForSignIn = (user , code) => API.put(`/api/v1/customers/verifyCodeForSignIn/${user}/${code}`);
+
 
 
 
@@ -91,5 +95,8 @@ module.exports = {
     getSingleQuoteDetails,
     makeNewPayment,
     getAllPaymentsHistoryOfAnyCustomer,
-    signInCustomerWithCode
+    signInCustomerWithCode,
+    verifyCodeForSignUp,
+    removeUserForWrongCode,
+    verifyCodeForSignIn
 }

@@ -9,7 +9,6 @@ import quoteStep2 from '../../assets/images/quoteStep2.png'
 import quoteStep3 from '../../assets/images/quoteStep3.png'
 import quoteStep4 from '../../assets/images/quoteStep4.png'
 import tick from '../../assets/images/tick.png'
-//import {getSingleQuoteDetails } from '../../api/CustomerApi'
 import {approveAnyFinancialRequest , getSingleQuoteDetails} from '../../api/AdminApi'
 import { ThreeDots } from  'react-loader-spinner'
 import moment from 'moment'
@@ -37,7 +36,7 @@ const RequestFinance = () => {
             setIsFetching(true)
             const {data} = await getSingleQuoteDetails(id);
             if(data?.success === true){
-                setQuoteData(data?.Quote)
+                setQuoteData(data?.Quote[0])
             }else{
                 toast.error(data?.message)
             }
@@ -202,11 +201,12 @@ const RequestFinance = () => {
         if(data?.success === true){
             if(status == false){
                 toast.success("Quote DisApproved SuccessFully")
-                setQuoteData({...quoteDate , status : false})
+                setQuoteData({...quoteDate , isAdminApproved : false})
             }else{
                 toast.success("Quote Approved SuccessFully")
-                setQuoteData({...quoteDate , status : true})
+                setQuoteData({...quoteDate , isAdminApproved : true})
             }
+
         }else{
             toast.error(data?.message)
         }
@@ -229,7 +229,7 @@ const RequestFinance = () => {
                 <span style={{color : '#6c5ce7', fontSize : '20px', fontWeight : 600 , marginRight : '20px'  }}>Status :</span>
                 <Dropdown as={ButtonGroup}>
                 {
-                    quoteDate?.status == true ? (
+                    quoteDate?.isAdminApproved == true ? (
                         <Button variant="success">Approved</Button>
                     ) : (
                         <Button variant="danger">Not Approved</Button>
@@ -240,7 +240,7 @@ const RequestFinance = () => {
 
                     <Dropdown.Menu>
                         <Dropdown.Item onClick={() => changeStatus(id , true)} style={{backgroundColor : '#6ab04c', color : 'white'}} >Approve Now</Dropdown.Item>
-                        <Dropdown.Item onClick={() => changeStatus(id , false)} style={{backgroundColor : 'crimson', color : 'white'}} >DisApprove Now</Dropdown.Item>
+                        <Dropdown.Item onClick={() => changeStatus(id , false)} style={{backgroundColor : 'crimson', color : 'white'}} >Decline Now</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
             </div>
@@ -381,15 +381,15 @@ const RequestFinance = () => {
 
                                 <div className="col-12 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Basic Salary</label>
-                                    <input type="text" className='form-control' placeholder='Please your basic salary here (SAR)' value={quoteDate?.monthlyIncome?.basicSalary} />
+                                    <input type="text" className='form-control' placeholder='Please your basic salary here (SAR)' value={quoteDate?.MonthlyIncome?.basicSalary} />
                                 </div>
                                 <div className="col-12 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Housing Allowance</label>
-                                    <input type="text" className='form-control' placeholder='Please your housing allowance here (SAR)' value={quoteDate?.monthlyIncome?.housingAllowance}  />
+                                    <input type="text" className='form-control' placeholder='Please your housing allowance here (SAR)' value={quoteDate?.MonthlyIncome?.housingAllowance}  />
                                 </div>
                                 <div className="col-12 form-group mb-4">
                                     <label className='form-label text-muted fs-small'>Other Allowance(Optional)</label>
-                                    <input type="text" className='form-control' placeholder='Please your other allowance here (SAR)' value={quoteDate?.monthlyIncome?.otherAllowances} />
+                                    <input type="text" className='form-control' placeholder='Please your other allowance here (SAR)' value={quoteDate?.MonthlyIncome?.otherAllowances} />
                                 </div>
 
                                 <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
@@ -435,7 +435,7 @@ const RequestFinance = () => {
                                             </div>
                                             <div className="text-light fs-small">
                                                 <span className='text-color-primary me-2'>Total income</span>
-                                                {quoteDate?.monthlyIncome?.basicSalary}.00
+                                                {Number(quoteDate?.MonthlyIncome?.basicSalary) + Number(quoteDate?.MonthlyIncome?.housingAllowance) + Number(quoteDate?.MonthlyIncome?.otherAllowances) }.00
                                                 <span className="text-muted"> SAR/month</span>
                                             </div>
                                         </div>
@@ -616,15 +616,15 @@ const RequestFinance = () => {
                                         <ul className='fs-small mb-0 p-3'>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Basic Salary</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.monthlyIncome?.basicSalary} <span className='text-muted fw-normal'> SAR</span></span>
+                                                <span className='fw-600 text-end'>{quoteDate?.MonthlyIncome?.basicSalary} <span className='text-muted fw-normal'> SAR</span></span>
                                             </li>
                                             <li className='d-flex py-2 border-bottom align-items-center justify-content-between'>
                                                 <span className='text-muted'>Housing Allowance</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.monthlyIncome?.housingAllowance}<span className='text-muted fw-normal'> SAR</span></span>
+                                                <span className='fw-600 text-end'>{quoteDate?.MonthlyIncome?.housingAllowance}<span className='text-muted fw-normal'> SAR</span></span>
                                             </li>
                                             <li className='d-flex py-2 align-items-center justify-content-between'>
                                                 <span className='text-muted'>Other Allowance</span>
-                                                <span className='fw-600 text-end'>{quoteDate?.monthlyIncome?.otherAllowances} <span className='text-muted fw-normal'> SAR</span></span>
+                                                <span className='fw-600 text-end'>{quoteDate?.MonthlyIncome?.otherAllowances} <span className='text-muted fw-normal'> SAR</span></span>
                                             </li>
                                         </ul>
                                     </div>

@@ -1,7 +1,7 @@
 import React , {useState , useEffect } from 'react'
 import { toast } from 'react-toastify';
 import { Link , useNavigate } from "react-router-dom";
-import {signUpCustomer} from '../../api/CustomerApi'
+import {signUpCustomer , verifyCodeForSignUp ,removeUserForWrongCode } from '../../api/CustomerApi'
 import { ThreeDots } from  'react-loader-spinner'
 import eye from '../../assets/icons/eye.png'
 import lock from '../../assets/images/lock.png'
@@ -26,7 +26,8 @@ const SignupForm = () => {
         email : '',
         dob : '',
         firstName : '',
-        lastName : ''
+        lastName : '',
+        phoneNo : ""
     })
 
     // showing code for login
@@ -34,7 +35,7 @@ const SignupForm = () => {
     const [showLoginCode, setShowLoginCode] = useState(false);
     const handleShowLoginCodeClose = () => {
         setShowLoginCode(false);
-        navigate('/customer/auth/login');
+        //navigate('/customer/auth/login');
     }
     const handleShowLoginCode = () => {
         setShowLoginCode(true);
@@ -61,17 +62,11 @@ const SignupForm = () => {
         }
         setIsFetching(true)
         const {data} = await signUpCustomer(userData);
-        console.log("data of response : ", data)
         if(data?.success === true){
             setCode(data?.Code)
-            toast.success("Signed Up SuccessFully");
-            setUserDate({
-                IDCardNo : '',
-                password : '',
-                email : '',
-                dob : '',
-            })
-            handleShowLoginCode()
+            toast.success("Verification Code Sent To Your Email Successfully.");
+            //handleShowLoginCode()
+            handleCodeSent()
         }else{
             toast.error(data?.message);
         }
@@ -106,6 +101,50 @@ const SignupForm = () => {
             setIsPasswordMatched(true)
         } else {
             setIsPasswordMatched(false)
+        }
+    }
+
+    // getting sent code
+    const [codeGot, setCodGot] = useState({
+        code : ""
+    });
+    const [codeSent, setCodeSent] = useState(false);
+    const handleCodeSentClose = () => {
+        setCodeSent(false);
+        setCodGot({
+            code : ""
+        })
+
+        // discarding user form backend
+        disCardUser()
+    }
+    const handleCodeSent = () => {
+        setCodeSent(true);
+    }
+
+    // discarding user on entering wrong pin
+    const disCardUser = async () => {
+        const {data} = await removeUserForWrongCode(userData.phoneNo);
+    }
+
+    // matching code
+    const matchCode = async () => {
+        const {data} = await verifyCodeForSignUp(userData.phoneNo , codeGot.code);
+        if(data?.success === true){
+            toast.success(data?.message)
+            setCodGot({
+                code : ""
+            })
+            setUserDate({
+                    IDCardNo : '',
+                    password : '',
+                    email : '',
+                    dob : '',
+                    phoneNMo : ""
+                })
+            navigate('/customer/auth/login');
+        }else{
+            toast.error(data?.message)
         }
     }
 
@@ -236,7 +275,7 @@ const SignupForm = () => {
                 <div className="modal-dialog modal-dialog-centered"  style={{border: '2px solid white' ,  marginTop : '-10px', marginBottom : '0px'}} >
                     <div className="modal-content p-3">
                         <div className="modal-body">
-                            <span style={{marginLeft: "25%", fontSize : '18px', marginBottom : '100px', fontWeight : 600 , color : "#e74c3c"}} >(Develeopment Only)</span>
+                            <span style={{marginLeft: "25%", fontSize : '18px', marginBottom : '100px', fontWeight : 600 , color : "#e74c3c"}} >(Development Only)</span>
                             <h4 style={{marginBottom : '30px', marginTop : '30px'}} >
                                 Your Code for Sign in is ({code}).
                             </h4>
@@ -265,6 +304,57 @@ const SignupForm = () => {
             </Modal.Body>
             </Modal>
             {/* showing code end */}
+
+            {/* getting code */}
+            <Modal
+                show={codeSent}
+                onHide={handleCodeSentClose}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header>
+                    <Modal.Title>
+                        <h4 className='text-dark fw-600'>Verify Your Phone Number</h4>
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="modal-dialog modal-dialog-centered"  style={{border: '2px solid white' ,  marginTop : '-10px', marginBottom : '0px'}} >
+                        <div className="modal-content p-3">
+                            <div className="modal-body">
+                                <span style={{marginLeft: "25%", fontSize : '18px', marginBottom : '100px', fontWeight : 600 , color : "#e74c3c"}} >(Development Only)</span>
+                                {/* <h4 style={{marginBottom : '30px', marginTop : '30px'}} >
+                                    Your Code for Sign in is ({code}).
+                                </h4> */}
+                                <div className="form-group mb-4">
+                                <label className='form-label'>Please enter code sent to your email <span style={{color : 'white'}} >*</span> </label>
+                                    <input type="number" className='form-control px-3' placeholder='Enter 4 digits Code' value={codeGot?.code} onChange={(e) => setCodGot({...codeGot , code : e.target.value})} required />
+                                </div>
+                                {
+                                    isFetching === true ? (
+                                        <div style={{display : 'flex' , justifyContent: 'center' , margin: 'auto'}}>
+                                            <ThreeDots
+                                                height = "60"
+                                                width = "60"
+                                                radius = "9"
+                                                color = 'green'
+                                                ariaLabel = 'three-dots-loading'
+                                                wrapperStyle
+                                                wrapperClass
+                                            />
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <button className="btn  btn-success border modal-cancel border-color-darkBlue w-100 rounded-3 text-darkBlue " style={{marginTop : '20px'}} onClick={matchCode}>Verify</button>
+                                            <button className="btn  btn-danger border modal-cancel border-color-darkBlue w-100 rounded-3 text-darkBlue " style={{marginTop : '20px'}} onClick={handleCodeSentClose}>Cancel</button>
+                                        </>
+                                    )
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
+            {/* getting code end */}
         </>
     )
 }

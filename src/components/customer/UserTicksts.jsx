@@ -249,7 +249,7 @@ const QuotesReceived = () => {
                                         <AiFillBell />
                                         <span>{allNotificationsCount}</span>
                                     </Link>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style={{maxHeight : '400px', overflowY: 'scroll'}}>
                                         {
                                             allNotifications?.length > 0 ? (
                                                 allNotifications?.map((item) => (

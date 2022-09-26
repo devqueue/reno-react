@@ -213,50 +213,50 @@ const PaidFinanceQuotes = () => {
                                 </div>
 
                                 <div className='d-flex align-items-center panel-right'>
-                        <div class="dropdown profile-dropdown">
-                            <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                <AiFillBell />
-                                <span>{allNotificationsCount}</span>
-                            </Link>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                {
-                                    allNotifications?.length > 0 ? (
-                                        allNotifications?.map((item) => (
-                                            item?.isRead === false ? (
-                                                <li style={{backgroundColor : '#ecf0f1'}} onClick={() => readNotification(item?._id)}>
-                                                    <Link class="dropdown-item" to="">
-                                                        <strong>{item?.message} </strong> <br />
-                                                        <span style={{ fontSize: '12px' , color : '#34495e' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
-                                                    </Link>
-                                                </li>
-                                            ) : (
-                                                <li style={{backgroundColor : 'transparent'}} >
-                                                <Link class="dropdown-item" to="">
-                                                        <strong>{item?.message} </strong> <br />
-                                                        <span className='text-muted' style={{ fontSize: '12px' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
-                                                </Link>
-                                                </li>
-                                            )
-                                        ))
-                                    ) : (
-                                        <li style={{marginLeft : '15px'}} >Empty</li>
-                                    )
-                                }
-                            </ul>
-                        </div>
+                                    <div class="dropdown profile-dropdown">
+                                        <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <AiFillBell />
+                                            <span>{allNotificationsCount}</span>
+                                        </Link>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style={{maxHeight : '400px', overflowY: 'scroll'}}>
+                                            {
+                                                allNotifications?.length > 0 ? (
+                                                    allNotifications?.map((item) => (
+                                                        item?.isRead === false ? (
+                                                            <li style={{backgroundColor : '#ecf0f1'}} onClick={() => readNotification(item?._id)}>
+                                                                <Link class="dropdown-item" to="">
+                                                                    <strong>{item?.message} </strong> <br />
+                                                                    <span style={{ fontSize: '12px' , color : '#34495e' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                                                </Link>
+                                                            </li>
+                                                        ) : (
+                                                            <li style={{backgroundColor : 'transparent'}} >
+                                                            <Link class="dropdown-item" to="">
+                                                                    <strong>{item?.message} </strong> <br />
+                                                                    <span className='text-muted' style={{ fontSize: '12px' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                                            </Link>
+                                                            </li>
+                                                        )
+                                                    ))
+                                                ) : (
+                                                    <li style={{marginLeft : '15px'}} >Empty</li>
+                                                )
+                                            }
+                                        </ul>
+                                    </div>
 
-                                <div className="dropdown profile-dropdown">
-                                    <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <div className='d-flex align-items-center fs-small me-3'>
-                                    <img src={userPic} alt="" style={{maxWidth: '50px', maxheight : '50px', borderRadius : '50%' }} />
-                                        {userName}
-                                                </div>
-                                            </button>
-                                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                                <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
-                                                <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
-                                            </ul>
-                        </div>
+                                    <div className="dropdown profile-dropdown">
+                                                <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <div className='d-flex align-items-center fs-small me-3'>
+                                                <img src={userPic} alt="" style={{maxWidth: '50px', maxheight : '50px', borderRadius : '50%' }} />
+                                                    {userName}
+                                                            </div>
+                                                        </button>
+                                                        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                            <li><Link className="dropdown-item" to="/customer/dashboard/profile">Profile</Link></li>
+                                                            <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
+                                                        </ul>
+                                    </div>
                                 </div>
                             </div>
 

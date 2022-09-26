@@ -223,12 +223,12 @@ const MainPage = () => {
                     </div>
 
                     <div className='d-flex align-items-center panel-right'>
-                        <div class="dropdown profile-dropdown">
+                        <div className="dropdown profile-dropdown">
                             <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                 <AiFillBell />
                                 <span>{allNotificationsCount}</span>
                             </Link>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style={{maxHeight : '400px', overflowY: 'scroll'}}>
                                 {
                                     allNotifications?.length > 0 ? (
                                         allNotifications?.map((item) => (
