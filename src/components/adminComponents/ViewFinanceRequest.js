@@ -21,7 +21,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 const RequestFinance = () => {
     document.title = 'Reno | Customer Portal'
     const {id} = useParams();
-    const [step, setStep] = useState(1)
+    const [step, setStep] = useState(4)
     const navigate = useNavigate()
     const [ userName , setUserName ] = useState("");
     const [ userPic , setUserPic ] = useState("");
