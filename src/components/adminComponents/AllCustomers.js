@@ -63,7 +63,7 @@ const MainPage = () => {
             title: "Profile Picture",
             cell: (prop) => {
                 return (
-                    <img style={{maxWidth : '50px' , maxHeight : '50px' , borderRadius : '50%'}} alt="Profile pic" src={ process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" +  prop?.profilePic} />
+                    <img style={{maxWidth : '50px' , maxHeight : '50px' , borderRadius : '50%'}} alt="Profile pic" src={ prop?.profilePic.indexOf("https") == 0 ? prop?.profilePic :  process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" +  prop?.profilePic  } onerror="this.src='https://placeimg.com/200/300/animals'"/>
                 )
                 },
         },
