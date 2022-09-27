@@ -165,7 +165,7 @@ const MainPage = () => {
         if(!pic){
             pic = JSON.parse(sessionStorage.getItem("reno-adminPic"));
         }
-        setUserPic( process.env.REACT_APP_API_SERVER_URL + "/adminProfileImages/" + pic)
+        setUserPic( pic.indexOf("https") == 0 ? pic : process.env.REACT_APP_API_SERVER_URL + "/adminProfileImages/" + pic)
     },[location,navigate])
     // logging out
     const logout = async () => {
@@ -294,7 +294,7 @@ const MainPage = () => {
                         />
                     </div>
                 ) : (
-                    <div className="container-fluid p-4">
+                    <div className="container-fluid p-4  dashboard-content">
                         <div className="panel-top d-flex align-items-center justify-content-between">
                             <div className='panel-left'>
                                 <h5 className='mb-0 fw-600'>All Merchants</h5>

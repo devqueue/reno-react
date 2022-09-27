@@ -76,11 +76,9 @@ const QuotesReceived = () => {
         }
     }
 
-    
     // sleeping
     const delay = ms => new Promise(res => setTimeout(res, ms));
 
-    
     // checking if user is signed in or not
     useEffect(() =>{
         const customerToken = JSON.parse(localStorage.getItem('reno-merchant-token'))
@@ -98,7 +96,7 @@ const QuotesReceived = () => {
         if(!pic){
             pic = JSON.parse(sessionStorage.getItem("reno-merchantPic"));
         }
-        setUserPic(process.env.REACT_APP_API_SERVER_URL + "/merchantsProfilePics/" + pic)
+        setUserPic( pic.indexOf("https") == 0 ? pic : process.env.REACT_APP_API_SERVER_URL + "/merchantsProfilePics/" + pic)
     },[location])
 
     // logging out

@@ -49,9 +49,7 @@ const Password = () => {
         if(!pic){
             pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
         }
-        if(pic){
-            setUserPic( process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + pic)
-        }
+        setUserPic( pic.indexOf("https") == 0 ? pic : process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + pic)
     },[location])
     // getting all notifications
     useEffect(() =>{
@@ -262,7 +260,7 @@ const Password = () => {
                         <div className="col-lg-12">
                             <div className="d-flex justify-content-between mb-4" >
                                 <div className="form-group mb-4 col-lg-4">
-                                    <img style={{maxWidth: '100px', maxHeight : '100px', borderRadius : '50%' }} alt="user imag" src={process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + userDetails?.profilePic} />
+                                    <img style={{maxWidth: '100px', maxHeight : '100px', borderRadius : '50%' }} alt="user imag" src={ userDetails?.profilePic.indexOf("https") == 0 ? userDetails?.profilePic : process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + userDetails?.profilePic} />
                                 </div>
                                 <div className="form-group mb-4 col-lg-4">
                                     {

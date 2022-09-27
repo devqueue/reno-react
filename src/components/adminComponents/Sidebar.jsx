@@ -6,7 +6,7 @@ import { AiOutlineAppstore, AiOutlineSend } from 'react-icons/ai'
 
 const Sidebar = ({ isActive }) => {
   return (
-    <div className={`partner-sidebar bg-darkBlue text-lightGray ${isActive ? 'active' : ''}`}  >
+    <div className={`partner-sidebar bg-darkBlue text-lightGray ${isActive ? 'active' : ''}`}   >
         <div >
 
             <Link to='/'>

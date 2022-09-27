@@ -1751,3 +1751,15 @@ input::-webkit-inner-spin-button {
     border-radius: 0 0 0 5px;
     display: none;
 }
+
+/* side bar responsive class */
+
+.sidebarClass{
+    margin-left : 250px;
+}
+
+@media (max-width: 768px) {
+    .sidebarClass{
+        margin-left : 0px;
+    }
+}

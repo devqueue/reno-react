@@ -264,7 +264,7 @@ const Password = () => {
                         <div className="col-lg-12">
                             <div className="d-flex justify-content-between mb-4" >
                                 <div className="form-group mb-4 col-lg-4">
-                                    <img style={{maxWidth: '100px', maxHeight : '100px', borderRadius : '50%' }} alt="user image" src={process.env.REACT_APP_API_SERVER_URL + "/merchantsProfilePics/" + userDetails?.profilePic} />
+                                    <img style={{maxWidth: '100px', maxHeight : '100px', borderRadius : '50%' }} alt="user image" src={ userDetails?.profilePic.indexOf("https") == 0 ? userDetails?.profilePic : process.env.REACT_APP_API_SERVER_URL + "/merchantsProfilePics/" + userDetails?.profilePic} />
                                 </div>
                                 <div className="form-group mb-4 col-lg-4">
                                     {

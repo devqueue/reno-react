@@ -83,7 +83,7 @@ const QuotesReceived = () => {
         if(!pic){
             pic = JSON.parse(sessionStorage.getItem("reno-adminPic"));
         }
-        setUserPic( process.env.REACT_APP_API_SERVER_URL + "/adminProfileImages/" + pic)
+        setUserPic( pic.indexOf("https") == 0 ? pic : process.env.REACT_APP_API_SERVER_URL + "/adminProfileImages/" + pic)
     },[location])
     // logging out
     const logout = async () => {
