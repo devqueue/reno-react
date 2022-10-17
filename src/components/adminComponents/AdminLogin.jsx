@@ -68,7 +68,7 @@ const LoginForm = () => {
         const adminToken = JSON.parse(localStorage.getItem('reno-admin-token'))
         const isSessionFound = sessionStorage.getItem("reno-admin-token");
         if(adminToken || isSessionFound){
-            navigate("/admin");
+            navigate("/admin/merchantsData");
         }
     },[])
 

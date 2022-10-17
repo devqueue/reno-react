@@ -165,7 +165,9 @@ const MainPage = () => {
         if(!pic){
             pic = JSON.parse(sessionStorage.getItem("reno-adminPic"));
         }
-        setUserPic( pic.indexOf("https") == 0 ? pic : process.env.REACT_APP_API_SERVER_URL + "/adminProfileImages/" + pic)
+        if(pic){
+            setUserPic( pic.indexOf("https") == 0 ? pic : process.env.REACT_APP_API_SERVER_URL + "/adminProfileImages/" + pic)
+        }
     },[location,navigate])
     // logging out
     const logout = async () => {

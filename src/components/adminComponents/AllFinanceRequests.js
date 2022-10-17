@@ -74,11 +74,11 @@ const MainPage = () => {
         },
         {
             prop: "martialStatus",
-            title: "Martial Status"
+            title: "Partner"
         },
         {
             prop: "employeement",
-            title: "Employement"
+            title: "Customer"
         },
         {
             prop: "View",
@@ -111,7 +111,7 @@ const MainPage = () => {
                         <Dropdown as={ButtonGroup}>
                             {
                                 prop?.Status == false && (
-                                    <Button size="sm" variant="primary" style={{fontSize : '11px' , fontWeight : 600}} >Declined</Button>
+                                    <Button size="sm" variant="danger" style={{fontSize : '11px' , fontWeight : 600}} >Declined</Button>
                                 )
                             }
                             {
@@ -138,6 +138,7 @@ const MainPage = () => {
         const getAllRecords = async () => {
             setIsFetching(true)
             const {data} = await getRecentFinancialRequests();
+            console.log("all records : ", data)
             let allDataArr = [];
             if(data?.success === true){
                 for(let i = 0; i !== data?.AllQuotes.length; i++){
@@ -145,10 +146,12 @@ const MainPage = () => {
                         customerId: data?.AllQuotes[i]?.ProductCategory?.IDCardNo,
                         customerEmail: data?.AllQuotes[i]?.ProductCategory?.email,
                         quoteNo: 8745885 + i,
-                        martialStatus: data?.AllQuotes[i]?.personalInfo?.martialStatus,
+                        //martialStatus: data?.AllQuotes[i]?.personalInfo?.martialStatus,
+                        martialStatus: data?.AllQuotes[i]?.Partner,
                         Status: data?.AllQuotes[i]?.Status,
                         quoteStatus: data?.AllQuotes[i]?.quoteStatus,
-                        employeement: data?.AllQuotes[i]?.personalInfo?.workingStatus === "true" ? "Employed" : "UnEmployed",
+                        //employeement: data?.AllQuotes[i]?.personalInfo?.workingStatus === "true" ? "Employed" : "UnEmployed",
+                        employeement: data?.AllQuotes[i]?.Customer,
                         Id: data?.AllQuotes[i]?._id,
                     }
                     allDataArr.push(newArr)
