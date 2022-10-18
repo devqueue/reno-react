@@ -9,6 +9,9 @@ import Home from './pages/home';
 import HowItWorks from './pages/howItWorks';
 import CustomerAuth from './pages/customer/auth';
 import Contact from './pages/contact';
+import FAQ from './pages/FaqPage';
+import AboutUs from './pages/AboutUs';
+import TermsAndConditions from './pages/Term&Conditions';
 import Location from './pages/location';
 import PartnerAuth from './pages/partner/auth';
 import CustomerDashboard from './pages/customer/dashboard';
@@ -46,6 +49,9 @@ function App() {
           <Route exact path='/admin/customer-issues' element={<AllTickets />} />
           <Route exact path='/admin/profile' element={<AdminProfile />} />
           <Route path='/view-finance-request/:id' element={<ViewFinanceReport />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="/about-us" element={<AboutUs />} />
         </Routes>
       </Router>
     </div>

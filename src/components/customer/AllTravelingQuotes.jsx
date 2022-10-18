@@ -66,7 +66,7 @@ const MainPage = () => {
         },
         {
             prop : "_id",
-            title: "Change Status",
+            title: "Status",
             name: "Status of Order",
                 cell: (prop) => {
                     return (
@@ -81,7 +81,7 @@ const MainPage = () => {
         },
         {
             prop : "changeNow",
-            title: "Change Status",
+            title: "Action",
             name: "Actions",
             cell: (prop) => {
                 return (
@@ -126,6 +126,7 @@ const MainPage = () => {
             let allDataArr = [];
             if(data?.success === true){
                 for(let i = 0; i !== data?.AllQuotes.length; i++){
+                    console.log("data?.AllQuotes[i]?.quoteStatus ; ",data?.AllQuotes[i]?.quoteStatus)
                     let no = Math.floor(1000 + Math.random() * 9000)
                     let newArr = {
                         customer: no,
