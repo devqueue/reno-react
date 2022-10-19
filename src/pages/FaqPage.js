@@ -23,7 +23,7 @@ const HowItWorks = () => {
                             <Accordion.Header style={{marginBottom : "12px", borderRight : "1px solid white"}} >
                                 <div style={{display : "flex", justifyContent: "space-between", minWidth : "100%"}} >
                                     <h6>
-                                        First Heading # 01
+                                        Question # 01
                                     </h6>
                                     <GrFormAdd style={{fontSize : '25px', fontWeight : 600}} />
                                 </div>
@@ -42,7 +42,7 @@ const HowItWorks = () => {
                         <Accordion.Header style={{marginBottom : "12px", borderRight : "1px solid white"}} >
                                 <div style={{display : "flex", justifyContent: "space-between", minWidth : "100%"}} >
                                     <h6>
-                                        First Heading # 02
+                                        Question # 02
                                     </h6>
                                     <GrFormAdd style={{fontSize : '25px', fontWeight : 600}} />
                                 </div>
@@ -61,7 +61,7 @@ const HowItWorks = () => {
                         <Accordion.Header style={{marginBottom : "12px", borderRight : "1px solid white"}} >
                                 <div style={{display : "flex", justifyContent: "space-between", minWidth : "100%"}} >
                                     <h6>
-                                        First Heading # 03
+                                        Question # 03
                                     </h6>
                                     <GrFormAdd style={{fontSize : '25px', fontWeight : 600}} />
                                 </div>
@@ -80,7 +80,7 @@ const HowItWorks = () => {
                         <Accordion.Header style={{marginBottom : "12px", borderRight : "1px solid white"}} >
                                 <div style={{display : "flex", justifyContent: "space-between", minWidth : "100%"}} >
                                     <h6>
-                                        First Heading # 04
+                                        Question # 04
                                     </h6>
                                     <GrFormAdd style={{fontSize : '25px', fontWeight : 600}} />
                                 </div>
@@ -103,7 +103,7 @@ const HowItWorks = () => {
                             <Accordion.Header style={{marginBottom : "12px", borderRight : "1px solid white"}} >
                                 <div style={{display : "flex", justifyContent: "space-between", minWidth : "100%"}} >
                                     <h6>
-                                        First Heading # 05
+                                        Question # 05
                                     </h6>
                                     <GrFormAdd style={{fontSize : '25px', fontWeight : 600}} />
                                 </div>
@@ -122,7 +122,7 @@ const HowItWorks = () => {
                         <Accordion.Header style={{marginBottom : "12px", borderRight : "1px solid white"}} >
                                 <div style={{display : "flex", justifyContent: "space-between", minWidth : "100%"}} >
                                     <h6>
-                                        First Heading # 06
+                                        Question # 06
                                     </h6>
                                     <GrFormAdd style={{fontSize : '25px', fontWeight : 600}} />
                                 </div>
@@ -141,7 +141,7 @@ const HowItWorks = () => {
                         <Accordion.Header style={{marginBottom : "12px", borderRight : "1px solid white"}} >
                                 <div style={{display : "flex", justifyContent: "space-between", minWidth : "100%"}} >
                                     <h6>
-                                        First Heading # 07
+                                        Question # 07
                                     </h6>
                                     <GrFormAdd style={{fontSize : '25px', fontWeight : 600}} />
                                 </div>
@@ -160,7 +160,7 @@ const HowItWorks = () => {
                             <Accordion.Header style={{marginBottom : "12px", borderRight : "1px solid white"}} >
                                     <div style={{display : "flex", justifyContent: "space-between", minWidth : "100%"}} >
                                         <h6>
-                                            First Heading # 08
+                                            Question # 08
                                         </h6>
                                         <GrFormAdd style={{fontSize : '25px', fontWeight : 600}} />
                                     </div>

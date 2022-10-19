@@ -226,13 +226,13 @@ const SignupForm = () => {
                         <div class="form-check d-flex align-items-center mb-4">
                             <input class="form-check-input auth-check me-3" type="checkbox" value="" id="termsConditions" onClick={() => setIsAge(!isAge)} />
                             <label class="form-check-label fs-small text-muted" for="termsConditions">
-                                I’m over 18 years old and agree to <Link className='text-light text-decoration-underline' to='/termsAndConditions'>Terms & Conditions.</Link>.
+                                I’m over 18 years old and agree to <Link className='text-light text-decoration-underline' to='/terms-and-conditions'>Terms & Conditions.</Link>.
                             </label>
                         </div>
                         <div class="form-check d-flex align-items-center mb-4">
                             <input class="form-check-input auth-check me-3" type="checkbox" value="" id="privacyPolicy" onClick={() => setTermAgree(!isTermAgree)} />
                             <label class="form-check-label fs-small text-muted" for="privacyPolicy">
-                                I agree to <Link className='text-light text-decoration-underline' to='/privacyPolicy'>Privacy Policy</Link>.
+                                I agree to <Link className='text-light text-decoration-underline' to='/terms-and-conditions'>Privacy Policy</Link>.
                             </label>
                         </div>
                         {

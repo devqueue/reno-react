@@ -10,6 +10,7 @@ import quoteStep3 from '../../assets/images/quoteStep3.png'
 import quoteStep4 from '../../assets/images/quoteStep4.png'
 import tick from '../../assets/images/tick.png'
 import {approveAnyFinancialRequest , getSingleQuoteDetails} from '../../api/AdminApi'
+import {getAllNotificationsOfAdmin ,markNotificationsOfAdminRead} from '../../api/AdminApi'
 import { ThreeDots } from  'react-loader-spinner'
 import moment from 'moment'
 import Button from 'react-bootstrap/Button';
@@ -213,17 +214,94 @@ const RequestFinance = () => {
         }
     }
 
+    // getting all notifications
+    useEffect(() =>{
+        const getAllNotifications = async () => {
+            const {data} = await getAllNotificationsOfAdmin()
+            if(data?.success === true){
+              setAllNotifications(data?.Notifications)
+              let count = 0;
+              data?.Notifications?.map((item) => (
+                item?.isRead === false && (
+                  count += 1
+                )
+              ))
+              setAllNotificationsCount(count)
+            }
+          }
+          getAllNotifications();
+      },[])
+      // marking notification as read
+      const readNotification = async (id) => {
+        const {data} = await markNotificationsOfAdminRead(id);
+        if(data?.success === true){
+            let newArr = allNotifications;
+            let isFound = newArr.find(item => item._id == id);
+            if(isFound){
+              isFound.isRead = true
+              newArr.filter(item => item._id == id ? isFound : item)
+              setAllNotifications(newArr)
+              setAllNotificationsCount(prev => prev - 1)
+            }
+          }
+      }
+
     return (
         <div className='container-fluid p-4 dashboard-content'>
             <div className="panel-top d-flex align-items-center justify-content-between">
-                    <div className='panel-left'>
-                        <h5 className='mb-0 fw-600'>View Finance Request</h5>
-                        {/* <p className='text-muted mb-0 text-light fs-small'>
-                        {moment().format('MMMM Do YYYY')}
-                        </p> */}
-                    </div>
+                            <div className='panel-left'>
+                                <h5 className='mb-0 fw-600'>All Merchants</h5>
+                                {/* <p className='text-muted mb-0 text-light fs-small'>
+                                {moment().format('MMMM Do YYYY')}
+                                </p> */}
+                            </div>
 
-                    
+                            <div className='d-flex align-items-center panel-right'>
+                                <div class="dropdown profile-dropdown">
+                                    <Link to='#' className='notification-btn' type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <AiFillBell />
+                                        <span>{allNotificationsCount}</span>
+                                    </Link>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        {
+                                            allNotifications?.length > 0 ? (
+                                                allNotifications?.map((item) => (
+                                                    item?.isRead === false ? (
+                                                        <li style={{backgroundColor : '#ecf0f1'}} onClick={() => readNotification(item?._id)}>
+                                                            <Link class="dropdown-item" to={item?.type === "Customer" ? ("/admin/customersData") : (item?.type === "Quote" ? ( "/admin/quotesData" ): (item?.type === "Merchant" ? ("/admin/merchantsData") : (item?.type === "Financial Request" ? ("/admin/financialRequestsData") : ("/admin/customer-issues") ) )  ) }>
+                                                                <strong>{item?.message} </strong> <br />
+                                                                <span style={{ fontSize: '12px' , color : '#34495e' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                                            </Link>
+                                                        </li>
+                                                    ) : (
+                                                        <li style={{backgroundColor : 'transparent'}} >
+                                                        <Link class="dropdown-item" to={item?.type === "Customer" ? ("/admin/customersData") : (item?.type === "Quote" ? ( "/admin/quotesData" ): (item?.type === "Merchant" ? ("/admin/merchantsData") : (item?.type === "Financial Request" ? ("/admin/financialRequestsData") : ("/admin/customer-issues") ) )  ) }>
+                                                                <strong>{item?.message} </strong> <br />
+                                                                <span className='text-muted' style={{ fontSize: '12px' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
+                                                        </Link>
+                                                        </li>
+                                                    )
+                                                ))
+                                            ) : (
+                                                <li style={{marginLeft : '15px'}} >Empty</li>
+                                            )
+                                        }
+                                    </ul>
+                                </div>
+
+                                <div className="dropdown profile-dropdown">
+                                    <button className="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div className='d-flex align-items-center fs-small me-3'>
+                                    <img src={userPic} alt="" style={{maxWidth: '50px', maxheight : '50px', borderRadius : '50%' }} />
+                                        {userName}
+                                                </div>
+                                            </button>
+                                            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <li><Link className="dropdown-item" to="/admin/profile">Profile</Link></li>
+                                                <li><Link className="dropdown-item" to="" onClick={logout}>Logout</Link></li>
+                                            </ul>
+                                </div>
+                            </div>
             </div>
 
             <div className="d-flex justify-content-center" >

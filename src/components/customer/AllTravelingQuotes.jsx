@@ -91,7 +91,7 @@ const MainPage = () => {
                                     prop?.CustomerResponse == false ? (
                                         <Button size="sm" variant="success" style={{fontSize : '11px' , fontWeight : 600}} onClick={() => changeStatus(prop?.Id , false)} >Delivery Confirmed</Button>
                                     ) : (
-                                        <Button size="sm" variant="danger" style={{fontSize : '11px' , fontWeight : 600}} onClick={() => changeStatus(prop?.Id , true)} >Delivery Not Confirmed</Button>
+                                        <Button size="sm" variant="danger" style={{fontSize : '11px' , fontWeight : 600}} onClick={() => changeStatus(prop?.Id , true)} >  Confirm Delivery </Button>
                                     )
                                 )
                             }

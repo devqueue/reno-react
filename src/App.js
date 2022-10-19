@@ -25,6 +25,8 @@ import AllQuotes from './pages/admin/QuotesData'
 import AllTickets from './pages/admin/TicketSupport'
 import AdminProfile from './pages/admin/ProfilePage'
 import ViewFinanceReport from './pages/admin/ViewFinanceRequest'
+import HowItWorksForCustomer from './components/customer/HowItWorks'
+import HowItWorksForMerchants from './components/partner/HowItWorks'
 
 function App() {
   return (
@@ -52,6 +54,8 @@ function App() {
           <Route path="/faq" element={<FAQ />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/how-it-works-for-customers" element={<HowItWorksForCustomer />} />
+          <Route path="/how-it-works-for-partners" element={<HowItWorksForMerchants />} />
         </Routes>
       </Router>
     </div>

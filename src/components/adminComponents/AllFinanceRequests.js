@@ -32,9 +32,9 @@ const MainPage = () => {
     const changeStatus = async (id , status) => {
         let isFound = allData.find(item => item.Id === id);
         if(isFound){
-                isFound.isMerchantApproved = status
+                isFound.Status = status
                 let msg = ""
-                if(status == false){
+                if(status === false){
                     msg = "Request Denied By Reno SuccessFully"
                 }else{
                     msg = "Request Approved and Sent to Merchant/Partner SuccessFully"
@@ -138,7 +138,6 @@ const MainPage = () => {
         const getAllRecords = async () => {
             setIsFetching(true)
             const {data} = await getRecentFinancialRequests();
-            console.log("all records : ", data)
             let allDataArr = [];
             if(data?.success === true){
                 for(let i = 0; i !== data?.AllQuotes.length; i++){
@@ -270,14 +269,14 @@ const MainPage = () => {
                                                     allNotifications?.map((item) => (
                                                         item?.isRead === false ? (
                                                             <li style={{backgroundColor : '#ecf0f1'}} onClick={() => readNotification(item?._id)}>
-                                                                <Link class="dropdown-item" to="">
+                                                                <Link class="dropdown-item" to={item?.type === "Customer" ? ("/admin/customersData") : (item?.type === "Quote" ? ( "/admin/quotesData" ): (item?.type === "Merchant" ? ("/admin/merchantsData") : (item?.type === "Financial Request" ? ("/admin/financialRequestsData") : ("/admin/customer-issues") ) )  ) }>
                                                                     <strong>{item?.message} </strong> <br />
                                                                     <span style={{ fontSize: '12px' , color : '#34495e' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
                                                                 </Link>
                                                             </li>
                                                         ) : (
                                                             <li style={{backgroundColor : 'transparent'}} >
-                                                            <Link class="dropdown-item" to="">
+                                                            <Link class="dropdown-item" to={item?.type === "Customer" ? ("/admin/customersData") : (item?.type === "Quote" ? ( "/admin/quotesData" ): (item?.type === "Merchant" ? ("/admin/merchantsData") : (item?.type === "Financial Request" ? ("/admin/financialRequestsData") : ("/admin/customer-issues") ) )  ) }>
                                                                     <strong>{item?.message} </strong> <br />
                                                                     <span className='text-muted' style={{ fontSize: '12px' }}>{moment(item?.createdAt).format('MMM Do, h:mm:ss a')}</span>
                                                             </Link>

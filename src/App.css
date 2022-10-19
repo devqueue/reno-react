@@ -1758,6 +1758,11 @@ input::-webkit-inner-spin-button {
     margin-left : 250px;
 }
 
+
+.accordion-item{
+    border : 2px solid white !important;
+}
+
 @media (max-width: 768px) {
     .sidebarClass{
         margin-left : 0px;
