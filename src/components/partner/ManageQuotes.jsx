@@ -252,12 +252,10 @@ const ManageQuotes = () => {
                               {
                                 item?.isAdminMerchantApproved === true ? (
                                   <>
-                                    <div className="quote-status text-color-primary bg-soft-orange">Approved</div>
+                                    <div className="quote-status text-color-primary bg-soft-primary">Approved</div>
                                   </>
-                                ) : (
-                                  <>
-                                    <div className="quote-status text-color-primary bg-soft-primary">Pending</div>
-                                  </>
+                                ) : (                                 
+                                    <div className="quote-status text-color-primary bg-soft-orange">Pending</div>                               
                                 )
                               }
                           </div>

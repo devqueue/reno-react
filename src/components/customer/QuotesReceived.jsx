@@ -86,7 +86,6 @@ const QuotesReceived = () => {
     }
 
     // logging out
-    // logging out
     const logout = async () => {
         localStorage.removeItem("reno-customer-token")
         sessionStorage.removeItem('reno-customer-token');
@@ -283,10 +282,8 @@ const QuotesReceived = () => {
                                                 <div>
                                                     <Button className=' mb-2' variant="primary"  onClick={() => getMyQuoteDetails(item?._id)} >View Details</Button>
                                                     {
-                                                        item?.isFinanceReqSent == false && item?.isCustomerDenied !== true ? (
+                                                        item?.isFinanceReqSent === false && item?.isCustomerDenied === false && (
                                                             <Link className='btn text-light fs-small mb-2' style={{backgroundColor : '#130f40' , color : 'white'}} to={`/customer/dashboard/quotesReceived/requestFinance/${item?._id}`} >Send Finance Request</Link>
-                                                        ) : (
-                                                            <Button className='btn close-btn fs-small' variant="success"  > Finance Request Sent </Button>
                                                         )
                                                     }
                                                     {
@@ -295,7 +292,7 @@ const QuotesReceived = () => {
                                                         )
                                                     }
                                                     {
-                                                        (item?.isFirstPaymentDone === false && item?.isCustomerDenied !== true) && (
+                                                        (item?.isFirstPaymentDone === false && item?.isCustomerDenied !== true && item?.isFinanceReqSent == false) && (
                                                             <Button className='btn close-btn fs-small mt-2' variant="danger" data-bs-toggle="modal" data-bs-target="#denyModal1" onClick={() => setSelectedId(item?._id)} >Deny </Button>
                                                         )
                                                     }
@@ -358,14 +355,17 @@ const QuotesReceived = () => {
                                                 <div>
                                                     <Button className=' mb-2' variant="primary"  onClick={() => getMyQuoteDetails(item?._id)} >View Details</Button>
                                                     {
-                                                        item?.isFinanceReqSent == false ? (
+                                                        item?.isFinanceReqSent === false && item?.isCustomerDenied === false && (
                                                             <Link className='btn text-light fs-small mb-2' style={{backgroundColor : '#130f40' , color : 'white'}} to={`/customer/dashboard/quotesReceived/requestFinance/${item?._id}`} >Send Finance Request</Link>
-                                                        ) : (
-                                                            <Button className='btn close-btn fs-small' variant="success"  > Finance Request Sent </Button>
                                                         )
                                                     }
                                                     {
-                                                        item?.isFirstPaymentDone == false && (
+                                                        item?.isCustomerDenied === true && (
+                                                            <Button className='btn close-btn fs-small mt-2' variant="danger" >Quote Denied </Button>
+                                                        )
+                                                    }
+                                                    {
+                                                        (item?.isFirstPaymentDone === false && item?.isCustomerDenied !== true && item?.isFinanceReqSent == false) && (
                                                             <Button className='btn close-btn fs-small mt-2' variant="danger" data-bs-toggle="modal" data-bs-target="#denyModal1" onClick={() => setSelectedId(item?._id)} >Deny </Button>
                                                         )
                                                     }

@@ -88,10 +88,10 @@ const MainPage = () => {
                         <>
                             {
                                 (prop?.quoteStatus == "Delivered By Partner" || prop?.quoteStatus == "Cancelled By Partner") && (
-                                    prop?.CustomerResponse == false ? (
+                                    prop?.CustomerResponse == true ? (
                                         <Button size="sm" variant="success" style={{fontSize : '11px' , fontWeight : 600}} onClick={() => changeStatus(prop?.Id , false)} >Delivery Confirmed</Button>
                                     ) : (
-                                        <Button size="sm" variant="danger" style={{fontSize : '11px' , fontWeight : 600}} onClick={() => changeStatus(prop?.Id , true)} >  Confirm Delivery </Button>
+                                        <Button size="sm" variant="info" style={{fontSize : '11px' , fontWeight : 600}} onClick={() => changeStatus(prop?.Id , true)} >  Confirm Delivery </Button>
                                     )
                                 )
                             }
@@ -103,9 +103,9 @@ const MainPage = () => {
                             {
                                 (prop?.quoteStatus == "Delivery Confirmed By Customer" || prop?.quoteStatus == "Order Cancelled By Customer") && (
                                     prop?.quoteStatus == "Delivery Confirmed By Customer" ? (
-                                        <Button size="sm" variant="success" style={{fontSize : '11px' , fontWeight : 600 , textDecoration : 'none' , fontSize : '10px'}} onClick={() => changeStatus(prop?.Id , false)} >Delivery Confirmed By You</Button>
+                                        <Button size="sm" variant="success" style={{fontSize : '11px' , fontWeight : 600 , textDecoration : 'none' , fontSize : '10px'}} >Delivery Confirmed By You</Button>
                                     ) : (
-                                        <Button size="sm" variant="danger" style={{fontSize : '11px' , fontWeight : 600 , textDecoration : 'none' , fontSize : '10px'}}  onClick={() => changeStatus(prop?.Id , true)} >Cancelled By You</Button>
+                                        <Button size="sm" variant="danger" style={{fontSize : '11px' , fontWeight : 600 , textDecoration : 'none' , fontSize : '10px'}}   >Cancelled By You</Button>
                                     )
                                 )
                             }

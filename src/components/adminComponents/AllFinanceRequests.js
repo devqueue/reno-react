@@ -111,7 +111,7 @@ const MainPage = () => {
                         <Dropdown as={ButtonGroup}>
                             {
                                 prop?.Status == false && (
-                                    <Button size="sm" variant="danger" style={{fontSize : '11px' , fontWeight : 600}} >Declined</Button>
+                                    <Button size="sm" variant="danger" style={{fontSize : '11px' , fontWeight : 600}} >Pending</Button>
                                 )
                             }
                             {
@@ -121,7 +121,7 @@ const MainPage = () => {
                             }
                             <Dropdown.Toggle split size="sm" variant="primary" id="dropdown-split-basic" />
                             <Dropdown.Menu style={{backgroundColor : 'transparent'}} >
-                                <Dropdown.Item onClick={() => changeStatus(prop?.Id , false)} style={{backgroundColor : '#c23616', color : 'white'}} >Declined</Dropdown.Item>
+                                <Dropdown.Item onClick={() => changeStatus(prop?.Id , false)} style={{backgroundColor : '#c23616', color : 'white'}} >Pending</Dropdown.Item>
                                 <Dropdown.Item onClick={() => changeStatus(prop?.Id , true)} style={{backgroundColor : '#10ac84', color : 'white'}} >Approved</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
