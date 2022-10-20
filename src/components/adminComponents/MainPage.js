@@ -104,7 +104,7 @@ const MainPage = () => {
                             }
                             <Dropdown.Toggle split size="sm" variant="primary" id="dropdown-split-basic" />
                             <Dropdown.Menu style={{backgroundColor : 'transparent'}} >
-                                <Dropdown.Item onClick={() => changeStatus(prop?.Id)} style={{backgroundColor : '#c23616', color : 'white'}} >Declined</Dropdown.Item>
+                                <Dropdown.Item onClick={() => changeStatus(prop?.Id)} style={{backgroundColor : '#c23616', color : 'white'}} >Pending</Dropdown.Item>
                                 <Dropdown.Item onClick={() => changeStatus(prop?.Id)} style={{backgroundColor : '#10ac84', color : 'white'}} >Approved</Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>

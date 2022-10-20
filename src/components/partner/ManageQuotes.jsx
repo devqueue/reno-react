@@ -19,6 +19,7 @@ const ManageQuotes = () => {
         const getAllRecord = async () => {
           setIsFetching(true)
           const {data} = await getAllRecentSentQuotes();
+          console.log("all quotes : ", data)
           if(data?.success === true){
               setAllData(data?.AllQuotes);
           }else{
@@ -250,12 +251,12 @@ const ManageQuotes = () => {
                               </div>
                             </div>
                               {
-                                item?.isAdminMerchantApproved === true ? (
+                                item?.status === true ? (
                                   <>
-                                    <div className="quote-status text-color-primary bg-soft-primary">Approved</div>
+                                    <div className="quote-status text-color-primary bg-soft-success">{item?.isCustomerApprovedText}</div>
                                   </>
                                 ) : (                                 
-                                    <div className="quote-status text-color-primary bg-soft-orange">Pending</div>                               
+                                    <div className="quote-status text-color-primary bg-soft-orange">{item?.isCustomerApprovedText}</div>                               
                                 )
                               }
                           </div>

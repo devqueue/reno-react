@@ -5,6 +5,8 @@ import {Row , Col } from 'react-bootstrap'
 import step3 from '../assets/images/step3.png'
 import corner3 from '../assets/images/corner3.png'
 import corner4 from '../assets/images/corner4.png'
+import arrows from '../assets/images/arrows.png'
+import { RiHtml5Line } from 'react-icons/ri'
 
 const TermConditions = () => {
     document.title = 'Reno | About Us'
@@ -12,7 +14,7 @@ const TermConditions = () => {
         <>
             <Header />
                 <div className="container" style={{marginTop : '45px', marginBottom : '35px' , textAlign : "center"}} >
-                    <h3 >Who we are:</h3> 
+                    <h2 >Who We Are:</h2> 
                 </div>
                 <div className="container" style={{marginTop : '45px', marginBottom : '35px'}} >
                     <Row>
@@ -26,25 +28,6 @@ const TermConditions = () => {
                                     When the company acquired SOFORT in 2014 the Reno Group was formed. Reno is backed by investors such as Sequoia Capital, Silver Lake, Bestseller Group, Dragoneer, Permira, Visa, Ant Group and Atomico.
                                     <br /> <br />
                                 </p>
-                                <h5 style={{color : "#2f3542" , marginBottom : "10px"}} >Statistics</h5>
-                                <p>
-                                    Reno is a part of The Reno Group.
-                                    <br /> <br />
-                                </p>
-                                <ul>
-                                    <li>
-                                        Total active consumers: 15,000
-                                    </li>
-                                    <li>
-                                        Total number of merchants: 455+
-                                    </li>
-                                    <li>
-                                        Number of transactions per day: 20,000
-                                    </li>
-                                    <li>
-                                        Number of employees: 50
-                                    </li>
-                                </ul>
                             </div>
                         </Col>
                         <Col sm={12} md={12} lg={4} >
@@ -55,6 +38,43 @@ const TermConditions = () => {
                             </div>
                         </Col>
                     </Row>
+
+                    <div className='container cta-container my-5'>
+                        <div className="row bg-darkBlue py-5 call-to-action-container">
+                            <div style={{display : "flex" , justifyContent : "center"}} >
+                                <h1 style={{color : 'white', }} >Reno Statistics</h1>
+                            </div>
+
+                            <Row style={{marginTop : "35px"}} >
+                                <Col sm={12} md={6} lg={3} >
+                                    <div style={{display : "flex" , justifyContent : "center", alignItems : "center" , flexDirection : "column", marginBottom : "25px"}} >
+                                        <h2 style={{color : 'white', }} >1500+</h2>
+                                        <h5 style={{color : 'white', }} >Total Customers</h5>
+                                    </div>
+                                </Col>
+                                <Col sm={12} md={6} lg={3} >
+                                    <div style={{display : "flex" , justifyContent : "center", alignItems : "center" , flexDirection : "column", marginBottom : "25px"}} >
+                                        <h2 style={{color : 'white', }} >455+</h2>
+                                        <h5 style={{color : 'white', }} >Merchants</h5>
+                                    </div>
+                                </Col>
+                                <Col sm={12} md={6} lg={3} >
+                                    <div style={{display : "flex" , justifyContent : "center", alignItems : "center" , flexDirection : "column",marginBottom : "25px"}} >
+                                        <h2 style={{color : 'white', }} >69</h2>
+                                        <h5 style={{color : 'white', }} >Employees</h5>
+                                    </div>
+                                </Col>
+                                <Col sm={12} md={6} lg={3} >
+                                    <div style={{display : "flex" , justifyContent : "center", alignItems : "center" , flexDirection : "column", marginBottom : "25px"}} >
+                                        <h2 style={{color : 'white', }} >200,0000</h2>
+                                        <h5 style={{color : 'white', }} >Transactions per day</h5>
+                                    </div>
+                                </Col>
+                            </Row>
+                            
+                        </div>
+                    </div>
+
                 </div>
             <Footer />
         </>

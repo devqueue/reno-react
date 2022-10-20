@@ -61,7 +61,7 @@ const FinanceRequests = () => {
         const getAllRecord = async () => {
             setIsFetching(true)
             const {data} = await getAllTodayFinancialRequestSent();
-            console.log("responsedata?.AllQuotes : ",data?.AllQuotes)
+            console.log("all data : ", data)
             if(data?.success === true){
                 setAllData(data?.AllQuotes);
             }
@@ -269,14 +269,17 @@ const FinanceRequests = () => {
 
                                                 <div>
                                                     {
-                                                        item?.isAdminApproved === true ? (
+                                                        item?.isAdminApproved === "Approved" && (
                                                             <div className="request-status-container" style={{marginLeft : '25px'}} >
                                                                 <div className="request-status text-green bg-soft-green" style={{maxWidth: '100px' , maxHeight : '30px' , backgroundColor : 'white' , marginLeft : '30px' , display: 'flex' , alignItems : 'center' ,  marginBottom : '25px', justifyContent : 'space-between'  }} >
                                                                     Approved
                                                                     <img src={success} alt=""  style={{maxWidth: '80px' , maxHeight : '30px'  }}  />
                                                                 </div>
                                                             </div>
-                                                        ) : (
+                                                        )  
+                                                    }
+                                                    {
+                                                        item?.isAdminApproved === "Pending" && (
                                                             <div className="request-status-container"  >
                                                                 <div className="request-status text-green bg-soft-green" style={{maxWidth: '100px' , maxHeight : '30px' , backgroundColor : 'white' , marginLeft : '30px' , display: 'flex' , alignItems : 'center' ,  marginBottom : '25px', justifyContent : 'space-between'  }} >
                                                                     Pending
@@ -285,7 +288,16 @@ const FinanceRequests = () => {
                                                         )
                                                     }
                                                     {
-                                                        item?.isAdminApproved === true && (
+                                                        item?.isAdminApproved === "Declined" && (
+                                                            <div className="request-status-container"  >
+                                                                <div className="request-status" style={{maxWidth: '100px' , color : "red" , maxHeight : '30px' , backgroundColor : 'white' , marginLeft : '30px' , display: 'flex' , alignItems : 'center' ,  marginBottom : '25px', justifyContent : 'space-between'  }} >
+                                                                    Declined
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    }
+                                                    {
+                                                        item?.isAdminApproved === "Approved" && (
                                                             <Button style={{color: 'white' }} variant="success" data-bs-toggle="modal" data-bs-target="#payModal" onClick={() => setSelectedId(item?._id)} >Make payment </Button>
                                                         )
                                                     }
@@ -345,15 +357,18 @@ const FinanceRequests = () => {
 
                                                 <div>
                                                     {
-                                                        item?.isAdminApproved === true ? (
+                                                        item?.isAdminApproved === "Approved" && (
                                                             <div className="request-status-container" style={{marginLeft : '25px'}} >
                                                                 <div className="request-status text-green bg-soft-green" style={{maxWidth: '100px' , maxHeight : '30px' , backgroundColor : 'white' , marginLeft : '30px' , display: 'flex' , alignItems : 'center' ,  marginBottom : '25px', justifyContent : 'space-between'  }} >
                                                                     Approved
                                                                     <img src={success} alt=""  style={{maxWidth: '80px' , maxHeight : '30px'  }}  />
                                                                 </div>
                                                             </div>
-                                                        ) : (
-                                                            <div className="request-status-container">
+                                                        )  
+                                                    }
+                                                    {
+                                                        item?.isAdminApproved === "Pending" && (
+                                                            <div className="request-status-container"  >
                                                                 <div className="request-status text-green bg-soft-green" style={{maxWidth: '100px' , maxHeight : '30px' , backgroundColor : 'white' , marginLeft : '30px' , display: 'flex' , alignItems : 'center' ,  marginBottom : '25px', justifyContent : 'space-between'  }} >
                                                                     Pending
                                                                 </div>
@@ -361,8 +376,17 @@ const FinanceRequests = () => {
                                                         )
                                                     }
                                                     {
-                                                        item?.isAdminApproved === true && (
-                                                                <Button style={{color: 'white' }} variant="success" data-bs-toggle="modal" data-bs-target="#payModal"  >Make payment </Button>
+                                                        item?.isAdminApproved === "Declined" && (
+                                                            <div className="request-status-container"  >
+                                                                <div className="request-status" style={{maxWidth: '100px' , color : "red" , maxHeight : '30px' , backgroundColor : 'white' , marginLeft : '30px' , display: 'flex' , alignItems : 'center' ,  marginBottom : '25px', justifyContent : 'space-between'  }} >
+                                                                    Declined
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    }
+                                                    {
+                                                        item?.isAdminApproved === "Approved" && (
+                                                            <Button style={{color: 'white' }} variant="success" data-bs-toggle="modal" data-bs-target="#payModal" onClick={() => setSelectedId(item?._id)} >Make payment </Button>
                                                         )
                                                     }
                                                 </div>
