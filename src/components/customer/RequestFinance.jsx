@@ -126,7 +126,7 @@ const RequestFinance = () => {
             emptyQuoteData();
             await delay(1500)
             setIsFetching(false)
-            navigate('customer/dashboard/financeRequests');
+            navigate('/customer/dashboard/financeRequests');
         }else{
             await delay(1500)
             setIsFetching(false)
