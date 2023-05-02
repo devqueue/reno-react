@@ -584,30 +584,30 @@ const NewApllication = () => {
               </div>
 
               <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
-                <Link
-                  to="/partner/dashboard/panel"
-                  className="btn finance-form-cancel me-3"
-                  style={{ flex: "1" }}
-                  onClick={emptyQuoteData}
-                >
-                  Cancel
-                </Link>
-                <Button
-                  className="btn bg-[#273c75] text-dark"
-                  style={{ flex: "1" }}
-                  onClick={() => setStep(3)}
-                >
-                  Save and Continue
-                </Button>
-              </div>
-
-              <div className="col-12 mt-4 d-flex justify-content-center">
                 <Button
                   className="btn border border-color-darkBlue bg-[#273c75] text-white"
                   style={{ flex: "1" }}
                   onClick={() => setStep(1)}
                 >
                   Go Back
+                </Button>
+                <Link
+                  to="/partner/dashboard/panel"
+                  className="btn finance-form-cancel "
+                  style={{ flex: "1" }}
+                  onClick={emptyQuoteData}
+                >
+                  Cancel
+                </Link>
+              </div>
+
+              <div className="col-12 mt-4 d-flex justify-content-center">
+                <Button
+                  className="btn bg-[#273c75] text-dark"
+                  style={{ flex: "1" }}
+                  onClick={() => setStep(3)}
+                >
+                  Save and Continue
                 </Button>
               </div>
             </div>

@@ -36,6 +36,43 @@ const FinanceRequests = () => {
     expiryDate: "",
     cvv: "",
   });
+
+  //=======Credit Card No Added by Alex
+  let [cardNumber, setCardNumber] = useState("");
+  let [message, setMessage] = useState("");
+
+  // function to validate credit card numbers using the Luhn algorithm
+  function validateByLuhn(cardNumber) {
+    let sum = 0;
+    let shouldDouble = false;
+    for (let i = cardNumber.length - 1; i >= 0; i--) {
+      let digit = parseInt(cardNumber.charAt(i));
+      if (shouldDouble) {
+        if ((digit *= 2) > 9) digit = digit - 9;
+      }
+      sum = sum + digit;
+      shouldDouble = !shouldDouble;
+    }
+    return sum % 10 === 0;
+  }
+  function validateCreditCard(event) {
+    let cardNumber = event.target.value;
+    setCardNumber(cardNumber);
+    let isValid =
+      (validateByLuhn(cardNumber) &&
+        cardNumber.length == 15 &&
+        (cardNumber.indexOf("34") == 0 || cardNumber.indexOf("37") == 0)) ||
+      (cardNumber.length == 13 && cardNumber[0] == 4) ||
+      (cardNumber.length == 16 &&
+        (cardNumber[0] == 4 ||
+          (cardNumber[0] == 5 && cardNumber[1] >= 1 && cardNumber[1] <= 5)));
+    if (isValid) {
+      setMessage("Valid Card Number");
+    } else {
+      setMessage("Invalid Card Number");
+    }
+  }
+
   const [userName, setUserName] = useState("");
   const [userPic, setUserPic] = useState("");
   const [isAgreed, setIsAgreed] = useState(false);
@@ -646,13 +683,19 @@ const FinanceRequests = () => {
                 </label>
                 <input
                   type="number"
+                  value={cardNumber}
+                  onChange={validateCreditCard}
+                />
+                <p> {message} </p>
+                {/* <input
+                  type="number"
                   className="form-control"
                   placeholder="XXXX-XXXX-XXXX-XXXX"
                   value={cardDetails?.cardNo}
                   onChange={(e) =>
                     setCardDetails({ ...cardDetails, cardNo: e.target.value })
                   }
-                />
+                /> */}
               </div>
 
               <div className="form-group mt-4">

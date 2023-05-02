@@ -168,7 +168,7 @@ const SignupForm = () => {
               </select>
               <div className="auth-input-container">
                 <input
-                  type="text"
+                  type="number"
                   className="form-control px-3"
                   placeholder="Enter Your Mobile Number"
                   style={{ flex: "1" }}

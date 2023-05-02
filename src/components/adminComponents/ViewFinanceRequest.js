@@ -1129,8 +1129,12 @@ const RequestFinance = () => {
                   <div className="col-12 mt-4 d-flex justify-content-center step-btns-container">
                     <Link
                       to="/admin/financialRequestsData"
-                      className="btn finance-form-cancel me-3"
-                      style={{ backgroundColor: "crimson", color: "white" }}
+                      className="btn finance-form-cancel text-nowrap"
+                      style={{
+                        backgroundColor: "crimson",
+                        color: "white",
+                        width: "220px",
+                      }}
                       onClick={emptyQuoteData}
                     >
                       View All Financial Requests

@@ -24,10 +24,14 @@ const Password = () => {
   const [isMatched, setIsMatched] = useState(false);
   const [oldPass, setOldPass] = useState("");
   const [newPass, setNewPass] = useState("");
+  const [confirmNewPass, setConfirmNewPass] = useState("");
+
   const [allowUpdate, setAllowUpdate] = useState(false);
   const [msg, setMsg] = useState("");
   const [pass1, setPass1] = useState(false);
   const [pass2, setPass2] = useState(false);
+  const [pass3, setPass3] = useState(false);
+
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
   const [userPic, setUserPic] = useState("");
@@ -211,7 +215,7 @@ const Password = () => {
 
   // allowing to change password
   const changeBtn = (value) => {
-    if (value?.length > 0) {
+    if (value?.length > 0 && newPass === confirmNewPass) {
       setAllowUpdate(true);
     } else {
       setAllowUpdate(false);
@@ -530,7 +534,7 @@ const Password = () => {
                 Update Password
               </h5>
               <div className="d-flex">
-                <div className="form-group mb-4 col-lg-5">
+                <div className="form-group mb-4 col-lg-4">
                   <label className="form-label">Old Password</label>
                   <span
                     style={{
@@ -580,7 +584,7 @@ const Password = () => {
                   )}
                 </div>
                 <div
-                  className="form-group mb-4 col-lg-6"
+                  className="form-group mb-4 col-lg-4"
                   style={{ marginLeft: "15px" }}
                 >
                   <label className="form-label">New Password</label>
@@ -588,7 +592,7 @@ const Password = () => {
                     <input
                       type={`${pass2 ? "text" : "password"}`}
                       className="form-control px-3"
-                      placeholder="Confirm Password"
+                      placeholder="New Password"
                       disabled={!isMatched}
                       onChange={(e) => setNewPass(e.target.value)}
                       value={newPass}
@@ -597,6 +601,30 @@ const Password = () => {
                     <img
                       src={eye}
                       onClick={() => setPass2(!pass2)}
+                      className="reveal-btn"
+                      alt=""
+                    />
+                  </div>
+                </div>
+
+                <div
+                  className="form-group mb-4 col-lg-4"
+                  style={{ marginLeft: "15px" }}
+                >
+                  <label className="form-label">Confirm New Password</label>
+                  <div className="pass-container">
+                    <input
+                      type={`${pass3 ? "text" : "password"}`}
+                      className="form-control px-3"
+                      placeholder="Confirm New Password"
+                      disabled={!isMatched && pass2}
+                      onChange={(e) => setConfirmNewPass(e.target.value)}
+                      value={confirmNewPass}
+                      onBlur={(e) => changeBtn(e.target.value)}
+                    />
+                    <img
+                      src={eye}
+                      onClick={() => setPass3(!pass3)}
                       className="reveal-btn"
                       alt=""
                     />

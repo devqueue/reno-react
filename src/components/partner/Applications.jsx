@@ -90,7 +90,9 @@ const Applications = () => {
       let newarray = [];
       newArr?.map((event, idx) => {
         return newarray.push([
-          event.CustomerAndProductDetails.IDCardNo,
+          event.CustomerAndProductDetails.IDCardNo +
+            " " +
+            event.CustomerAndProductDetails.email,
           event.CustomerAndProductDetails.productCategory,
           event.FinanceDetails.totalPurchaseAmt,
           event.RepaymentAmount.totalMonths,
@@ -380,7 +382,7 @@ const Applications = () => {
                 setFilterData({ ...filterData, quoteStatus: e.target.value })
               }
             >
-              <option selected>select any Status</option>
+              {/* <option selected>select any Status</option> */}
               <option>Quote Sent To Customer</option>
               <option>Financial Details Accepted By Reno</option>
               <option>Order Cancelled By Customer</option>
@@ -453,7 +455,7 @@ const Applications = () => {
                 data={allData}
                 columns={[
                   {
-                    name: "Custumer",
+                    name: "Customer",
                     minWidth: "150px",
                   },
                   {
