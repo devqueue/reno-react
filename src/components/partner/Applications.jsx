@@ -18,8 +18,11 @@ import "gridjs/dist/theme/mermaid.css";
 import Dropdown from "react-bootstrap/Dropdown";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import ModalBody from "react-bootstrap/ModalBody";
+
 import axios from "axios";
 import Badge from "react-bootstrap/Badge";
+import NotificationMerchant from "./NotificationMerchant";
 
 const Applications = () => {
   const navigate = useNavigate();
@@ -166,7 +169,39 @@ const Applications = () => {
 
   const [refund, setRefund] = useState(false);
   const handleRefundClose = () => setRefund(false);
-  const handleRefund = () => setRefund(true);
+
+  //=======Details View on Click
+  const [detailsData, setDetailsData] = useState([]);
+  const [detailPopUpData, setDetailPopUpData] = useState({});
+
+  // console.log("detailPopUpData", detailPopUpData);
+
+  const [viewDetails, setViewDetails] = useState(false);
+
+  function togView(t) {
+    let selectedpayroll = [];
+
+    detailsData?.map((item, index) =>
+      item._id === t
+        ? selectedpayroll.push({
+            IdCard: item.CustomerAndProductDetails.IDCardNo,
+            email: item.CustomerAndProductDetails.email,
+            custPhone: item.CustomerAndProductDetails.phoneNo,
+            firstName: item.firstName,
+            lastName: item.lastName,
+            category: item.CustomerAndProductDetails.productCategory,
+            amount: item.FinanceDetails.totalPurchaseAmt,
+            totalMonth: item.RepaymentAmount.totalMonths,
+            depositeAmt: item.FinanceDetails.depositAmt,
+            amountPerMonth: item.RepaymentAmount.amountPerMonth,
+            CreatedAt: moment(item.CreatedAt).format("MMM Do YY"),
+            status: item.quoteStatus,
+          })
+        : null
+    );
+    setDetailPopUpData(selectedpayroll[0]);
+    setViewDetails(!viewDetails);
+  }
 
   //getting all data
   useEffect(() => {
@@ -175,6 +210,7 @@ const Applications = () => {
       const { data } = await getAllRecentSentQuotes();
       if (data?.success === true) {
         let newArr = data?.AllQuotes;
+        setDetailsData(newArr);
         let newarray = [];
         newArr?.map((event, idx) => {
           return newarray.push([
@@ -182,6 +218,8 @@ const Applications = () => {
             event.CustomerAndProductDetails.productCategory,
             event.FinanceDetails.totalPurchaseAmt,
             event.RepaymentAmount.totalMonths,
+            event.FinanceDetails.depositAmt,
+            event.RepaymentAmount.amountPerMonth,
             moment(event.CreatedAt).format("MMM Do YY"),
             event.quoteStatus,
             event._id,
@@ -197,38 +235,6 @@ const Applications = () => {
     getAllRecord();
   }, [location]);
 
-  const [allNotifications, setAllNotifications] = useState([]);
-  const [allNotificationsCount, setAllNotificationsCount] = useState([]);
-  // getting all notifications
-  useEffect(() => {
-    const getAllNotifications = async () => {
-      const { data } = await getAllNotificationsOfMerchant();
-      if (data?.success === true) {
-        setAllNotifications(data?.Notifications);
-        let count = 0;
-        data?.Notifications?.map(
-          (item) => item?.isRead === false && (count += 1)
-        );
-        setAllNotificationsCount(count);
-      }
-    };
-    getAllNotifications();
-  }, []);
-  // marking notification as read
-  const readNotification = async (id) => {
-    const { data } = await markNotificationsOfMerchantRead(id);
-    if (data?.success === true) {
-      let newArr = allNotifications;
-      let isFound = newArr.find((item) => item._id == id);
-      if (isFound) {
-        isFound.isRead = true;
-        newArr.filter((item) => (item._id == id ? isFound : item));
-        setAllNotifications(newArr);
-        setAllNotificationsCount((prev) => prev - 1);
-      }
-    }
-  };
-
   return (
     <div className="container-fluid p-4 dashboard-content">
       <div className="panel-top d-flex align-items-center justify-content-between">
@@ -240,58 +246,7 @@ const Applications = () => {
         </div>
 
         <div className="d-flex align-items-center panel-right">
-          <div className="dropdown profile-dropdown">
-            <Link
-              to="#"
-              className="notification-btn"
-              type="button"
-              id="dropdownMenuButton1"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <AiFillBell />
-              {allNotificationsCount > 0 && (
-                <span>{allNotificationsCount}</span>
-              )}
-            </Link>
-            <ul
-              class="dropdown-menu"
-              aria-labelledby="dropdownMenuButton1"
-              style={{ maxHeight: "400px", overflowY: "scroll" }}
-            >
-              {allNotifications?.length > 0 ? (
-                allNotifications?.map((item) =>
-                  item?.isRead === false ? (
-                    <li
-                      style={{ backgroundColor: "#ecf0f1" }}
-                      onClick={() => readNotification(item?._id)}
-                    >
-                      <Link class="dropdown-item" to="">
-                        <strong>{item?.message} </strong> <br />
-                        <span style={{ fontSize: "12px", color: "#34495e" }}>
-                          {moment(item?.createdAt).format("MMM Do, h:mm:ss a")}
-                        </span>
-                      </Link>
-                    </li>
-                  ) : (
-                    <li style={{ backgroundColor: "transparent" }}>
-                      <Link class="dropdown-item" to="">
-                        <strong>{item?.message} </strong> <br />
-                        <span
-                          className="text-muted"
-                          style={{ fontSize: "12px" }}
-                        >
-                          {moment(item?.createdAt).format("MMM Do, h:mm:ss a")}
-                        </span>
-                      </Link>
-                    </li>
-                  )
-                )
-              ) : (
-                <li style={{ marginLeft: "15px" }}>Empty</li>
-              )}
-            </ul>
-          </div>
+          <NotificationMerchant />
 
           <div className="dropdown profile-dropdown">
             <button
@@ -476,6 +431,16 @@ const Applications = () => {
                         </span>
                       ),
                   },
+
+                  {
+                    name: "Deposite Amount",
+                    minWidth: "120px",
+                  },
+                  {
+                    name: "Funding",
+                    minWidth: "120px",
+                  },
+
                   {
                     name: "Date",
                     minWidth: "150px",
@@ -516,9 +481,9 @@ const Applications = () => {
                           <Button
                             variant="danger"
                             size="sm"
-                            onClick={handleRefund}
+                            onClick={() => togView(cell)}
                           >
-                            View Invoice
+                            View Details
                           </Button>
                         </>
                       ),
@@ -709,16 +674,55 @@ const Applications = () => {
       {/* Modal */}
 
       {/* Invoice modal */}
-      <Modal
-        show={invoice}
-        onHide={handleInvoiceClose}
+      {/* <Modal
+        show={viewDetails}
+        toggle={() => {
+          togView();
+        }}
+        // onHide={togView()}
         backdrop="static"
         keyboard={false}
       >
         <Modal.Header closeButton>
           <Modal.Title>Your Invoice</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body></Modal.Body>
+        <Modal.Footer>
+          <Button variant="danger" onClick={handleInvoiceClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal> */}
+
+      {/* //New */}
+      <Modal
+        show={viewDetails}
+        isOpen={viewDetails}
+        toggle={() => {
+          togView();
+        }}
+        size="md"
+        centered
+        backdrop="static"
+        keyboard={false}
+      >
+        <div className="bg-light p-3 d-flex justify-content-between">
+          <div>
+            <h2 className="pt-2">Details</h2>
+          </div>
+          <div className="">
+            <Button
+              type="button"
+              onClick={() => {
+                setViewDetails(false);
+              }}
+              className="btn-close "
+              aria-label="Close"
+            ></Button>
+          </div>
+        </div>
+
+        <ModalBody>
           <div className="modal-content">
             <div className="modal-body p-0">
               <h3 className="text-center fw-600">Submit Invoice</h3>
@@ -736,62 +740,87 @@ const Applications = () => {
                 <li className="d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted">
                   Category
                   <span style={{ marginRight: "15px" }}>
-                    Solar & Battery System
+                    {detailPopUpData?.category}
                   </span>
                 </li>
                 <li className="d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted">
                   Amount
                   <span style={{ marginRight: "15px" }}>
-                    SAR<span className="text-dark"> 1200</span>
+                    SAR
+                    <span className="text-dark">
+                      {" "}
+                      {detailPopUpData?.amount}
+                    </span>
                   </span>
                 </li>
                 <li className="d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted">
                   Deposit amount
                   <span style={{ marginRight: "15px" }}>
-                    SAR<span className="text-dark"> 0</span>
+                    SAR
+                    <span className="text-dark">
+                      {" "}
+                      {detailPopUpData?.depositeAmt}
+                    </span>
                   </span>
                 </li>
                 <li className="d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted">
-                  Financed amount
+                  Amount Per Month
                   <span style={{ marginRight: "15px" }}>
-                    SAR<span className="text-dark"> 0</span>
+                    SAR
+                    <span className="text-dark">
+                      {" "}
+                      {detailPopUpData?.amountPerMonth}
+                    </span>
                   </span>
                 </li>
                 <li className="d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted">
-                  Amount to be paid to partner
+                  Term (Month)
                   <span style={{ marginRight: "15px" }}>
-                    SAR<span className="text-dark"> 1080</span>
+                    <span className="text-dark">
+                      {" "}
+                      {detailPopUpData?.totalMonth} Months
+                    </span>
                   </span>
                 </li>
                 <li className="d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted">
                   Customer name
-                  <span style={{ marginRight: "15px" }}>Mohammed</span>
+                  <span style={{ marginRight: "15px" }}>
+                    {detailPopUpData?.firstName +
+                      " " +
+                      detailPopUpData?.lastName}
+                  </span>
                 </li>
                 <li className="d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted">
                   Customer phone number
-                  <span style={{ marginRight: "15px" }}>+96655332156</span>
+                  <span style={{ marginRight: "15px" }}>
+                    {detailPopUpData?.custPhone}
+                  </span>
                 </li>
                 <li className="d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted">
                   Customer Email
-                  <span style={{ marginRight: "15px" }}>abc@gmail.com</span>
+                  <span style={{ marginRight: "15px" }}>
+                    {" "}
+                    {detailPopUpData?.email}
+                  </span>
                 </li>
               </ul>
-
-              <button
-                className="btn text-light bg-darkBlue w-100 mt-3"
-                style={{ borderRadius: "6px", height: "47px" }}
-              >
-                Request Payment
-              </button>
+              <Modal.Footer>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    setViewDetails(false);
+                  }}
+                  className="btn btn-danger"
+                  aria-label="Close"
+                >
+                  Close
+                </Button>
+              </Modal.Footer>
             </div>
           </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="danger" onClick={handleInvoiceClose}>
-            Close
-          </Button>
-        </Modal.Footer>
+        </ModalBody>
       </Modal>
+
       {/* invoice modal end */}
 
       {/* Refund modal */}
@@ -876,9 +905,9 @@ const Applications = () => {
           <Button variant="danger" onClick={handleRefundClose}>
             Close
           </Button>
-          <Button variant="success" onClick={handleRefundClose}>
+          {/* <Button variant="success" onClick={handleRefundClose}>
             Yes, Refund
-          </Button>
+          </Button> */}
         </Modal.Footer>
       </Modal>
       {/* Refund modal end */}

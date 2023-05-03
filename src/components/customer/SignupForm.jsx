@@ -44,7 +44,6 @@ const SignupForm = () => {
     lastName,
     phoneNo: parseInt(phoneNo),
   };
-  console.log("apiData", apiData.IDCardNo);
 
   // showing code for login
   const [code, setCode] = useState("");

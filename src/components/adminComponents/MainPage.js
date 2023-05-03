@@ -19,18 +19,13 @@ import {
 } from "../../api/AdminApi";
 import user from "../../assets/images/user.jpg";
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import moment from "moment";
-import { AiFillBell } from "react-icons/ai";
-import {
-  getAllNotificationsOfAdmin,
-  markNotificationsOfAdminRead,
-} from "../../api/AdminApi";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import Dropdown from "react-bootstrap/Dropdown";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
+import NotificationAdmin from "./NotificationAdmin";
 
 const MainPage = () => {
   const [allData, setData] = useState([]);
@@ -223,38 +218,6 @@ const MainPage = () => {
     navigate("/admin/login");
   };
 
-  const [allNotifications, setAllNotifications] = useState([]);
-  const [allNotificationsCount, setAllNotificationsCount] = useState([]);
-  // getting all notifications
-  useEffect(() => {
-    const getAllNotifications = async () => {
-      const { data } = await getAllNotificationsOfAdmin();
-      if (data?.success === true) {
-        setAllNotifications(data?.Notifications);
-        let count = 0;
-        data?.Notifications?.map(
-          (item) => item?.isRead === false && (count += 1)
-        );
-        setAllNotificationsCount(count);
-      }
-    };
-    getAllNotifications();
-  }, []);
-  // marking notification as read
-  const readNotification = async (id) => {
-    const { data } = await markNotificationsOfAdminRead(id);
-    if (data?.success === true) {
-      let newArr = allNotifications;
-      let isFound = newArr.find((item) => item._id == id);
-      if (isFound) {
-        isFound.isRead = true;
-        newArr.filter((item) => (item._id == id ? isFound : item));
-        setAllNotifications(newArr);
-        setAllNotificationsCount((prev) => prev - 1);
-      }
-    }
-  };
-
   // getting searched data
   const getSearchedMerchants = async () => {
     if (text.length < 5) {
@@ -352,86 +315,7 @@ const MainPage = () => {
             </div>
 
             <div className="d-flex align-items-center panel-right">
-              <div class="dropdown profile-dropdown">
-                <Link
-                  to="#"
-                  className="notification-btn"
-                  type="button"
-                  id="dropdownMenuButton1"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  <AiFillBell />
-                  {allNotificationsCount > 0 && (
-                    <span>{allNotificationsCount}</span>
-                  )}
-                </Link>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                  {allNotifications?.length > 0 ? (
-                    allNotifications?.map((item) =>
-                      item?.isRead === false ? (
-                        <li
-                          style={{ backgroundColor: "#ecf0f1" }}
-                          onClick={() => readNotification(item?._id)}
-                        >
-                          <Link
-                            class="dropdown-item"
-                            to={
-                              item?.type === "Customer"
-                                ? "/admin/customersData"
-                                : item?.type === "Quote"
-                                ? "/admin/quotesData"
-                                : item?.type === "Merchant"
-                                ? "/admin/merchantsData"
-                                : item?.type === "Financial Request"
-                                ? "/admin/financialRequestsData"
-                                : "/admin/customer-issues"
-                            }
-                          >
-                            <strong>{item?.message} </strong> <br />
-                            <span
-                              style={{ fontSize: "12px", color: "#34495e" }}
-                            >
-                              {moment(item?.createdAt).format(
-                                "MMM Do, h:mm:ss a"
-                              )}
-                            </span>
-                          </Link>
-                        </li>
-                      ) : (
-                        <li style={{ backgroundColor: "transparent" }}>
-                          <Link
-                            class="dropdown-item"
-                            to={
-                              item?.type === "Customer"
-                                ? "/admin/customersData"
-                                : item?.type === "Quote"
-                                ? "/admin/quotesData"
-                                : item?.type === "Merchant"
-                                ? "/admin/merchantsData"
-                                : item?.type === "Financial Request"
-                                ? "/admin/financialRequestsData"
-                                : "/admin/customer-issues"
-                            }
-                          >
-                            <strong>{item?.message} </strong> <br />
-                            <span
-                              className="text-muted"
-                              style={{ fontSize: "12px" }}
-                            >
-                              {moment(item?.createdAt).format(
-                                "MMM Do, h:mm:ss a"
-                              )}
-                            </span>
-                          </Link>
-                        </li>
-                      )
-                    )
-                  ) : (
-                    <li style={{ marginLeft: "15px" }}>Empty</li>
-                  )}
-                </ul>
-              </div>
+              <NotificationAdmin />
 
               <div className="dropdown profile-dropdown">
                 <button

@@ -50,7 +50,6 @@ const LoginForm = () => {
 
   // sending data
   const sendData = async () => {
-    console.log("userData: ", userData);
     if (isEmailMatched == false) {
       toast.error("Please Provide valid Email Address to continue.");
       return;
@@ -163,7 +162,7 @@ const LoginForm = () => {
     }
     setIsMyFetching(true);
     const { data } = await updateMerchantPassword(custEmail, custPasswordOne);
-    console.log("password response : ", data);
+    // console.log("password response : ", data);
     if (data?.success === true) {
       toast.success(data?.message);
       handleSendMyEmailClose();

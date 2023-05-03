@@ -23,6 +23,7 @@ import {
   markNotificationsOfMerchantRead,
   makeNewPayment,
 } from "../../api/CustomerApi";
+import NotificationCustomer from "./NotificationCustomer";
 
 const FinanceRequests = () => {
   const navigate = useNavigate();
@@ -38,44 +39,116 @@ const FinanceRequests = () => {
   });
 
   //=======Credit Card No Added by Alex
-  let [cardNumber, setCardNumber] = useState("");
-  let [message, setMessage] = useState("");
+  let [validCardNo, setValidCardNo] = useState(false);
 
-  // function to validate credit card numbers using the Luhn algorithm
-  function validateByLuhn(cardNumber) {
-    let sum = 0;
-    let shouldDouble = false;
-    for (let i = cardNumber.length - 1; i >= 0; i--) {
-      let digit = parseInt(cardNumber.charAt(i));
-      if (shouldDouble) {
-        if ((digit *= 2) > 9) digit = digit - 9;
+  const [cardNumber, setCardNumber] = useState("");
+
+  const handleChange = (event) => {
+    let { value } = event.target;
+
+    // remove any non-digit characters
+    value = value.replace(/\D/g, "");
+
+    // only allow 16 digits
+    if (value.length > 16) {
+      value = value.slice(0, 16);
+    }
+
+    // add dashes after every 4 digits
+    value = value.replace(/(\d{4})/g, "$1-");
+
+    // remove trailing dash
+    value = value.replace(/-$/, "");
+
+    // set state
+    setCardNumber(value);
+
+    // check if number is valid using Luhn's algorithm
+    const luhnCheck = (ccNum) => {
+      let checkSum = 0;
+      let isEven = false;
+
+      for (let i = ccNum.length - 1; i >= 0; i--) {
+        let digit = parseInt(ccNum.charAt(i));
+
+        if (isEven) {
+          digit *= 2;
+          if (digit > 9) {
+            digit -= 9;
+          }
+        }
+
+        checkSum += digit;
+        isEven = !isEven;
       }
-      sum = sum + digit;
-      shouldDouble = !shouldDouble;
-    }
-    return sum % 10 === 0;
-  }
-  function validateCreditCard(event) {
-    let cardNumber = event.target.value;
-    setCardNumber(cardNumber);
-    let isValid =
-      (validateByLuhn(cardNumber) &&
-        cardNumber.length == 15 &&
-        (cardNumber.indexOf("34") == 0 || cardNumber.indexOf("37") == 0)) ||
-      (cardNumber.length == 13 && cardNumber[0] == 4) ||
-      (cardNumber.length == 16 &&
-        (cardNumber[0] == 4 ||
-          (cardNumber[0] == 5 && cardNumber[1] >= 1 && cardNumber[1] <= 5)));
-    if (isValid) {
-      setMessage("Valid Card Number");
+      return checkSum % 10 === 0;
+    };
+
+    if (luhnCheck(value)) {
+      setValidCardNo(true);
     } else {
-      setMessage("Invalid Card Number");
+      setValidCardNo(false);
     }
-  }
+  };
+
+  //========Expiry Card Checks =================================
+  const [expiryDate, setExpiryDate] = useState("");
+  const [expiryCardMessage, setExpiryCardMessage] = useState("");
+  console.log("expiryCardMessage", expiryCardMessage);
+  const [isExpired, setIsExpired] = useState(false);
+
+  const handleExpiryDateChange = (event) => {
+    let input = event.target.value;
+
+    // Remove any non-numeric characters
+    input = input.replace(/[^\d]/g, "");
+    const expiryMonth = parseInt(input.substring(0, 2));
+    const expiryYear = parseInt(input.substring(3));
+    const currentYear = new Date().getFullYear() % 100;
+    const currentMonth = new Date().getMonth() + 1;
+    if (
+      expiryYear < currentYear ||
+      (expiryYear === currentYear && expiryMonth < currentMonth)
+    ) {
+      setIsExpired(true);
+    } else {
+      setIsExpired(false);
+    }
+
+    // Format the expiry date with a slash after 2 digits
+    if (input.length > 2) {
+      input = input.slice(0, 2) + "/" + input.slice(2);
+    }
+
+    setExpiryDate(input);
+  };
+
+  const validateExpiryDate = () => {
+    const [expiryMonth, expiryYear] = expiryDate.split("/");
+
+    // Check if the expiry date is valid and more than the current date
+    const now = new Date();
+    const expiry = new Date(`20${expiryYear}`, expiryMonth - 1, 1);
+    if (expiry <= now || isNaN(expiry)) {
+      setExpiryCardMessage("Invalid expiry date");
+    }
+
+    return "";
+  };
+
+  //==========CVV==========
+  const [cvv, setCvv] = useState("");
+
+  const handleCvvChange = (e) => {
+    const value = e.target.value;
+    const regex = /^\d{0,3}$/; // accepts 0-3 digits
+    if (regex.test(value)) {
+      setCvv(value);
+    }
+  };
 
   const [userName, setUserName] = useState("");
   const [userPic, setUserPic] = useState("");
-  const [isAgreed, setIsAgreed] = useState(false);
 
   const location = useLocation();
   // checking if user is signed in or not
@@ -140,38 +213,6 @@ const FinanceRequests = () => {
   // sleeping
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-  const [allNotifications, setAllNotifications] = useState([]);
-  const [allNotificationsCount, setAllNotificationsCount] = useState([]);
-  // getting all notifications
-  useEffect(() => {
-    const getAllNotifications = async () => {
-      const { data } = await getAllNotificationsOfCustomer();
-      if (data?.success === true) {
-        setAllNotifications(data?.Notifications);
-        let count = 0;
-        data?.Notifications?.map(
-          (item) => item?.isRead === false && (count += 1)
-        );
-        setAllNotificationsCount(count);
-      }
-    };
-    getAllNotifications();
-  }, []);
-  // marking notification as read
-  const readNotification = async (id) => {
-    const { data } = await markNotificationsOfMerchantRead(id);
-    if (data?.success === true) {
-      let newArr = allNotifications;
-      let isFound = newArr.find((item) => item._id == id);
-      if (isFound) {
-        isFound.isRead = true;
-        newArr.filter((item) => (item._id == id ? isFound : item));
-        setAllNotifications(newArr);
-        setAllNotificationsCount((prev) => prev - 1);
-      }
-    }
-  };
-
   // making payment
   const makeMyPayment = async () => {
     // if(isAgreed == false){
@@ -180,8 +221,9 @@ const FinanceRequests = () => {
     // }
     if (
       cardDetails?.name == "" ||
-      cardDetails?.cardNo == "" ||
-      cardDetails?.cvv == ""
+      cardNumber == "" ||
+      cvv == "" ||
+      expiryDate == ""
     ) {
       toast.warning("Please Fill All required Fields.");
       return;
@@ -195,6 +237,9 @@ const FinanceRequests = () => {
         expiryDate: "",
         cvv: "",
       });
+      setCvv("");
+      setCardNumber("");
+      setExpiryDate("");
       setSelectedId("");
       await delay(2000);
       window.location.reload();
@@ -234,64 +279,7 @@ const FinanceRequests = () => {
               </div>
 
               <div className="d-flex align-items-center panel-right">
-                <div class="dropdown profile-dropdown">
-                  <Link
-                    to="#"
-                    className="notification-btn"
-                    type="button"
-                    id="dropdownMenuButton1"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <AiFillBell />
-                    {allNotificationsCount > 0 && (
-                      <span>{allNotificationsCount}</span>
-                    )}
-                  </Link>
-                  <ul
-                    class="dropdown-menu"
-                    aria-labelledby="dropdownMenuButton1"
-                    style={{ maxHeight: "400px", overflowY: "scroll" }}
-                  >
-                    {allNotifications?.length > 0 ? (
-                      allNotifications?.map((item) =>
-                        item?.isRead === false ? (
-                          <li
-                            style={{ backgroundColor: "#ecf0f1" }}
-                            onClick={() => readNotification(item?._id)}
-                          >
-                            <Link class="dropdown-item" to="">
-                              <strong>{item?.message} </strong> <br />
-                              <span
-                                style={{ fontSize: "12px", color: "#34495e" }}
-                              >
-                                {moment(item?.createdAt).format(
-                                  "MMM Do, h:mm:ss a"
-                                )}
-                              </span>
-                            </Link>
-                          </li>
-                        ) : (
-                          <li style={{ backgroundColor: "transparent" }}>
-                            <Link class="dropdown-item" to="">
-                              <strong>{item?.message} </strong> <br />
-                              <span
-                                className="text-muted"
-                                style={{ fontSize: "12px" }}
-                              >
-                                {moment(item?.createdAt).format(
-                                  "MMM Do, h:mm:ss a"
-                                )}
-                              </span>
-                            </Link>
-                          </li>
-                        )
-                      )
-                    ) : (
-                      <li style={{ marginLeft: "15px" }}>Empty</li>
-                    )}
-                  </ul>
-                </div>
+                <NotificationCustomer />
 
                 <div className="dropdown profile-dropdown">
                   <button
@@ -682,11 +670,13 @@ const FinanceRequests = () => {
                   Credit Card Number
                 </label>
                 <input
-                  type="number"
+                  className="form-control"
+                  type="text"
+                  placeholder="XXXX-XXXX-XXXX-XXXX"
                   value={cardNumber}
-                  onChange={validateCreditCard}
+                  onChange={handleChange}
                 />
-                <p> {message} </p>
+
                 {/* <input
                   type="number"
                   className="form-control"
@@ -720,6 +710,20 @@ const FinanceRequests = () => {
                     type="text"
                     className="form-control"
                     placeholder="MM / YYYY"
+                    id="expiryDate"
+                    name="expiryDate"
+                    value={expiryDate}
+                    maxLength="7"
+                    onChange={handleExpiryDateChange}
+                    onBlur={validateExpiryDate}
+                  />
+                  {isExpired && (
+                    <span className="text-danger">{"Expired"}</span>
+                  )}
+                  {/* <input
+                    type="text"
+                    className="form-control"
+                    placeholder="MM / YYYY"
                     value={cardDetails?.expiryDate}
                     onChange={(e) =>
                       setCardDetails({
@@ -727,19 +731,28 @@ const FinanceRequests = () => {
                         expiryDate: e.target.value,
                       })
                     }
-                  />
+                  /> */}
                 </div>
                 <div className="form-group mt-4 col-lg-6">
                   <label className="form-label text-muted">Security Code</label>
                   <input
+                    type="text"
+                    className="form-control"
+                    value={cvv}
+                    onChange={handleCvvChange}
+                    // pattern="\d{1,3}"
+                    maxLength="3"
+                  />
+                  {/* <input
                     type="number"
                     className="form-control"
                     placeholder="CVV"
                     value={cardDetails?.cvv}
+                    maxLength={3}
                     onChange={(e) =>
                       setCardDetails({ ...cardDetails, cvv: e.target.value })
                     }
-                  />
+                  /> */}
                 </div>
               </div>
 

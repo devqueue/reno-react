@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { AiFillBell } from "react-icons/ai";
 import { Row, Col } from "react-bootstrap";
 import { IoMdClose } from "react-icons/io";
 import user from "../../assets/images/user.jpg";
@@ -23,7 +22,7 @@ import {
   markNotificationsOfMerchantRead,
   getAllPaymentsHistoryOfAnyCustomer,
 } from "../../api/CustomerApi";
-
+import NotificationCustomer from "./NotificationCustomer";
 const Panel = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -132,8 +131,6 @@ const Panel = () => {
     ],
   };
 
-  const [tab, setTab] = useState(1);
-
   // logging out
   // logging out
   const logout = async () => {
@@ -150,38 +147,42 @@ const Panel = () => {
   // sleeping
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-  const [allNotifications, setAllNotifications] = useState([]);
-  const [allNotificationsCount, setAllNotificationsCount] = useState([]);
+  //=====================Notification =================
+  const [tab, setTab] = useState(1);
+  // const [recentNotifications, setRecentNotifications] = useState([]);
+  // const [allNotifications, setAllNotifications] = useState([]);
+  // const [allNotificationsCount, setAllNotificationsCount] = useState([]);
 
-  // getting all notifications
-  useEffect(() => {
-    const getAllNotifications = async () => {
-      const { data } = await getAllNotificationsOfCustomer();
-      if (data?.success === true) {
-        setAllNotifications(data?.Notifications);
-        let count = 0;
-        data?.Notifications?.map(
-          (item) => item?.isRead === false && (count += 1)
-        );
-        setAllNotificationsCount(count);
-      }
-    };
-    getAllNotifications();
-  }, []);
-  // marking notification as read
-  const readNotification = async (id) => {
-    const { data } = await markNotificationsOfMerchantRead(id);
-    if (data?.success === true) {
-      let newArr = allNotifications;
-      let isFound = newArr.find((item) => item._id == id);
-      if (isFound) {
-        isFound.isRead = true;
-        newArr.filter((item) => (item._id == id ? isFound : item));
-        setAllNotifications(newArr);
-        setAllNotificationsCount((prev) => prev - 1);
-      }
-    }
-  };
+  // // getting all notifications
+  // useEffect(() => {
+  //   const getAllNotifications = async () => {
+  //     const { data } = await getAllNotificationsOfCustomer();
+  //     if (data?.success === true) {
+  //       setAllNotifications(data?.Notifications);
+  //       setRecentNotifications(data?.Notifications.slice(0, 10));
+  //       let count = 0;
+  //       data?.Notifications?.map(
+  //         (item) => item?.isRead === false && (count += 1)
+  //       );
+  //       setAllNotificationsCount(count);
+  //     }
+  //   };
+  //   getAllNotifications();
+  // }, []);
+  // // marking notification as read
+  // const readNotification = async (id) => {
+  //   const { data } = await markNotificationsOfMerchantRead(id);
+  //   if (data?.success === true) {
+  //     let newArr = allNotifications;
+  //     let isFound = newArr.find((item) => item._id == id);
+  //     if (isFound) {
+  //       isFound.isRead = true;
+  //       newArr.filter((item) => (item._id == id ? isFound : item));
+  //       setAllNotifications(newArr);
+  //       setAllNotificationsCount((prev) => prev - 1);
+  //     }
+  //   }
+  // };
 
   return (
     <div className="container-fluid p-4 dashboard-content">
@@ -194,7 +195,8 @@ const Panel = () => {
         </div>
 
         <div className="d-flex align-items-center panel-right">
-          <div class="dropdown profile-dropdown">
+          <NotificationCustomer />
+          {/* <div class="dropdown profile-dropdown">
             <Link
               to="#"
               className="notification-btn"
@@ -213,7 +215,84 @@ const Panel = () => {
               aria-labelledby="dropdownMenuButton1"
               style={{ maxHeight: "400px", overflowY: "scroll" }}
             >
-              {allNotifications?.length > 0 ? (
+              <div className="d-flex m-2">
+                <Link
+                  to="#"
+                  type="button"
+                  className={`btn col-6 ${
+                    tab === 1
+                      ? "btn-primary justify-content-center "
+                      : "btn-light justify-content-center "
+                  } `}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setTab(1);
+                  }}
+                  aria-expanded="true"
+                >
+                  <span>Recent</span>
+                </Link>
+                <Link
+                  type="button"
+                  to="#"
+                  className={`btn col-6 ${
+                    tab === 2
+                      ? "btn-primary justify-content-center"
+                      : "btn-light justify-content-center"
+                  } `}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setTab(2);
+                  }}
+                  aria-expanded="true"
+                >
+                  <span>All Notifications</span>
+                </Link>
+              </div>
+
+              <div className="d-flex mx-2 mb-2">
+                <Link
+                  to="#"
+                  type="button"
+                  className={`btn col-12 justify-content-center btn-info text-white`}
+               
+                  aria-expanded="true"
+                >
+                  <span>Mark All Notification As Read</span>
+                </Link>
+              </div>
+
+              {tab === 1 &&
+                recentNotifications?.length > 0 &&
+                recentNotifications?.map((item) =>
+                  item?.isRead === false ? (
+                    <li
+                      style={{ backgroundColor: "#ecf0f1" }}
+                      onClick={() => readNotification(item?._id)}
+                    >
+                      <Link class="dropdown-item" to="">
+                        <strong>{item?.message} </strong> <br />
+                        <span style={{ fontSize: "12px", color: "#34495e" }}>
+                          {moment(item?.createdAt).format("MMM Do, h:mm:ss a")}
+                        </span>
+                      </Link>
+                    </li>
+                  ) : (
+                    <li style={{ backgroundColor: "transparent" }}>
+                      <Link class="dropdown-item" to="">
+                        <strong>{item?.message} </strong> <br />
+                        <span
+                          className="text-muted"
+                          style={{ fontSize: "12px" }}
+                        >
+                          {moment(item?.createdAt).format("MMM Do, h:mm:ss a")}
+                        </span>
+                      </Link>
+                    </li>
+                  )
+                )}
+              {tab === 2 &&
+                allNotifications?.length > 0 &&
                 allNotifications?.map((item) =>
                   item?.isRead === false ? (
                     <li
@@ -240,12 +319,14 @@ const Panel = () => {
                       </Link>
                     </li>
                   )
-                )
-              ) : (
-                <li style={{ marginLeft: "15px" }}>Empty</li>
-              )}
+                )}
+              {allNotifications?.length === 0 &&
+                recentNotifications?.length === 0 && (
+                  <li className="text-center">No Notification</li>
+                )}
+            
             </ul>
-          </div>
+          </div> */}
 
           <div className="dropdown profile-dropdown">
             <button
@@ -368,10 +449,6 @@ const Panel = () => {
               <div className="col-lg-4">
                 <h5 className="fw-600">Quotes Status</h5>
               </div>
-              {/* <div className="col-lg-4 text-center">
-                  <button className={`btn fs-small ${tab == 1 ? 'bg-darkBlue text-light' : 'text-muted'} me-3`} onClick={() => setTab(1)}>Current</button>
-                  <button className={`btn fs-small ${tab == 2 ? 'bg-darkBlue text-light' : 'text-muted'}`} onClick={() => setTab(2)}>Past</button>
-                </div> */}
             </div>
 
             <div className="table-responsive mt-3">
@@ -410,10 +487,11 @@ const Panel = () => {
                       {allRecords?.length > 0 ? (
                         allRecords?.map((item, index) => (
                           <tr key={item?._id}>
+                            {/* {console.log("item", item)} */}
                             <td>{874557 + index}</td>
                             <td>{item?.FinancedAmount?.totalPurchaseAmt}</td>
                             <td>{item?.FinancedAmount?.depositAmt}</td>
-                            <td>{item?.FinancedAmount?.depositAmt}</td>
+                            <td>{item?.RepaymentAmount?.amountPerMonth}</td>
                             <td>{item?.RepaymentAmount?.totalMonths}</td>
                             <td>{item?.ProductCategory?.productCategory}</td>
                             <td>{item?.quoteStatus}</td>

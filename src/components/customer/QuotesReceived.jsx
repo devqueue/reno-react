@@ -19,6 +19,7 @@ import {
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import moment from "moment";
 import Modal from "react-bootstrap/Modal";
+import NotificationCustomer from "./NotificationCustomer";
 
 const QuotesReceived = () => {
   const [isFetching, setIsFetching] = useState(false);
@@ -133,37 +134,37 @@ const QuotesReceived = () => {
     );
   }, []);
 
-  const [allNotifications, setAllNotifications] = useState([]);
-  const [allNotificationsCount, setAllNotificationsCount] = useState([]);
-  // getting all notifications
-  useEffect(() => {
-    const getAllNotifications = async () => {
-      const { data } = await getAllNotificationsOfCustomer();
-      if (data?.success === true) {
-        setAllNotifications(data?.Notifications);
-        let count = 0;
-        data?.Notifications?.map(
-          (item) => item?.isRead === false && (count += 1)
-        );
-        setAllNotificationsCount(count);
-      }
-    };
-    getAllNotifications();
-  }, []);
-  // marking notification as read
-  const readNotification = async (id) => {
-    const { data } = await markNotificationsOfMerchantRead(id);
-    if (data?.success === true) {
-      let newArr = allNotifications;
-      let isFound = newArr.find((item) => item._id == id);
-      if (isFound) {
-        isFound.isRead = true;
-        newArr.filter((item) => (item._id == id ? isFound : item));
-        setAllNotifications(newArr);
-        setAllNotificationsCount((prev) => prev - 1);
-      }
-    }
-  };
+  // const [allNotifications, setAllNotifications] = useState([]);
+  // const [allNotificationsCount, setAllNotificationsCount] = useState([]);
+  // // getting all notifications
+  // useEffect(() => {
+  //   const getAllNotifications = async () => {
+  //     const { data } = await getAllNotificationsOfCustomer();
+  //     if (data?.success === true) {
+  //       setAllNotifications(data?.Notifications);
+  //       let count = 0;
+  //       data?.Notifications?.map(
+  //         (item) => item?.isRead === false && (count += 1)
+  //       );
+  //       setAllNotificationsCount(count);
+  //     }
+  //   };
+  //   getAllNotifications();
+  // }, []);
+  // // marking notification as read
+  // const readNotification = async (id) => {
+  //   const { data } = await markNotificationsOfMerchantRead(id);
+  //   if (data?.success === true) {
+  //     let newArr = allNotifications;
+  //     let isFound = newArr.find((item) => item._id == id);
+  //     if (isFound) {
+  //       isFound.isRead = true;
+  //       newArr.filter((item) => (item._id == id ? isFound : item));
+  //       setAllNotifications(newArr);
+  //       setAllNotificationsCount((prev) => prev - 1);
+  //     }
+  //   }
+  // };
 
   // getting single quote details
   const getMyQuoteDetails = async (id) => {
@@ -207,64 +208,7 @@ const QuotesReceived = () => {
               </div>
 
               <div className="d-flex align-items-center panel-right">
-                <div class="dropdown profile-dropdown">
-                  <Link
-                    to="#"
-                    className="notification-btn"
-                    type="button"
-                    id="dropdownMenuButton1"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <AiFillBell />
-                    {allNotificationsCount > 0 && (
-                      <span>{allNotificationsCount}</span>
-                    )}
-                  </Link>
-                  <ul
-                    class="dropdown-menu"
-                    aria-labelledby="dropdownMenuButton1"
-                    style={{ maxHeight: "400px", overflowY: "scroll" }}
-                  >
-                    {allNotifications?.length > 0 ? (
-                      allNotifications?.map((item) =>
-                        item?.isRead === false ? (
-                          <li
-                            style={{ backgroundColor: "#ecf0f1" }}
-                            onClick={() => readNotification(item?._id)}
-                          >
-                            <Link class="dropdown-item" to="">
-                              <strong>{item?.message} </strong> <br />
-                              <span
-                                style={{ fontSize: "12px", color: "#34495e" }}
-                              >
-                                {moment(item?.createdAt).format(
-                                  "MMM Do, h:mm:ss a"
-                                )}
-                              </span>
-                            </Link>
-                          </li>
-                        ) : (
-                          <li style={{ backgroundColor: "transparent" }}>
-                            <Link class="dropdown-item" to="">
-                              <strong>{item?.message} </strong> <br />
-                              <span
-                                className="text-muted"
-                                style={{ fontSize: "12px" }}
-                              >
-                                {moment(item?.createdAt).format(
-                                  "MMM Do, h:mm:ss a"
-                                )}
-                              </span>
-                            </Link>
-                          </li>
-                        )
-                      )
-                    ) : (
-                      <li style={{ marginLeft: "15px" }}>Empty</li>
-                    )}
-                  </ul>
-                </div>
+                <NotificationCustomer />
 
                 <div className="dropdown profile-dropdown">
                   <button
@@ -312,6 +256,7 @@ const QuotesReceived = () => {
             {/* today quotes */}
             <div className="row mt-4">
               <h6 className="text-darkBlue fw-600 mb-0">Today</h6>
+
               {allData.length > 0 ? (
                 allData?.map((item) => (
                   <div className="col-12 mt-3" key={item?._id}>
