@@ -487,7 +487,6 @@ const Panel = () => {
                       {allRecords?.length > 0 ? (
                         allRecords?.map((item, index) => (
                           <tr key={item?._id}>
-                            {/* {console.log("item", item)} */}
                             <td>{874557 + index}</td>
                             <td>{item?.FinancedAmount?.totalPurchaseAmt}</td>
                             <td>{item?.FinancedAmount?.depositAmt}</td>

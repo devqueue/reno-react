@@ -194,10 +194,6 @@ const MainPage = () => {
       let allDataArr = [];
       if (data?.success === true) {
         for (let i = 0; i !== data?.AllQuotes.length; i++) {
-          console.log(
-            "data?.AllQuotes[i]?.quoteStatus ; ",
-            data?.AllQuotes[i]?.quoteStatus
-          );
           let no = Math.floor(1000 + Math.random() * 9000);
           let newArr = {
             customer: no,

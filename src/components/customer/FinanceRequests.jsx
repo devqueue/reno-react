@@ -40,7 +40,6 @@ const FinanceRequests = () => {
 
   //=======Credit Card No Added by Alex
   let [validCardNo, setValidCardNo] = useState(false);
-
   const [cardNumber, setCardNumber] = useState("");
 
   const handleChange = (event) => {
@@ -94,7 +93,6 @@ const FinanceRequests = () => {
   //========Expiry Card Checks =================================
   const [expiryDate, setExpiryDate] = useState("");
   const [expiryCardMessage, setExpiryCardMessage] = useState("");
-  console.log("expiryCardMessage", expiryCardMessage);
   const [isExpired, setIsExpired] = useState(false);
 
   const handleExpiryDateChange = (event) => {
@@ -228,6 +226,21 @@ const FinanceRequests = () => {
       toast.warning("Please Fill All required Fields.");
       return;
     }
+
+    if (cardNumber.length < 19) {
+      toast.error("Card Number should be 16 digits.");
+      return;
+    }
+
+    if (expiryDate.length < 7) {
+      toast.error("Date Should be in MM/YYYY format.");
+      return;
+    }
+    if (cvv.length < 3) {
+      toast.error("Cvv Number should be 3 digits.");
+      return;
+    }
+
     const { data } = await makeNewPayment(selectedId);
     if (data?.success == true) {
       toast.success(data?.message);

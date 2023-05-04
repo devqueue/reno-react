@@ -10,6 +10,7 @@ import {
   getAllRecentSentQuotes,
   getAllNotificationsOfMerchant,
   markNotificationsOfMerchantRead,
+  uploadInvoice,
 } from "../../api/MerchentApi";
 import { IoMdClose } from "react-icons/io";
 import moment from "moment";
@@ -47,7 +48,6 @@ const Applications = () => {
           `/api/v1/quotes/getAllFilteredRecords/${merchantId}?customerId=${filterData?.customerId}&category=${filterData?.category}&totalAmount=${filterData?.totalAmount}&terms=${filterData?.terms}&date=${filterData?.date}&quoteStatus=${filterData?.quoteStatus}`
       )
       .then(function (response) {
-        console.log("response : ", response);
         if (response?.data?.success === true) {
           let newArr = response?.data?.AllQuotes;
           let newarray = [];
@@ -163,9 +163,9 @@ const Applications = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [allData, setAllData] = useState([]);
 
-  const [invoice, setInvoice] = useState(false);
-  const handleInvoiceClose = () => setInvoice(false);
-  const handleInvoiceInvoice = () => setInvoice(true);
+  // const [invoice, setInvoice] = useState(false);
+  // const handleInvoiceClose = () => setInvoice(false);
+  // const handleInvoiceInvoice = () => setInvoice(true);
 
   const [refund, setRefund] = useState(false);
   const handleRefundClose = () => setRefund(false);
@@ -173,14 +173,14 @@ const Applications = () => {
   //=======Details View on Click
   const [detailsData, setDetailsData] = useState([]);
   const [detailPopUpData, setDetailPopUpData] = useState({});
-
-  // console.log("detailPopUpData", detailPopUpData);
-
   const [viewDetails, setViewDetails] = useState(false);
 
-  function togView(t) {
-    let selectedpayroll = [];
+  const [idOfDetail, setIdOfDetail] = useState();
+  const [invoiceFile, setInvoiceFile] = useState("");
 
+  function togView(t) {
+    setIdOfDetail(t);
+    let selectedpayroll = [];
     detailsData?.map((item, index) =>
       item._id === t
         ? selectedpayroll.push({
@@ -189,6 +189,7 @@ const Applications = () => {
             custPhone: item.CustomerAndProductDetails.phoneNo,
             firstName: item.firstName,
             lastName: item.lastName,
+            customerId: item.CustomerId,
             category: item.CustomerAndProductDetails.productCategory,
             amount: item.FinanceDetails.totalPurchaseAmt,
             totalMonth: item.RepaymentAmount.totalMonths,
@@ -196,12 +197,43 @@ const Applications = () => {
             amountPerMonth: item.RepaymentAmount.amountPerMonth,
             CreatedAt: moment(item.CreatedAt).format("MMM Do YY"),
             status: item.quoteStatus,
+            InvoiceFile: item.InvoiceFile,
           })
         : null
     );
     setDetailPopUpData(selectedpayroll[0]);
     setViewDetails(!viewDetails);
   }
+
+  //=============Upload Invoice =================
+  // updating data of user
+  const customerInvoiceUpload = async () => {
+    setIsFetching(true);
+    if (invoiceFile === "" || invoiceFile === undefined) {
+      toast.warning("File is required.");
+    }
+    if (invoiceFile !== "") {
+      let formData = new FormData();
+      formData.append("invoiceFile", invoiceFile);
+      formData.append("customerId", detailPopUpData?.customerId);
+      formData.append("id", idOfDetail);
+
+      const res = await uploadInvoice(formData);
+      if (res?.data?.success === true) {
+        toast.success(res?.data?.message);
+        setViewDetails(!viewDetails);
+        setInvoiceFile("");
+        setIsFetching(false);
+        await delay(500);
+        window.location.reload();
+      } else {
+        toast.error(res?.data?.message);
+      }
+    }
+    setIsFetching(false);
+    await delay(1500);
+    // window.location.reload();
+  };
 
   //getting all data
   useEffect(() => {
@@ -695,6 +727,7 @@ const Applications = () => {
       </Modal> */}
 
       {/* //New */}
+      {/* //====Alex */}
       <Modal
         show={viewDetails}
         isOpen={viewDetails}
@@ -734,9 +767,56 @@ const Applications = () => {
                     Upload PDF file, Max size 10mb
                   </p>
                 </div>
-                <input type="file" />
+                <input
+                  type="file"
+                  accept="application/pdf,application/vnd.ms-excel"
+                  onChange={(e) => setInvoiceFile(e.target.files[0])}
+                />
               </div>
+              {invoiceFile && invoiceFile !== undefined && (
+                <iframe
+                  style={{
+                    maxWidth: "100px",
+                    maxHeight: "100px",
+                    borderRadius: "50%",
+                  }}
+                  title="invoiceFile"
+                  src={URL.createObjectURL(invoiceFile)}
+                />
+              )}
+              {invoiceFile !== "" && (
+                <button
+                  className="btn btn-danger btn-sm"
+                  onClick={() => setInvoiceFile("")}
+                >
+                  Remove File
+                </button>
+              )}
+              <div className="d-flex justify-content-end mb-3 me-2">
+                <button
+                  className="btn btn-sm btn-info text-white"
+                  onClick={customerInvoiceUpload}
+                >
+                  Upload
+                </button>
+              </div>
+
               <ul style={{ marginLeft: "-20px" }}>
+                {detailPopUpData?.InvoiceFile && (
+                  <>
+                    <h6 className="mb-0">Invoice Files</h6>
+                    {detailPopUpData?.InvoiceFile?.map((fileName, index) => (
+                      <li
+                        key={index}
+                        className="d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted"
+                      >
+                        {index + 1}. FileName
+                        <span style={{ marginRight: "15px" }}>{fileName}</span>
+                      </li>
+                    ))}
+                  </>
+                )}
+                <h6 className="mt-4 mb-0">Details</h6>
                 <li className="d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted">
                   Category
                   <span style={{ marginRight: "15px" }}>

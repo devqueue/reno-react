@@ -41,7 +41,6 @@ const RequestFinance = () => {
     const getData = async () => {
       setIsFetching(true);
       const { data } = await getSingleQuoteDetails(id);
-      console.log("data of quote : ", data);
       if (data?.success === true) {
         setQuoteData(data?.Quote[0]);
       } else {

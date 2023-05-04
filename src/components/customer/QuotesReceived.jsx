@@ -287,9 +287,21 @@ const QuotesReceived = () => {
                           <span className="text-muted">Financed Amount</span>
                           {item?.FirstInstallment?.totalPurchaseAmt} SAR
                         </li>
-                        <li>
-                          <span className="text-muted">First Installment</span>
+                        <li className="mb-3">
+                          <span className="text-muted">Initial Deposite</span>
                           {item?.FirstInstallment?.depositAmt} SAR
+                        </li>
+                        <li className="mb-3">
+                          <span className="text-muted me-2">
+                            Monthly Installment{" "}
+                          </span>
+                          {"  "}
+                          {item?.RepaymentAmount?.amountPerMonth} SAR
+                        </li>
+
+                        <li className="mb-3">
+                          <span className="text-muted">Total Months</span>
+                          {item?.RepaymentAmount?.totalMonths}
                         </li>
                       </ul>
                       <div>
@@ -361,6 +373,7 @@ const QuotesReceived = () => {
               {allPreviousData?.length > 0 ? (
                 allPreviousData?.map((item) => (
                   <div className="col-12 mt-3" key={item?._id}>
+                    {console.log("item---Pre-----", item)}
                     <div className="d-flex justify-content-between fs-small quote-card">
                       <ul>
                         <li className="mb-3">
@@ -394,9 +407,21 @@ const QuotesReceived = () => {
                           <span className="text-muted">Financed Amount</span>
                           {item?.FirstInstallment?.totalPurchaseAmt} SAR
                         </li>
-                        <li>
-                          <span className="text-muted">First Installment</span>
+                        <li className="mb-3">
+                          <span className="text-muted">Initial Deposite</span>
                           {item?.FirstInstallment?.depositAmt} SAR
+                        </li>
+                        <li className="mb-3">
+                          <span className="text-muted me-2">
+                            Monthly Installment{" "}
+                          </span>
+                          {"  "}
+                          {item?.RepaymentAmount?.amountPerMonth} SAR
+                        </li>
+
+                        <li className="mb-3">
+                          <span className="text-muted">Total Months</span>
+                          {item?.RepaymentAmount?.totalMonths}
                         </li>
                       </ul>
 

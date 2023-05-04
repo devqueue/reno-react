@@ -44,6 +44,9 @@ const changeStatusOfQuote = (quoteId, status) =>
   API.put(`/api/v1/quotes/sendMerchantDeliveryResponse/${quoteId}/${status}`);
 const getQuotesForHomeScreen = () =>
   API.get(`/api/v1/quotes/getAllQuotesCountOfMerchant`);
+
+const uploadInvoice = (data) => API.post(`/api/v1/quotes/postInvoice`, data);
+
 const getAllNotificationsOfMerchant = () =>
   API.get(`/api/v1/notifications/getAllOfAMerchant`);
 const readAllNotificationsOfMerchant = () =>
@@ -100,4 +103,5 @@ module.exports = {
   updateMerchantDetails,
   signInMerchantWithCode,
   readAllNotificationsOfMerchant,
+  uploadInvoice,
 };
