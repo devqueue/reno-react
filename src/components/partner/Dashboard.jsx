@@ -153,7 +153,7 @@ const Dashboard = () => {
           borderColor: "#F18056",
           borderWidth: 1.5,
           fill: true,
-          backgroundColor: (context: ScriptableContext<"line">) => {
+          backgroundColor: (context) => {
             const ctx = context.chart.ctx;
             const gradient = ctx.createLinearGradient(0, 0, 0, 400);
             gradient.addColorStop(0, "#F18056");

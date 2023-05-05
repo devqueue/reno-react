@@ -88,6 +88,40 @@ const Panel = () => {
     maintainAspectRatio: false,
   };
 
+  // abel: "Not issued",
+  // label: "Issued",
+  // label: "Paid",
+
+  const [dueData, setDueData] = useState([]); //Due Date randomly Data
+  const [notIssued, setNotIssued] = useState([]); //Not issued randomly Data
+  const [issuedData, setIssuedData] = useState([]); //Issued randomly Data
+  const [paidData, setPaidData] = useState([]); //Paid randomly Data
+
+  useEffect(() => {
+    const newSequence = Array.from({ length: 1000 }, () =>
+      Math.floor(Math.random() * 1000)
+    );
+    setDueData(newSequence);
+    const newSequence1 = Array.from({ length: 2000 }, () =>
+      Math.floor(Math.random() * 2000)
+    );
+    setNotIssued(newSequence1);
+    const newSequence2 = Array.from({ length: 1500 }, () =>
+      Math.floor(Math.random() * 1500)
+    );
+    setIssuedData(newSequence2);
+    const newSequence3 = Array.from({ length: 2500 }, () =>
+      Math.floor(Math.random() * 2500)
+    );
+    setPaidData(newSequence3);
+  }, []);
+
+  const [selectedMonth, setSelectedMonth] = useState(0); // Initialize to 0, which means all months
+
+  const handleMonthSelect = (event) => {
+    setSelectedMonth(parseInt(event.target.value));
+  };
+
   const data = {
     labels: [
       "Jan",
@@ -106,27 +140,39 @@ const Panel = () => {
     datasets: [
       {
         label: "Due or late",
-        data: [2.8, 0.5, 5, 8, 13.9, 2],
+        data: dueData.filter(
+          (value, index) => selectedMonth === 0 || index === selectedMonth - 1
+        ),
         backgroundColor: "#F18056",
-        borderRadius: 5,
+        borderRadius: 50,
+        // borderWidth: 5,
       },
       {
         label: "Not issued",
-        data: [3, 2, 4, 2, 4, 6],
+        data: notIssued.filter(
+          (value, index) => selectedMonth === 0 || index === selectedMonth - 1
+        ),
         backgroundColor: "#F8C22D",
-        borderRadius: 5,
+        borderRadius: 50,
+        // borderWidth: 5,
       },
       {
         label: "Issued",
-        data: [0.5, 6, 3, 2, 6, 4],
+        data: issuedData.filter(
+          (value, index) => selectedMonth === 0 || index === selectedMonth - 1
+        ),
         backgroundColor: "#9A42F2",
-        borderRadius: 5,
+        borderRadius: 50,
+        // borderWidth: 5,
       },
       {
         label: "Paid",
-        data: [3, 2, 6, 6, 4, 10],
+        data: paidData.filter(
+          (value, index) => selectedMonth === 0 || index === selectedMonth - 1
+        ),
         backgroundColor: "#67D832",
-        borderRadius: 5,
+        borderRadius: 50,
+        // borderWidth: 5,
       },
     ],
   };
@@ -149,40 +195,6 @@ const Panel = () => {
 
   //=====================Notification =================
   const [tab, setTab] = useState(1);
-  // const [recentNotifications, setRecentNotifications] = useState([]);
-  // const [allNotifications, setAllNotifications] = useState([]);
-  // const [allNotificationsCount, setAllNotificationsCount] = useState([]);
-
-  // // getting all notifications
-  // useEffect(() => {
-  //   const getAllNotifications = async () => {
-  //     const { data } = await getAllNotificationsOfCustomer();
-  //     if (data?.success === true) {
-  //       setAllNotifications(data?.Notifications);
-  //       setRecentNotifications(data?.Notifications.slice(0, 10));
-  //       let count = 0;
-  //       data?.Notifications?.map(
-  //         (item) => item?.isRead === false && (count += 1)
-  //       );
-  //       setAllNotificationsCount(count);
-  //     }
-  //   };
-  //   getAllNotifications();
-  // }, []);
-  // // marking notification as read
-  // const readNotification = async (id) => {
-  //   const { data } = await markNotificationsOfMerchantRead(id);
-  //   if (data?.success === true) {
-  //     let newArr = allNotifications;
-  //     let isFound = newArr.find((item) => item._id == id);
-  //     if (isFound) {
-  //       isFound.isRead = true;
-  //       newArr.filter((item) => (item._id == id ? isFound : item));
-  //       setAllNotifications(newArr);
-  //       setAllNotificationsCount((prev) => prev - 1);
-  //     }
-  //   }
-  // };
 
   return (
     <div className="container-fluid p-4 dashboard-content">
@@ -196,137 +208,6 @@ const Panel = () => {
 
         <div className="d-flex align-items-center panel-right">
           <NotificationCustomer />
-          {/* <div class="dropdown profile-dropdown">
-            <Link
-              to="#"
-              className="notification-btn"
-              type="button"
-              id="dropdownMenuButton1"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <AiFillBell />
-              {allNotificationsCount > 0 && (
-                <span>{allNotificationsCount}</span>
-              )}
-            </Link>
-            <ul
-              class="dropdown-menu"
-              aria-labelledby="dropdownMenuButton1"
-              style={{ maxHeight: "400px", overflowY: "scroll" }}
-            >
-              <div className="d-flex m-2">
-                <Link
-                  to="#"
-                  type="button"
-                  className={`btn col-6 ${
-                    tab === 1
-                      ? "btn-primary justify-content-center "
-                      : "btn-light justify-content-center "
-                  } `}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setTab(1);
-                  }}
-                  aria-expanded="true"
-                >
-                  <span>Recent</span>
-                </Link>
-                <Link
-                  type="button"
-                  to="#"
-                  className={`btn col-6 ${
-                    tab === 2
-                      ? "btn-primary justify-content-center"
-                      : "btn-light justify-content-center"
-                  } `}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setTab(2);
-                  }}
-                  aria-expanded="true"
-                >
-                  <span>All Notifications</span>
-                </Link>
-              </div>
-
-              <div className="d-flex mx-2 mb-2">
-                <Link
-                  to="#"
-                  type="button"
-                  className={`btn col-12 justify-content-center btn-info text-white`}
-               
-                  aria-expanded="true"
-                >
-                  <span>Mark All Notification As Read</span>
-                </Link>
-              </div>
-
-              {tab === 1 &&
-                recentNotifications?.length > 0 &&
-                recentNotifications?.map((item) =>
-                  item?.isRead === false ? (
-                    <li
-                      style={{ backgroundColor: "#ecf0f1" }}
-                      onClick={() => readNotification(item?._id)}
-                    >
-                      <Link class="dropdown-item" to="">
-                        <strong>{item?.message} </strong> <br />
-                        <span style={{ fontSize: "12px", color: "#34495e" }}>
-                          {moment(item?.createdAt).format("MMM Do, h:mm:ss a")}
-                        </span>
-                      </Link>
-                    </li>
-                  ) : (
-                    <li style={{ backgroundColor: "transparent" }}>
-                      <Link class="dropdown-item" to="">
-                        <strong>{item?.message} </strong> <br />
-                        <span
-                          className="text-muted"
-                          style={{ fontSize: "12px" }}
-                        >
-                          {moment(item?.createdAt).format("MMM Do, h:mm:ss a")}
-                        </span>
-                      </Link>
-                    </li>
-                  )
-                )}
-              {tab === 2 &&
-                allNotifications?.length > 0 &&
-                allNotifications?.map((item) =>
-                  item?.isRead === false ? (
-                    <li
-                      style={{ backgroundColor: "#ecf0f1" }}
-                      onClick={() => readNotification(item?._id)}
-                    >
-                      <Link class="dropdown-item" to="">
-                        <strong>{item?.message} </strong> <br />
-                        <span style={{ fontSize: "12px", color: "#34495e" }}>
-                          {moment(item?.createdAt).format("MMM Do, h:mm:ss a")}
-                        </span>
-                      </Link>
-                    </li>
-                  ) : (
-                    <li style={{ backgroundColor: "transparent" }}>
-                      <Link class="dropdown-item" to="">
-                        <strong>{item?.message} </strong> <br />
-                        <span
-                          className="text-muted"
-                          style={{ fontSize: "12px" }}
-                        >
-                          {moment(item?.createdAt).format("MMM Do, h:mm:ss a")}
-                        </span>
-                      </Link>
-                    </li>
-                  )
-                )}
-              {allNotifications?.length === 0 &&
-                recentNotifications?.length === 0 && (
-                  <li className="text-center">No Notification</li>
-                )}
-            
-            </ul>
-          </div> */}
 
           <div className="dropdown profile-dropdown">
             <button
@@ -430,11 +311,22 @@ const Panel = () => {
               <select
                 class="form-select fs-small text-muted shadow-none"
                 aria-label="Default select example"
+                value={selectedMonth}
+                onChange={handleMonthSelect}
               >
-                <option selected>6 Months</option>
-                <option>6 Months</option>
-                <option>6 Months</option>
-                <option>6 Months</option>
+                <option value="0">All Months</option>
+                <option value="1">Jan</option>
+                <option value="2">Feb</option>
+                <option value="3">Mar</option>
+                <option value="4">Apr</option>
+                <option value="5">May</option>
+                <option value="6">Jun</option>
+                <option value="7">July</option>
+                <option value="8">Aug</option>
+                <option value="9">Sept</option>
+                <option value="10">Oct</option>
+                <option value="11">Nov</option>
+                <option value="12">Dec</option>
               </select>
             </div>
             <Bar data={data} className="bar-chart" options={options} />

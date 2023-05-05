@@ -82,10 +82,8 @@ const NotificationCustomer = () => {
                   <Link
                     to="#"
                     type="button"
-                    className={`btn col-6 ${
-                      tab === 1
-                        ? "btn-primary justify-content-center "
-                        : "btn-light justify-content-center "
+                    className={`btn justify-content-center col-6 ${
+                      tab === 1 ? "btn-primary " : "btn-light "
                     } `}
                     onClick={(e) => {
                       e.preventDefault();
@@ -98,10 +96,8 @@ const NotificationCustomer = () => {
                   <Link
                     type="button"
                     to="#"
-                    className={`btn col-6 ${
-                      tab === 2
-                        ? "btn-primary justify-content-center"
-                        : "btn-light justify-content-center"
+                    className={`btn justify-content-center col-6 ${
+                      tab === 2 ? "btn-primary" : "btn-light"
                     } `}
                     onClick={(e) => {
                       e.preventDefault();
