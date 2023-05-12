@@ -78,9 +78,11 @@ const MainPage = () => {
       cell: (prop) => {
         return (
           <Dropdown as={ButtonGroup}>
+            {/* {console.log("prop", prop)} */}
             {prop?.quoteStatus !== "Traveling" &&
               prop?.quoteStatus !== "Cancelled By Partner" &&
-              prop?.quoteStatus !== "Delivered By Partner" && (
+              prop?.quoteStatus !== "Delivered By Partner" &&
+              prop?.quoteStatus !== "Delivery Confirmed By Customer" && (
                 <Button
                   size="sm"
                   style={{
@@ -111,15 +113,16 @@ const MainPage = () => {
                 Cancelled
               </Button>
             )}
-            {prop?.quoteStatus === "Delivered By Partner" && (
-              <Button
-                size="sm"
-                variant="success"
-                style={{ fontSize: "11px", fontWeight: 600 }}
-              >
-                Delivered
-              </Button>
-            )}
+            {prop?.quoteStatus === "Delivered By Partner" ||
+              (prop?.quoteStatus === "Delivery Confirmed By Customer" && (
+                <Button
+                  size="sm"
+                  variant="success"
+                  style={{ fontSize: "11px", fontWeight: 600 }}
+                >
+                  Delivered
+                </Button>
+              ))}
             <Dropdown.Toggle
               split
               size="sm"

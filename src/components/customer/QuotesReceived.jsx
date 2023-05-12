@@ -373,7 +373,7 @@ const QuotesReceived = () => {
               {allPreviousData?.length > 0 ? (
                 allPreviousData?.map((item) => (
                   <div className="col-12 mt-3" key={item?._id}>
-                    {console.log("item---Pre-----", item)}
+                    {/* {console.log("item---Pre-----", item)} */}
                     <div className="d-flex justify-content-between fs-small quote-card">
                       <ul>
                         <li className="mb-3">

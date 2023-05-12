@@ -45,6 +45,10 @@ const sendResponseOnQuote = (quoteId, data) =>
   API.put(`/api/v1/quotes/sendCustomerResponse/${quoteId}`, data);
 const getAllTodayFinancialRequestSent = () =>
   API.get(`/api/v1/quotes/getAllFinancingOfQuotesOfACustomerToday`);
+//All Quotes of customer
+const getAllQuotesOfCustomer = () =>
+  API.get(`/api/v1/quotes/getAllQuotesOfCustomer`);
+
 const getAllFinancialRequestSent = () =>
   API.get(`/api/v1/quotes/getAllFinancingOfQuotesOfACustomer`);
 const getRecentQuotesDeliveredToACustomer = () =>
@@ -57,6 +61,7 @@ const getUpcomingPaymentsOfQuotes = () =>
   API.get(`/api/v1/quotes/getAllNearDuePaymentsofACustomer`);
 const getAllTravelingQuotes = () =>
   API.get(`/api/v1/quotes/getAllTravelingOfCustomer`);
+
 const getAllNotificationsOfCustomer = () =>
   API.get(`/api/v1/notifications/getAllOfACustomer`);
 const readAllNotificationsOfCustomer = () =>
@@ -113,6 +118,7 @@ module.exports = {
   denyAnyQuote,
   sendResponseOnQuote,
   getAllTodayFinancialRequestSent,
+  getAllQuotesOfCustomer, //get All Quotes Of Customer
   getAllFinancialRequestSent,
   getRecentQuotesDeliveredToACustomer,
   deliveryConfirmationOfAQuote,
@@ -139,6 +145,5 @@ module.exports = {
   verifyCodeForSignUp,
   removeUserForWrongCode,
   verifyCodeForSignIn,
-
   readAllNotificationsOfCustomer,
 };
