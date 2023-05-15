@@ -23,6 +23,7 @@ import {
   getAllPaymentsHistoryOfAnyCustomer,
 } from "../../api/CustomerApi";
 import NotificationCustomer from "./NotificationCustomer";
+import CustomerDropdown from "./CustomerDropdown";
 const Panel = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,8 +31,6 @@ const Panel = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [totalFinanced, setTotalFinanced] = useState(0);
   const [allDuePayments, setAllDuePayments] = useState([]);
-  const [userName, setUserName] = useState("");
-  const [userPic, setUserPic] = useState("");
 
   useEffect(() => {
     const getData = async () => {
@@ -49,7 +48,6 @@ const Panel = () => {
 
       // getting all due payments
       const res = await getAllPaymentsHistoryOfAnyCustomer();
-      // console.log("data of upcoming ", res?.data?.PaymentsDue);
       if (res?.data?.success === true) {
         setAllDuePayments(res?.data?.PaymentsDue);
       }
@@ -57,31 +55,6 @@ const Panel = () => {
       setIsFetching(false);
     };
     getData();
-  }, [location]);
-
-  // checking if user is signed in or not
-  useEffect(() => {
-    const customerToken = JSON.parse(
-      localStorage.getItem("reno-customer-token")
-    );
-    const isSessionFound = sessionStorage.getItem("reno-customer-token");
-    if (!customerToken && !isSessionFound) {
-      navigate("/customer/auth/login");
-    }
-    let name = JSON.parse(localStorage.getItem("reno-customerName"));
-    if (name) {
-      setUserName(name);
-    }
-
-    let pic = JSON.parse(localStorage.getItem("reno-customerPhoto"));
-    if (!pic) {
-      pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
-    }
-    setUserPic(
-      pic.indexOf("https") == 0
-        ? pic
-        : process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + pic
-    );
   }, [location]);
 
   const options = {
@@ -177,22 +150,6 @@ const Panel = () => {
     ],
   };
 
-  // logging out
-  // logging out
-  const logout = async () => {
-    localStorage.removeItem("reno-customer-token");
-    sessionStorage.removeItem("reno-customer-token");
-    localStorage.removeItem("reno-customerName");
-    sessionStorage.removeItem("reno-customerName");
-    localStorage.removeItem("reno-customerPhoto");
-    sessionStorage.removeItem("reno-customerPhoto");
-    toast.success("Signed Out SuccessFully");
-    await delay(2000);
-    navigate("/customer/auth/login");
-  };
-  // sleeping
-  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-
   //=====================Notification =================
   const [tab, setTab] = useState(1);
 
@@ -208,44 +165,7 @@ const Panel = () => {
 
         <div className="d-flex align-items-center panel-right">
           <NotificationCustomer />
-
-          <div className="dropdown profile-dropdown">
-            <button
-              className="btn dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton1"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <div className="d-flex align-items-center fs-small me-3">
-                <img
-                  src={userPic}
-                  alt=""
-                  style={{
-                    maxWidth: "50px",
-                    maxheight: "50px",
-                    borderRadius: "50%",
-                  }}
-                />
-                {userName}
-              </div>
-            </button>
-            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-              <li>
-                <Link
-                  className="dropdown-item"
-                  to="/customer/dashboard/profile"
-                >
-                  Profile
-                </Link>
-              </li>
-              <li>
-                <Link className="dropdown-item" to="" onClick={logout}>
-                  Logout
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <CustomerDropdown />
         </div>
       </div>
 

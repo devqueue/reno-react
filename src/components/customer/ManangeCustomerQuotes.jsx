@@ -3,17 +3,20 @@ import { AiFillBell } from "react-icons/ai";
 import { ThreeDots } from "react-loader-spinner";
 import user from "../../assets/images/user.jpg";
 import { IoMdClose } from "react-icons/io";
-import { getAllQuotesOfCustomer, makeNewPayment } from "../../api/CustomerApi";
+import {
+  getAllQuotesOfCustomer,
+  makeNewPayment,
+  getAllPaymentsHistory,
+} from "../../api/CustomerApi";
 import moment from "moment";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import NotificationCustomer from "./NotificationCustomer";
+import CustomerDropdown from "./CustomerDropdown";
 
 const ManangeCustomerQuotes = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [allData, setAllData] = useState([]);
-  const [userName, setUserName] = useState("");
-  const [userPic, setUserPic] = useState("");
 
   //getting all data
   useEffect(() => {
@@ -236,46 +239,36 @@ const ManangeCustomerQuotes = () => {
   // sleeping
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-  const location = useLocation();
-  // checking if user is signed in or not
-  useEffect(() => {
-    const customerToken = JSON.parse(
-      localStorage.getItem("reno-customer-token")
-    );
-    const isSessionFound = sessionStorage.getItem("reno-customer-token");
-    if (!customerToken && !isSessionFound) {
-      navigate("/customer/auth/login");
-    }
-    let name = JSON.parse(localStorage.getItem("reno-customerName"));
-    if (!name) {
-      name = JSON.parse(sessionStorage.getItem("reno-customerName"));
-    }
-    setUserName(name);
+  // getting payments details
+  const [allPaid, setAllPaid] = useState([]);
 
-    let pic = JSON.parse(localStorage.getItem("reno-customerPhoto"));
-    if (!pic) {
-      pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
-    }
-    setUserPic(
-      pic.indexOf("https") == 0
-        ? pic
-        : process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + pic
-    );
-  }, [location]);
+  const [allUnPaid, setAllUnPaid] = useState([]);
+  const getAllPayments = async (id) => {
+    const { data } = await getAllPaymentsHistory(id);
+    if (data?.success === true) {
+      let newNo = data?.TotalMonths - data?.History?.length;
+      let newArr = [];
 
-  // logging out
-  // logging out
-  const logout = async () => {
-    localStorage.removeItem("reno-customer-token");
-    sessionStorage.removeItem("reno-customer-token");
-    localStorage.removeItem("reno-customerName");
-    sessionStorage.removeItem("reno-customerName");
-    localStorage.removeItem("reno-customerPhoto");
-    sessionStorage.removeItem("reno-customerPhoto");
-    toast.success("Signed Out SuccessFully");
-    await delay(2000);
-    navigate("/customer/auth/login");
+      for (let i = 0; i !== newNo; i++) {
+        let month = moment(data?.History[data?.History.length - 1].date)
+          .add(i + 1, "months")
+          .calendar();
+        let myDate = moment(month).format("MMM YY");
+        newArr.push({
+          index: i + 1,
+          date: myDate,
+          amount: data?.Amount,
+        });
+
+        setAllUnPaid(newArr);
+      }
+
+      setAllPaid(data?.History);
+    } else {
+      toast.error(data?.message);
+    }
   };
+
   // sleeping
 
   return (
@@ -307,47 +300,7 @@ const ManangeCustomerQuotes = () => {
 
               <div className="d-flex align-items-center panel-right">
                 <NotificationCustomer />
-
-                <div className="dropdown profile-dropdown">
-                  <button
-                    className="btn dropdown-toggle"
-                    type="button"
-                    id="dropdownMenuButton1"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <div className="d-flex align-items-center fs-small me-3">
-                      <img
-                        src={userPic}
-                        alt=""
-                        style={{
-                          maxWidth: "50px",
-                          maxheight: "50px",
-                          borderRadius: "50%",
-                        }}
-                      />
-                      {userName}
-                    </div>
-                  </button>
-                  <ul
-                    className="dropdown-menu"
-                    aria-labelledby="dropdownMenuButton1"
-                  >
-                    <li>
-                      <Link
-                        className="dropdown-item"
-                        to="/partner/dashboard/profile"
-                      >
-                        Profile
-                      </Link>
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" to="" onClick={logout}>
-                        Logout
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
+                <CustomerDropdown />
               </div>
             </div>
             {allData?.length > 0 &&
@@ -407,13 +360,28 @@ const ManangeCustomerQuotes = () => {
                                 item?.RepaymentAmount?.amountPerMonth
                               )}
                               <tr>
+                                {item?.isFullyPaid !== true ? (
+                                  <span
+                                    className="btn btn-sm btn-success m-2"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#payModal"
+                                    onClick={() => setSelectedId(item?._id)}
+                                  >
+                                    Next Payment
+                                  </span>
+                                ) : (
+                                  <span className="btn btn-sm btn-success m-2">
+                                    Paid
+                                  </span>
+                                )}
+
                                 <span
-                                  className="btn btn-sm btn-success m-2"
+                                  className="btn btn-sm btn-info m-2 text-white"
                                   data-bs-toggle="modal"
-                                  data-bs-target="#payModal"
-                                  onClick={() => setSelectedId(item?._id)}
+                                  data-bs-target="#payModal01"
+                                  onClick={() => getAllPayments(item?._id)}
                                 >
-                                  Make Payment
+                                  View Payment History{" "}
                                 </span>
                               </tr>
                             </tr>
@@ -588,6 +556,106 @@ const ManangeCustomerQuotes = () => {
           </div>
         </div>
       </div>
+
+      {/* getting all payment history */}
+      <div
+        class="modal fade"
+        id="payModal01"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel01"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-body pay-form">
+              <div className="d-flex justify-content-end">
+                <span
+                  className="bg-soft-danger text-danger modal-close"
+                  data-bs-dismiss="modal"
+                >
+                  <IoMdClose />
+                </span>
+              </div>
+
+              <h5 className="text-center">Payments History </h5>
+              <div
+                style={{
+                  border: "1px solid darkGray",
+                  borderRadius: "10px",
+                  padding: "10px",
+                }}
+              >
+                <div
+                  className="row d-flex mb-3"
+                  style={{
+                    borderBottom: "1px solid darkGray",
+                  }}
+                >
+                  <div className="col-sm-2">
+                    <h6>No.</h6>
+                  </div>
+                  <div className="col-sm-4">
+                    <h6>Month</h6>
+                  </div>
+                  <div className="col-sm-6">
+                    <h6>Payments</h6>
+                  </div>
+                </div>
+                {allPaid?.length > 0 ? (
+                  allPaid?.map((item, index) => (
+                    <div className="row d-flex mb-3">
+                      <div className="col-sm-2">
+                        <h6>{index + 1}</h6>
+                      </div>
+                      <div className="col-sm-4">
+                        <h6>{moment(item?.date).format("MMM YY")}</h6>
+                      </div>
+                      <div className="col-sm-6">
+                        <h6 className="text-nowrap">
+                          {moment(item?.date).format("MMM Do YY, h:mm:ss a")}{" "}
+                          <span className="text-success">(Paid)</span>
+                        </h6>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p>No Payment History Found</p>
+                )}
+
+                {/* {console.log("allunpaid", allUnPaid)} */}
+
+                {allUnPaid?.length > 1 &&
+                  allUnPaid?.map((item, index) => (
+                    <div className="row d-flex mb-3">
+                      <div className="col-sm-4">
+                        <h6>{index + 1}</h6>
+                      </div>
+                      <div className="col-sm-4">
+                        <h6>{item?.date}</h6>
+                      </div>
+                      <div className="col-sm-4">
+                        <h6>{item?.amount}</h6>
+                      </div>
+                    </div>
+                  ))}
+
+                {/* <h5
+                  className="text-center"
+                  style={{
+                    color: "crimson",
+                    marginBottom: "35px",
+                    marginTop: "25px",
+                  }}
+                >
+                  Payments Pending{" "}
+                </h5> */}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* modals */}
     </>
   );
 };

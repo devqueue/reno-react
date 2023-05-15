@@ -18,6 +18,7 @@ import {
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import NotificationCustomer from "./NotificationCustomer";
+import CustomerDropdown from "./CustomerDropdown";
 
 const Password = () => {
   const location = useLocation();
@@ -33,55 +34,10 @@ const Password = () => {
   const [pass2, setPass2] = useState(false);
   const [pass3, setPass3] = useState(false);
 
-  const navigate = useNavigate();
-  const [userName, setUserName] = useState("");
-  const [userPic, setUserPic] = useState("");
   const [userDetails, setUserDetails] = useState();
   const [userDetailsOne, setUserDetailsOne] = useState();
   const [uploadImage, setUploadImage] = useState("");
 
-  const [allNotifications, setAllNotifications] = useState([]);
-  const [allNotificationsCount, setAllNotificationsCount] = useState([]);
-  // checking if user is signed in or not
-  useEffect(() => {
-    const customerToken = JSON.parse(
-      localStorage.getItem("reno-customer-token")
-    );
-    const isSessionFound = sessionStorage.getItem("reno-customer-token");
-    if (!customerToken && !isSessionFound) {
-      navigate("/customer/auth/login");
-    }
-    let name = JSON.parse(localStorage.getItem("reno-customerName"));
-    if (!name) {
-      name = JSON.parse(sessionStorage.getItem("reno-customerName"));
-    }
-    if (name) {
-      setUserName(name);
-    }
-
-    let pic = JSON.parse(localStorage.getItem("reno-customerPhoto"));
-    if (!pic) {
-      pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
-    }
-    setUserPic(
-      pic.indexOf("https") == 0
-        ? pic
-        : process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + pic
-    );
-  }, [location]);
-
-  // logging out
-  const logout = async () => {
-    localStorage.removeItem("reno-customer-token");
-    sessionStorage.removeItem("reno-customer-token");
-    localStorage.removeItem("reno-customerName");
-    sessionStorage.removeItem("reno-customerName");
-    localStorage.removeItem("reno-customerPhoto");
-    sessionStorage.removeItem("reno-customerPhoto");
-    toast.success("Signed Out SuccessFully");
-    await delay(2000);
-    navigate("/customer/auth/login");
-  };
   // sleeping
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -207,47 +163,7 @@ const Password = () => {
 
           <div className="d-flex align-items-center panel-right">
             <NotificationCustomer />
-
-            <div className="dropdown profile-dropdown">
-              <button
-                className="btn dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <div className="d-flex align-items-center fs-small me-3">
-                  <img
-                    src={userPic}
-                    alt=""
-                    style={{
-                      maxWidth: "50px",
-                      maxheight: "50px",
-                      borderRadius: "50%",
-                    }}
-                  />
-                  {userName}
-                </div>
-              </button>
-              <ul
-                className="dropdown-menu"
-                aria-labelledby="dropdownMenuButton1"
-              >
-                <li>
-                  <Link
-                    className="dropdown-item"
-                    to="/customer/dashboard/profile"
-                  >
-                    Profile
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="" onClick={logout}>
-                    Logout
-                  </Link>
-                </li>
-              </ul>
-            </div>
+            <CustomerDropdown />
           </div>
         </div>
         <div className="py-5">

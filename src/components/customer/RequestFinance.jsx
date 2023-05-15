@@ -18,14 +18,14 @@ import { ThreeDots } from "react-loader-spinner";
 import moment from "moment";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import NotificationCustomer from "./NotificationCustomer";
+import CustomerDropdown from "./CustomerDropdown";
 
 const RequestFinance = () => {
   document.title = "Reno | Customer Portal";
   const { id } = useParams();
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
-  const [userName, setUserName] = useState("");
-  const [userPic, setUserPic] = useState("");
 
   const [isFetching, setIsFetching] = useState(false);
   const [updateData, setUpdateData] = useState(null);
@@ -176,48 +176,8 @@ const RequestFinance = () => {
     });
   };
 
-  // logging out
-  const logout = async () => {
-    localStorage.removeItem("reno-customer-token");
-    sessionStorage.removeItem("reno-customer-token");
-    localStorage.removeItem("reno-customerName");
-    sessionStorage.removeItem("reno-customerName");
-    localStorage.removeItem("reno-customerPhoto");
-    sessionStorage.removeItem("reno-customerPhoto");
-    toast.success("Signed Out SuccessFully");
-    await delay(2000);
-    navigate("/customer/auth/login");
-  };
-
   // sleeping
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-
-  const location = useLocation();
-  // checking if user is signed in or not
-  useEffect(() => {
-    const customerToken = JSON.parse(
-      localStorage.getItem("reno-customer-token")
-    );
-    const isSessionFound = sessionStorage.getItem("reno-customer-token");
-    if (!customerToken && !isSessionFound) {
-      navigate("/customer/auth/login");
-    }
-    let name = JSON.parse(localStorage.getItem("reno-customerName"));
-    if (!name) {
-      name = JSON.parse(sessionStorage.getItem("reno-customerName"));
-    }
-    setUserName(name);
-
-    let pic = JSON.parse(localStorage.getItem("reno-customerPhoto"));
-    if (!pic) {
-      pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
-    }
-    setUserPic(
-      pic.indexOf("https") == 0
-        ? pic
-        : process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + pic
-    );
-  }, [location]);
 
   // updating data
   const saveChanges = () => {
@@ -225,38 +185,6 @@ const RequestFinance = () => {
     handlePersonalInfoClose();
     handleMonthlyIncomeClose();
     handleExpenseClose();
-  };
-
-  const [allNotifications, setAllNotifications] = useState([]);
-  const [allNotificationsCount, setAllNotificationsCount] = useState([]);
-  // getting all notifications
-  useEffect(() => {
-    const getAllNotifications = async () => {
-      const { data } = await getAllNotificationsOfCustomer();
-      if (data?.success === true) {
-        setAllNotifications(data?.Notifications);
-        let count = 0;
-        data?.Notifications?.map(
-          (item) => item?.isRead === false && (count += 1)
-        );
-        setAllNotificationsCount(count);
-      }
-    };
-    getAllNotifications();
-  }, []);
-  // marking notification as read
-  const readNotification = async (id) => {
-    const { data } = await markNotificationsOfMerchantRead(id);
-    if (data?.success === true) {
-      let newArr = allNotifications;
-      let isFound = newArr.find((item) => item._id == id);
-      if (isFound) {
-        isFound.isRead = true;
-        newArr.filter((item) => (item._id == id ? isFound : item));
-        setAllNotifications(newArr);
-        setAllNotificationsCount((prev) => prev - 1);
-      }
-    }
   };
 
   // changing home allownce
@@ -286,96 +214,8 @@ const RequestFinance = () => {
         </div>
 
         <div className="d-flex align-items-center panel-right">
-          <div class="dropdown profile-dropdown">
-            <Link
-              to="#"
-              className="notification-btn"
-              type="button"
-              id="dropdownMenuButton1"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <AiFillBell />
-              {allNotificationsCount > 0 && (
-                <span>{allNotificationsCount}</span>
-              )}
-            </Link>
-            <ul
-              class="dropdown-menu"
-              aria-labelledby="dropdownMenuButton1"
-              style={{ maxHeight: "400px", overflowY: "scroll" }}
-            >
-              {allNotifications?.length > 0 ? (
-                allNotifications?.map((item) =>
-                  item?.isRead === false ? (
-                    <li
-                      style={{ backgroundColor: "#ecf0f1" }}
-                      onClick={() => readNotification(item?._id)}
-                    >
-                      <Link class="dropdown-item" to="">
-                        <strong>{item?.message} </strong> <br />
-                        <span style={{ fontSize: "12px", color: "#34495e" }}>
-                          {moment(item?.createdAt).format("MMM Do, h:mm:ss a")}
-                        </span>
-                      </Link>
-                    </li>
-                  ) : (
-                    <li style={{ backgroundColor: "transparent" }}>
-                      <Link class="dropdown-item" to="">
-                        <strong>{item?.message} </strong> <br />
-                        <span
-                          className="text-muted"
-                          style={{ fontSize: "12px" }}
-                        >
-                          {moment(item?.createdAt).format("MMM Do, h:mm:ss a")}
-                        </span>
-                      </Link>
-                    </li>
-                  )
-                )
-              ) : (
-                <li style={{ marginLeft: "15px" }}>Empty</li>
-              )}
-            </ul>
-          </div>
-
-          <div className="dropdown profile-dropdown">
-            <button
-              className="btn dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton1"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <div className="d-flex align-items-center fs-small me-3">
-                <img
-                  src={userPic}
-                  alt=""
-                  style={{
-                    maxWidth: "50px",
-                    maxheight: "50px",
-                    borderRadius: "50%",
-                  }}
-                />
-                {userName}
-              </div>
-            </button>
-            <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-              <li>
-                <Link
-                  className="dropdown-item"
-                  to="/customer/dashboard/profile"
-                >
-                  Profile
-                </Link>
-              </li>
-              <li>
-                <Link className="dropdown-item" to="" onClick={logout}>
-                  Logout
-                </Link>
-              </li>
-            </ul>
-          </div>
+          <NotificationCustomer />
+          <CustomerDropdown />
         </div>
       </div>
 

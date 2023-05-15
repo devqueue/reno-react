@@ -100,7 +100,8 @@ const makeNewPayment = (quoteId) =>
   API.post(
     `/api/v1/quotesHistory/addNewPaymentHistoryToAQuoteHistory/${quoteId}`
   );
-//const getAllPaymentsHistory = (quoteId) => API.get(`/api/v1/quotesHistory/getAllPaymentHistoryOfAQuote/${quoteId}`);
+const getAllPaymentsHistory = (quoteId) =>
+  API.get(`/api/v1/quotesHistory/getAllPaymentHistoryOfAQuote/${quoteId}`);
 const getAllPaymentsHistoryOfAnyCustomer = () =>
   API.get(`/api/v1/quotesHistory/getAllUpcomingPaymentsOfCustomer`);
 const verifyCodeForSignUp = (phoneNo, code) =>
@@ -146,4 +147,5 @@ module.exports = {
   removeUserForWrongCode,
   verifyCodeForSignIn,
   readAllNotificationsOfCustomer,
+  getAllPaymentsHistory,
 };

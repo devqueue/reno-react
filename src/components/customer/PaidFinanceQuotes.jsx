@@ -26,14 +26,13 @@ import {
   getAllPaymentsHistory,
 } from "../../api/CustomerApi";
 import NotificationCustomer from "./NotificationCustomer";
+import CustomerDropdown from "./CustomerDropdown";
 
 const PaidFinanceQuotes = () => {
   const navigate = useNavigate();
   const [isFetching, setIsFetching] = useState(false);
   const [allData, setAllData] = useState([]);
   const [itemId, setItemId] = useState("");
-  const [userName, setUserName] = useState("");
-  const [userPic, setUserPic] = useState("");
   const [selectedId, setSelectedId] = useState("");
   const [cardDetails, setCardDetails] = useState({
     cardNo: "",
@@ -41,6 +40,113 @@ const PaidFinanceQuotes = () => {
     expiryDate: "",
     cvv: "",
   });
+
+  //=======Credit Card No Added by Alex
+  let [validCardNo, setValidCardNo] = useState(false);
+  const [cardNumber, setCardNumber] = useState("");
+
+  const handleChange = (event) => {
+    let { value } = event.target;
+
+    // remove any non-digit characters
+    value = value.replace(/\D/g, "");
+
+    // only allow 16 digits
+    if (value.length > 16) {
+      value = value.slice(0, 16);
+    }
+
+    // add dashes after every 4 digits
+    value = value.replace(/(\d{4})/g, "$1-");
+
+    // remove trailing dash
+    value = value.replace(/-$/, "");
+
+    // set state
+    setCardNumber(value);
+
+    // check if number is valid using Luhn's algorithm
+    const luhnCheck = (ccNum) => {
+      let checkSum = 0;
+      let isEven = false;
+
+      for (let i = ccNum.length - 1; i >= 0; i--) {
+        let digit = parseInt(ccNum.charAt(i));
+
+        if (isEven) {
+          digit *= 2;
+          if (digit > 9) {
+            digit -= 9;
+          }
+        }
+
+        checkSum += digit;
+        isEven = !isEven;
+      }
+      return checkSum % 10 === 0;
+    };
+
+    if (luhnCheck(value)) {
+      setValidCardNo(true);
+    } else {
+      setValidCardNo(false);
+    }
+  };
+
+  //========Expiry Card Checks =================================
+  const [expiryDate, setExpiryDate] = useState("");
+  const [expiryCardMessage, setExpiryCardMessage] = useState("");
+  const [isExpired, setIsExpired] = useState(false);
+
+  const handleExpiryDateChange = (event) => {
+    let input = event.target.value;
+
+    // Remove any non-numeric characters
+    input = input.replace(/[^\d]/g, "");
+    const expiryMonth = parseInt(input.substring(0, 2));
+    const expiryYear = parseInt(input.substring(3));
+    const currentYear = new Date().getFullYear() % 100;
+    const currentMonth = new Date().getMonth() + 1;
+    if (
+      expiryYear < currentYear ||
+      (expiryYear === currentYear && expiryMonth < currentMonth)
+    ) {
+      setIsExpired(true);
+    } else {
+      setIsExpired(false);
+    }
+
+    // Format the expiry date with a slash after 2 digits
+    if (input.length > 2) {
+      input = input.slice(0, 2) + "/" + input.slice(2);
+    }
+
+    setExpiryDate(input);
+  };
+
+  const validateExpiryDate = () => {
+    const [expiryMonth, expiryYear] = expiryDate.split("/");
+
+    // Check if the expiry date is valid and more than the current date
+    const now = new Date();
+    const expiry = new Date(`20${expiryYear}`, expiryMonth - 1, 1);
+    if (expiry <= now || isNaN(expiry)) {
+      setExpiryCardMessage("Invalid expiry date");
+    }
+
+    return "";
+  };
+
+  //==========CVV==========
+  const [cvv, setCvv] = useState("");
+
+  const handleCvvChange = (e) => {
+    const value = e.target.value;
+    const regex = /^\d{0,3}$/; // accepts 0-3 digits
+    if (regex.test(value)) {
+      setCvv(value);
+    }
+  };
 
   //getting all data
   useEffect(() => {
@@ -71,48 +177,8 @@ const PaidFinanceQuotes = () => {
     }
   };
 
-  // logging out
-  // logging out
-  const logout = async () => {
-    localStorage.removeItem("reno-customer-token");
-    sessionStorage.removeItem("reno-customer-token");
-    localStorage.removeItem("reno-customerName");
-    sessionStorage.removeItem("reno-customerName");
-    localStorage.removeItem("reno-customerPhoto");
-    sessionStorage.removeItem("reno-customerPhoto");
-    toast.success("Signed Out SuccessFully");
-    await delay(2000);
-    navigate("/customer/auth/login");
-  };
   // sleeping
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-
-  const location = useLocation();
-  // checking if user is signed in or not
-  useEffect(() => {
-    const customerToken = JSON.parse(
-      localStorage.getItem("reno-customer-token")
-    );
-    const isSessionFound = sessionStorage.getItem("reno-customer-token");
-    if (!customerToken && !isSessionFound) {
-      navigate("/customer/auth/login");
-    }
-    let name = JSON.parse(localStorage.getItem("reno-customerName"));
-    if (!name) {
-      name = JSON.parse(sessionStorage.getItem("reno-customerName"));
-    }
-    setUserName(name);
-
-    let pic = JSON.parse(localStorage.getItem("reno-customerPhoto"));
-    if (!pic) {
-      pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
-    }
-    setUserPic(
-      pic.indexOf("https") == 0
-        ? pic
-        : process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + pic
-    );
-  }, [location]);
 
   const [allPaid, setAllPaid] = useState([]);
   const [allUnPaid, setAllUnPaid] = useState([]);
@@ -125,10 +191,25 @@ const PaidFinanceQuotes = () => {
     // }
     if (
       cardDetails?.name == "" ||
-      cardDetails?.cardNo == "" ||
-      cardDetails?.cvv == ""
+      cardNumber == "" ||
+      cvv == "" ||
+      expiryDate == ""
     ) {
       toast.warning("Please Fill All required Fields.");
+      return;
+    }
+
+    if (cardNumber.length < 19) {
+      toast.error("Card Number should be 16 digits.");
+      return;
+    }
+
+    if (expiryDate.length < 7) {
+      toast.error("Date Should be in MM/YYYY format.");
+      return;
+    }
+    if (cvv.length < 3) {
+      toast.error("Cvv Number should be 3 digits.");
       return;
     }
     const { data } = await makeNewPayment(selectedId);
@@ -140,6 +221,9 @@ const PaidFinanceQuotes = () => {
         expiryDate: "",
         cvv: "",
       });
+      setCvv("");
+      setCardNumber("");
+      setExpiryDate("");
       setSelectedId("");
       await delay(2000);
       window.location.reload();
@@ -148,13 +232,15 @@ const PaidFinanceQuotes = () => {
     }
   };
 
+  useEffect(() => {}, [allPaid]);
+
   // getting payments details
   const getAllPayments = async (id) => {
     const { data } = await getAllPaymentsHistory(id);
     if (data?.success === true) {
-      setAllPaid(data?.History);
-      let newNo = data?.TotalMonths - data?.History.length;
+      let newNo = data?.TotalMonths - data?.History?.length;
       let newArr = [];
+
       for (let i = 0; i !== newNo; i++) {
         let month = moment(data?.History[data?.History.length - 1].date)
           .add(i + 1, "months")
@@ -165,8 +251,11 @@ const PaidFinanceQuotes = () => {
           date: myDate,
           amount: data?.Amount,
         });
+
         setAllUnPaid(newArr);
       }
+
+      setAllPaid(data?.History);
     } else {
       toast.error(data?.message);
     }
@@ -204,47 +293,7 @@ const PaidFinanceQuotes = () => {
 
               <div className="d-flex align-items-center panel-right">
                 <NotificationCustomer />
-
-                <div className="dropdown profile-dropdown">
-                  <button
-                    className="btn dropdown-toggle"
-                    type="button"
-                    id="dropdownMenuButton1"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <div className="d-flex align-items-center fs-small me-3">
-                      <img
-                        src={userPic}
-                        alt=""
-                        style={{
-                          maxWidth: "50px",
-                          maxheight: "50px",
-                          borderRadius: "50%",
-                        }}
-                      />
-                      {userName}
-                    </div>
-                  </button>
-                  <ul
-                    className="dropdown-menu"
-                    aria-labelledby="dropdownMenuButton1"
-                  >
-                    <li>
-                      <Link
-                        className="dropdown-item"
-                        to="/customer/dashboard/profile"
-                      >
-                        Profile
-                      </Link>
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" to="" onClick={logout}>
-                        Logout
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
+                <CustomerDropdown />
               </div>
             </div>
 
@@ -304,7 +353,7 @@ const PaidFinanceQuotes = () => {
                               justifyContent: "space-between",
                             }}
                           >
-                            {item?.quoteStatus}
+                            {item?.quotePaymentStatus}
                             <img
                               src={success}
                               alt=""
@@ -440,6 +489,14 @@ const PaidFinanceQuotes = () => {
                   Credit Card Number
                 </label>
                 <input
+                  className="form-control"
+                  type="text"
+                  placeholder="XXXX-XXXX-XXXX-XXXX"
+                  value={cardNumber}
+                  onChange={handleChange}
+                />
+
+                {/* <input
                   type="number"
                   className="form-control"
                   placeholder="XXXX-XXXX-XXXX-XXXX"
@@ -447,7 +504,7 @@ const PaidFinanceQuotes = () => {
                   onChange={(e) =>
                     setCardDetails({ ...cardDetails, cardNo: e.target.value })
                   }
-                />
+                /> */}
               </div>
 
               <div className="form-group mt-4">
@@ -472,6 +529,20 @@ const PaidFinanceQuotes = () => {
                     type="text"
                     className="form-control"
                     placeholder="MM / YYYY"
+                    id="expiryDate"
+                    name="expiryDate"
+                    value={expiryDate}
+                    maxLength="7"
+                    onChange={handleExpiryDateChange}
+                    onBlur={validateExpiryDate}
+                  />
+                  {isExpired && (
+                    <span className="text-danger">{"Expired"}</span>
+                  )}
+                  {/* <input
+                    type="text"
+                    className="form-control"
+                    placeholder="MM / YYYY"
                     value={cardDetails?.expiryDate}
                     onChange={(e) =>
                       setCardDetails({
@@ -479,22 +550,30 @@ const PaidFinanceQuotes = () => {
                         expiryDate: e.target.value,
                       })
                     }
-                  />
+                  /> */}
                 </div>
                 <div className="form-group mt-4 col-lg-6">
                   <label className="form-label text-muted">Security Code</label>
                   <input
+                    type="text"
+                    className="form-control"
+                    value={cvv}
+                    onChange={handleCvvChange}
+                    // pattern="\d{1,3}"
+                    maxLength="3"
+                  />
+                  {/* <input
                     type="number"
                     className="form-control"
                     placeholder="CVV"
                     value={cardDetails?.cvv}
+                    maxLength={3}
                     onChange={(e) =>
                       setCardDetails({ ...cardDetails, cvv: e.target.value })
                     }
-                  />
+                  /> */}
                 </div>
               </div>
-
               {/* <div class="form-check d-flex align-items-center mt-4">
                         <input class="form-check-input pay-check me-3" style={{ border: '1.5px solid #3F3F3F', width: '25px', height: '25px', borderRadius: '30%' }} type="checkbox" value="" id="privacyPolicy" />
                         <label class="form-check-label fs-small text-muted" for="privacyPolicy">
@@ -581,16 +660,8 @@ const PaidFinanceQuotes = () => {
                   <p>No Payment History Found</p>
                 )}
 
-                <h5
-                  className="text-center"
-                  style={{
-                    color: "crimson",
-                    marginBottom: "35px",
-                    marginTop: "25px",
-                  }}
-                >
-                  Payments Pending{" "}
-                </h5>
+                {/* {console.log("allunpaid", allUnPaid)} */}
+
                 {allUnPaid?.length > 1 ? (
                   allUnPaid?.map((item, index) => (
                     <div className="row d-flex mb-3">
@@ -608,6 +679,17 @@ const PaidFinanceQuotes = () => {
                 ) : (
                   <p>No Pending Payments</p>
                 )}
+
+                {/* <h5
+                  className="text-center"
+                  style={{
+                    color: "crimson",
+                    marginBottom: "35px",
+                    marginTop: "25px",
+                  }}
+                >
+                  Payments Pending{" "}
+                </h5> */}
               </div>
             </div>
           </div>

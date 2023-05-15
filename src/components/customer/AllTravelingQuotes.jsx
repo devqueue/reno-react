@@ -15,24 +15,16 @@ import {
 } from "react-bs-datatable";
 import { toast } from "react-toastify";
 import { ThreeDots } from "react-loader-spinner";
-import {
-  getAllTravelingQuotes,
-  changeStatusOfQuote,
-} from "../../api/CustomerApi";
+import { getAllTravelingQuotes } from "../../api/CustomerApi";
 import moment from "moment";
-import { useLocation, useNavigate, Link } from "react-router-dom";
-import {
-  getAllNotificationsOfCustomer,
-  markNotificationsOfMerchantRead,
-  ApproveDisproveDelivery,
-} from "../../api/CustomerApi";
+import { Link } from "react-router-dom";
+import { ApproveDisproveDelivery } from "../../api/CustomerApi";
 import NotificationCustomer from "./NotificationCustomer";
+import CustomerDropdown from "./CustomerDropdown";
 
 const MainPage = () => {
   const [allData, setData] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
-  const [userName, setUserName] = useState("");
-  const [userPic, setUserPic] = useState("");
 
   const TABLE_HEADERS = [
     {
@@ -111,6 +103,16 @@ const MainPage = () => {
       cell: (prop) => {
         return (
           <>
+            {prop?.quoteStatus == "Financial Details Accepted By Reno" && (
+              <Button
+                size="sm"
+                variant="primary"
+                style={{ fontSize: "11px", fontWeight: 600 }}
+                onClick={() => changeStatus(prop?.Id, false)}
+              >
+                Pending
+              </Button>
+            )}
             {(prop?.quoteStatus == "Delivered By Partner" ||
               prop?.quoteStatus == "Cancelled By Partner") &&
               (prop?.CustomerResponse == true ? (
@@ -118,7 +120,7 @@ const MainPage = () => {
                   size="sm"
                   variant="success"
                   style={{ fontSize: "11px", fontWeight: 600 }}
-                  onClick={() => changeStatus(prop?.Id, false)}
+                  // onClick={() => changeStatus(prop?.Id, false)}
                 >
                   Delivery Confirmed
                 </Button>
@@ -226,51 +228,6 @@ const MainPage = () => {
     getAllRecords();
   }, []);
 
-  // sleeping
-  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-
-  const navigate = useNavigate();
-  const location = useLocation();
-  // checking if user is signed in or not
-  useEffect(() => {
-    const customerToken = JSON.parse(
-      localStorage.getItem("reno-customer-token")
-    );
-    const isSessionFound = sessionStorage.getItem("reno-customer-token");
-    if (!customerToken && !isSessionFound) {
-      navigate("/customer/auth/login");
-    }
-    let name = JSON.parse(localStorage.getItem("reno-customerName"));
-    if (!name) {
-      name = JSON.parse(sessionStorage.getItem("reno-customerName"));
-    }
-    setUserName(name);
-
-    let pic = JSON.parse(localStorage.getItem("reno-customerPhoto"));
-    if (!pic) {
-      pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
-    }
-    setUserPic(
-      pic.indexOf("https") == 0
-        ? pic
-        : process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + pic
-    );
-  }, [location]);
-
-  // logging out
-  const logout = async () => {
-    localStorage.removeItem("reno-customer-token");
-    sessionStorage.removeItem("reno-customer-token");
-    localStorage.removeItem("reno-customerName");
-    sessionStorage.removeItem("reno-customerName");
-    localStorage.removeItem("reno-customerPhoto");
-    sessionStorage.removeItem("reno-customerPhoto");
-    toast.success("Signed Out SuccessFully");
-    await delay(2000);
-    navigate("/customer/auth/login");
-  };
-  // sleeping
-
   // approving merchant request for quote
   const changeStatus = async (id, status) => {
     let isFound = allData.find((item) => item.Id === id);
@@ -307,47 +264,7 @@ const MainPage = () => {
 
           <div className="d-flex align-items-center panel-right">
             <NotificationCustomer />
-
-            <div className="dropdown profile-dropdown">
-              <button
-                className="btn dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <div className="d-flex align-items-center fs-small me-3">
-                  <img
-                    src={userPic}
-                    alt=""
-                    style={{
-                      maxWidth: "50px",
-                      maxheight: "50px",
-                      borderRadius: "50%",
-                    }}
-                  />
-                  {userName}
-                </div>
-              </button>
-              <ul
-                className="dropdown-menu"
-                aria-labelledby="dropdownMenuButton1"
-              >
-                <li>
-                  <Link
-                    className="dropdown-item"
-                    to="/customer/dashboard/profile"
-                  >
-                    Profile
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="" onClick={logout}>
-                    Logout
-                  </Link>
-                </li>
-              </ul>
-            </div>
+            <CustomerDropdown />
           </div>
         </div>
         {isFetching === true ? (

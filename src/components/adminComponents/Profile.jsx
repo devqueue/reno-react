@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import eye from "../../assets/icons/eye.png";
-import user from "../../assets/images/user.jpg";
-import { AiFillBell } from "react-icons/ai";
 import { toast } from "react-toastify";
 import { ThreeDots } from "react-loader-spinner";
-import moment from "moment";
 import {
-  getAllNotificationsOfCustomer,
-  markNotificationsOfMerchantRead,
   checkUserPassword,
   updateUserPassword,
   getAdminDetails,
@@ -18,6 +13,7 @@ import {
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import NotificationAdmin from "./NotificationAdmin";
+import AdminDropdown from "./AdminDropdown";
 
 const Password = () => {
   const location = useLocation();
@@ -30,49 +26,10 @@ const Password = () => {
   const [pass1, setPass1] = useState(false);
   const [pass2, setPass2] = useState(false);
   const [pass3, setPass3] = useState(false);
-
-  const navigate = useNavigate();
-  const [userName, setUserName] = useState("");
-  const [userPic, setUserPic] = useState("");
   const [userDetails, setUserDetails] = useState();
   const [userDetailsOne, setUserDetailsOne] = useState();
   const [uploadImage, setUploadImage] = useState("");
 
-  // checking if user is signed in or not
-  useEffect(() => {
-    const adminToken = JSON.parse(localStorage.getItem("reno-admin-token"));
-    const isSessionFound = sessionStorage.getItem("reno-admin-token");
-    if (!adminToken && !isSessionFound) {
-      navigate("/admin/login");
-    }
-    let name = JSON.parse(localStorage.getItem("reno-adminName"));
-    if (!name) {
-      name = JSON.parse(sessionStorage.getItem("reno-adminName"));
-    }
-    setUserName(name);
-
-    let pic = JSON.parse(localStorage.getItem("reno-adminPic"));
-    if (!pic) {
-      pic = JSON.parse(sessionStorage.getItem("reno-adminPic"));
-    }
-    setUserPic(
-      pic.indexOf("https") == 0
-        ? pic
-        : process.env.REACT_APP_API_SERVER_URL + "/adminProfileImages/" + pic
-    );
-  }, [location]);
-  // logging out
-  const logout = async () => {
-    localStorage.removeItem("reno-admin-token");
-    sessionStorage.removeItem("reno-admin-token");
-    localStorage.removeItem("reno-adminName");
-    sessionStorage.removeItem("reno-adminName");
-    localStorage.removeItem("reno-adminPic");
-    sessionStorage.removeItem("reno-adminPic");
-    toast.success("Signed Out SuccessFully");
-    await delay(2000);
-    navigate("/admin/login");
-  };
   // sleeping
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -200,44 +157,7 @@ const Password = () => {
 
           <div className="d-flex align-items-center panel-right">
             <NotificationAdmin />
-
-            <div className="dropdown profile-dropdown">
-              <button
-                className="btn dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <div className="d-flex align-items-center fs-small me-3">
-                  <img
-                    src={userPic}
-                    alt=""
-                    style={{
-                      maxWidth: "50px",
-                      maxheight: "50px",
-                      borderRadius: "50%",
-                    }}
-                  />
-                  {userName}
-                </div>
-              </button>
-              <ul
-                className="dropdown-menu"
-                aria-labelledby="dropdownMenuButton1"
-              >
-                <li>
-                  <Link className="dropdown-item" to="/admin/profile">
-                    Profile
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="" onClick={logout}>
-                    Logout
-                  </Link>
-                </li>
-              </ul>
-            </div>
+            <AdminDropdown />
           </div>
         </div>
         <div className="py-5">

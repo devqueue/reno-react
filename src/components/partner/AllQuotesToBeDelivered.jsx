@@ -3,8 +3,6 @@ import React, { useState, useEffect } from "react";
 import { Col, Row, Table, Button } from "react-bootstrap";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import Dropdown from "react-bootstrap/Dropdown";
-import { AiFillBell } from "react-icons/ai";
-import user from "../../assets/images/user.jpg";
 import {
   DatatableWrapper,
   Filter,
@@ -18,18 +16,15 @@ import { ThreeDots } from "react-loader-spinner";
 import {
   getAllQuotesToBeDelivered,
   changeStatusOfQuote,
-  getAllNotificationsOfMerchant,
-  markNotificationsOfMerchantRead,
 } from "../../api/MerchentApi";
 import moment from "moment";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import NotificationMerchant from "./NotificationMerchant";
+import MerchantDropdown from "./MerchantDropdown";
 
 const MainPage = () => {
   const [allData, setData] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
-  const [userName, setUserName] = useState("");
-  const [userPic, setUserPic] = useState("");
 
   // approving merchant request for quote
   const changeStatus = async (id, status) => {
@@ -78,24 +73,20 @@ const MainPage = () => {
       cell: (prop) => {
         return (
           <Dropdown as={ButtonGroup}>
-            {/* {console.log("prop", prop)} */}
-            {prop?.quoteStatus !== "Traveling" &&
-              prop?.quoteStatus !== "Cancelled By Partner" &&
-              prop?.quoteStatus !== "Delivered By Partner" &&
-              prop?.quoteStatus !== "Delivery Confirmed By Customer" && (
-                <Button
-                  size="sm"
-                  style={{
-                    fontSize: "11px",
-                    fontWeight: 600,
-                    backgroundColor: "#40407a",
-                    color: "white",
-                  }}
-                >
-                  Pending
-                </Button>
-              )}
-            {prop?.quoteStatus === "Traveling" && (
+            {prop?.quoteStatus == "Financial Details Accepted By Reno" && (
+              <Button
+                size="sm"
+                style={{
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  backgroundColor: "#40407a",
+                  color: "white",
+                }}
+              >
+                Pending
+              </Button>
+            )}
+            {prop?.quoteStatus == "Traveling" && (
               <Button
                 size="sm"
                 variant="primary"
@@ -104,7 +95,7 @@ const MainPage = () => {
                 Traveling
               </Button>
             )}
-            {prop?.quoteStatus === "Cancelled By Partner" && (
+            {prop?.quoteStatus == "Cancelled By Partner" && (
               <Button
                 size="sm"
                 variant="danger"
@@ -113,8 +104,17 @@ const MainPage = () => {
                 Cancelled
               </Button>
             )}
-            {prop?.quoteStatus === "Delivered By Partner" ||
-              (prop?.quoteStatus === "Delivery Confirmed By Customer" && (
+            {prop?.quoteStatus == "Delivered By Partner" && (
+              <Button
+                size="sm"
+                variant="success"
+                style={{ fontSize: "11px", fontWeight: 600 }}
+              >
+                Delivered
+              </Button>
+            )}
+            {prop?.quoteStatus == "Delivered By Partner" ||
+              (prop?.quoteStatus == "Delivery Confirmed By Customer" && (
                 <Button
                   size="sm"
                   variant="success"
@@ -198,53 +198,6 @@ const MainPage = () => {
     getAllRecords();
   }, []);
 
-  // sleeping
-  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
-
-  const navigate = useNavigate();
-  const location = useLocation();
-  // checking if user is signed in or not
-  useEffect(() => {
-    const customerToken = JSON.parse(
-      localStorage.getItem("reno-merchant-token")
-    );
-    const isSessionFound = sessionStorage.getItem("reno-merchant-token");
-    if (!customerToken && !isSessionFound) {
-      navigate("/partner/auth/login");
-    }
-    let name = JSON.parse(localStorage.getItem("reno-merchantName"));
-    if (!name) {
-      name = JSON.parse(sessionStorage.getItem("reno-merchantName"));
-    }
-    setUserName(name);
-
-    let pic = JSON.parse(localStorage.getItem("reno-merchantPic"));
-    if (!pic) {
-      pic = JSON.parse(sessionStorage.getItem("reno-merchantPic"));
-    }
-    setUserPic(
-      pic.indexOf("https") == 0
-        ? pic
-        : process.env.REACT_APP_API_SERVER_URL + "/merchantsProfilePics/" + pic
-    );
-  }, [location]);
-
-  // logging out
-  const logout = async () => {
-    localStorage.removeItem("reno-merchant-token");
-    sessionStorage.removeItem("reno-merchant-token");
-    localStorage.removeItem("reno-merchantId");
-    sessionStorage.removeItem("reno-merchantId");
-    localStorage.removeItem("reno-merchantName");
-    sessionStorage.removeItem("reno-merchantName");
-    localStorage.removeItem("reno-merchantPic");
-    sessionStorage.removeItem("reno-merchantPic");
-    toast.success("Signed Out SuccessFully");
-    await delay(2000);
-    navigate("/partner/auth/login");
-  };
-  // sleeping
-
   return (
     <>
       <div className="container-fluid p-4 dashboard-content">
@@ -260,47 +213,7 @@ const MainPage = () => {
 
           <div className="d-flex align-items-center panel-right">
             <NotificationMerchant />
-
-            <div className="dropdown profile-dropdown">
-              <button
-                className="btn dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <div className="d-flex align-items-center fs-small me-3">
-                  <img
-                    src={userPic}
-                    alt=""
-                    style={{
-                      maxWidth: "50px",
-                      maxheight: "50px",
-                      borderRadius: "50%",
-                    }}
-                  />
-                  {userName}
-                </div>
-              </button>
-              <ul
-                className="dropdown-menu"
-                aria-labelledby="dropdownMenuButton1"
-              >
-                <li>
-                  <Link
-                    className="dropdown-item"
-                    to="/partner/dashboard/profile"
-                  >
-                    Profile
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="" onClick={logout}>
-                    Logout
-                  </Link>
-                </li>
-              </ul>
-            </div>
+            <MerchantDropdown />
           </div>
         </div>
         {isFetching === true ? (

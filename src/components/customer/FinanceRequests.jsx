@@ -24,6 +24,7 @@ import {
   makeNewPayment,
 } from "../../api/CustomerApi";
 import NotificationCustomer from "./NotificationCustomer";
+import CustomerDropdown from "./CustomerDropdown";
 
 const FinanceRequests = () => {
   const navigate = useNavigate();
@@ -145,36 +146,6 @@ const FinanceRequests = () => {
     }
   };
 
-  const [userName, setUserName] = useState("");
-  const [userPic, setUserPic] = useState("");
-
-  const location = useLocation();
-  // checking if user is signed in or not
-  useEffect(() => {
-    const customerToken = JSON.parse(
-      localStorage.getItem("reno-customer-token")
-    );
-    const isSessionFound = sessionStorage.getItem("reno-customer-token");
-    if (!customerToken && !isSessionFound) {
-      navigate("/customer/auth/login");
-    }
-    let name = JSON.parse(localStorage.getItem("reno-customerName"));
-    if (!name) {
-      name = JSON.parse(sessionStorage.getItem("reno-customerName"));
-    }
-    setUserName(name);
-
-    let pic = JSON.parse(localStorage.getItem("reno-customerPhoto"));
-    if (!pic) {
-      pic = JSON.parse(sessionStorage.getItem("reno-customerPhoto"));
-    }
-    setUserPic(
-      pic.indexOf("https") == 0
-        ? pic
-        : process.env.REACT_APP_API_SERVER_URL + "/customerProfilePics/" + pic
-    );
-  }, [location]);
-
   //getting all data
   useEffect(() => {
     const getAllRecord = async () => {
@@ -195,19 +166,6 @@ const FinanceRequests = () => {
     };
     getAllRecord();
   }, []);
-
-  // logging out
-  const logout = async () => {
-    localStorage.removeItem("reno-customer-token");
-    sessionStorage.removeItem("reno-customer-token");
-    localStorage.removeItem("reno-customerName");
-    sessionStorage.removeItem("reno-customerName");
-    localStorage.removeItem("reno-customerPhoto");
-    sessionStorage.removeItem("reno-customerPhoto");
-    toast.success("Signed Out SuccessFully");
-    await delay(2000);
-    navigate("/customer/auth/login");
-  };
   // sleeping
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -261,6 +219,11 @@ const FinanceRequests = () => {
     }
   };
 
+  //=======handleNavigate
+  const handleNavigate = () => {
+    navigate("/customer/dashboard/manangeCustomerQuotes");
+  };
+
   return (
     <>
       {isFetching === true ? (
@@ -293,47 +256,7 @@ const FinanceRequests = () => {
 
               <div className="d-flex align-items-center panel-right">
                 <NotificationCustomer />
-
-                <div className="dropdown profile-dropdown">
-                  <button
-                    className="btn dropdown-toggle"
-                    type="button"
-                    id="dropdownMenuButton1"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <div className="d-flex align-items-center fs-small me-3">
-                      <img
-                        src={userPic}
-                        alt=""
-                        style={{
-                          maxWidth: "50px",
-                          maxheight: "50px",
-                          borderRadius: "50%",
-                        }}
-                      />
-                      {userName}
-                    </div>
-                  </button>
-                  <ul
-                    className="dropdown-menu"
-                    aria-labelledby="dropdownMenuButton1"
-                  >
-                    <li>
-                      <Link
-                        className="dropdown-item"
-                        to="/customer/dashboard/profile"
-                      >
-                        Profile
-                      </Link>
-                    </li>
-                    <li>
-                      <Link className="dropdown-item" to="" onClick={logout}>
-                        Logout
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
+                <CustomerDropdown />
               </div>
             </div>
 
@@ -447,9 +370,11 @@ const FinanceRequests = () => {
                           <Button
                             style={{ color: "white" }}
                             variant="success"
-                            data-bs-toggle="modal"
-                            data-bs-target="#payModal"
-                            onClick={() => setSelectedId(item?._id)}
+                            // data-bs-toggle="modal"
+                            // data-bs-target="#payModal"
+                            onClick={handleNavigate}
+
+                            // onClick={() => setSelectedId(item?._id)}
                           >
                             Make payment{" "}
                           </Button>
@@ -582,9 +507,10 @@ const FinanceRequests = () => {
                           <Button
                             style={{ color: "white" }}
                             variant="success"
-                            data-bs-toggle="modal"
-                            data-bs-target="#payModal"
-                            onClick={() => setSelectedId(item?._id)}
+                            // data-bs-toggle="modal"
+                            // data-bs-target="#payModal"
+                            onClick={handleNavigate}
+                            // onClick={() => setSelectedId(item?._id)}
                           >
                             Make payment{" "}
                           </Button>
