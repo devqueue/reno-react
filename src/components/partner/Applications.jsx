@@ -58,6 +58,7 @@ const Applications = () => {
               event[0].RepaymentAmount.totalMonths,
               moment(event[0].CreatedAt).format("MMM Do YY"),
               event[0].quoteStatus,
+              event[0].isFullyPaid,
               event[0]._id,
               event[0]._id,
             ]);
@@ -92,14 +93,26 @@ const Applications = () => {
       let newarray = [];
       newArr?.map((event, idx) => {
         return newarray.push([
-          event.CustomerAndProductDetails.IDCardNo +
-            " " +
-            event.CustomerAndProductDetails.email,
+          // event.CustomerAndProductDetails.IDCardNo +
+          //   " " +
+          //   event.CustomerAndProductDetails.email,
+          // event.CustomerAndProductDetails.productCategory,
+          // event.FinanceDetails.totalPurchaseAmt,
+          // event.RepaymentAmount.totalMonths,
+          // moment(event.CreatedAt).format("MMM Do YY"),
+          // event.quoteStatus,
+          // event.isFullyPaid,
+          // event._id,
+          // event._id,
+          `${event.CustomerAndProductDetails.IDCardNo} ${event.CustomerAndProductDetails.email}`,
           event.CustomerAndProductDetails.productCategory,
           event.FinanceDetails.totalPurchaseAmt,
           event.RepaymentAmount.totalMonths,
+          event.FinanceDetails.depositAmt,
+          event.RepaymentAmount.amountPerMonth,
           moment(event.CreatedAt).format("MMM Do YY"),
           event.quoteStatus,
+          event.isFullyPaid,
           event._id,
           event._id,
         ]);
@@ -161,6 +174,40 @@ const Applications = () => {
     setViewDetails(!viewDetails);
   }
 
+  //getting all data
+  useEffect(() => {
+    getAllRecord();
+  }, [location]);
+
+  const getAllRecord = async () => {
+    setIsFetching(true);
+    const { data } = await getAllRecentSentQuotes();
+    if (data?.success === true) {
+      let newArr = data?.AllQuotes;
+      setDetailsData(newArr);
+      let newarray = [];
+      newArr?.map((event, idx) => {
+        return newarray.push([
+          `${event.CustomerAndProductDetails.IDCardNo} ${event.CustomerAndProductDetails.email}`,
+          event.CustomerAndProductDetails.productCategory,
+          event.FinanceDetails.totalPurchaseAmt,
+          event.RepaymentAmount.totalMonths,
+          event.FinanceDetails.depositAmt,
+          event.RepaymentAmount.amountPerMonth,
+          moment(event.CreatedAt).format("MMM Do YY"),
+          event.quoteStatus,
+          event.isFullyPaid,
+          event._id,
+          event._id,
+        ]);
+      });
+      setAllData(newarray);
+    } else {
+      toast.error(data?.message);
+    }
+    setIsFetching(false);
+  };
+
   //=============Upload Invoice =================
   // updating data of user
   const customerInvoiceUpload = async () => {
@@ -181,7 +228,8 @@ const Applications = () => {
         setInvoiceFile("");
         setIsFetching(false);
         await delay(500);
-        window.location.reload();
+        // window.location.reload();
+        getAllRecord();
       } else {
         toast.error(res?.data?.message);
       }
@@ -190,38 +238,6 @@ const Applications = () => {
     await delay(1500);
     // window.location.reload();
   };
-
-  //getting all data
-  useEffect(() => {
-    const getAllRecord = async () => {
-      setIsFetching(true);
-      const { data } = await getAllRecentSentQuotes();
-      if (data?.success === true) {
-        let newArr = data?.AllQuotes;
-        setDetailsData(newArr);
-        let newarray = [];
-        newArr?.map((event, idx) => {
-          return newarray.push([
-            `${event.CustomerAndProductDetails.IDCardNo} ${event.CustomerAndProductDetails.email}`,
-            event.CustomerAndProductDetails.productCategory,
-            event.FinanceDetails.totalPurchaseAmt,
-            event.RepaymentAmount.totalMonths,
-            event.FinanceDetails.depositAmt,
-            event.RepaymentAmount.amountPerMonth,
-            moment(event.CreatedAt).format("MMM Do YY"),
-            event.quoteStatus,
-            event._id,
-            event._id,
-          ]);
-        });
-        setAllData(newarray);
-      } else {
-        toast.error(data?.message);
-      }
-      setIsFetching(false);
-    };
-    getAllRecord();
-  }, [location]);
 
   return (
     <div className="container-fluid p-4 dashboard-content">
@@ -420,9 +436,15 @@ const Applications = () => {
                     formatter: (cell) =>
                       _(
                         <>
-                          <Badge bg="danger" text="light">
-                            Un Paid{" "}
-                          </Badge>
+                          {cell === true ? (
+                            <Badge bg="success" text="light">
+                              Paid{" "}
+                            </Badge>
+                          ) : (
+                            <Badge bg="danger" text="light">
+                              Un Paid{" "}
+                            </Badge>
+                          )}
                         </>
                       ),
                   },
@@ -724,20 +746,23 @@ const Applications = () => {
               </div>
 
               <ul style={{ marginLeft: "-20px" }}>
-                {detailPopUpData?.InvoiceFile && (
-                  <>
-                    <h6 className="mb-0">Invoice Files</h6>
-                    {detailPopUpData?.InvoiceFile?.map((fileName, index) => (
-                      <li
-                        key={index}
-                        className="d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted"
-                      >
-                        {index + 1}. FileName
-                        <span style={{ marginRight: "15px" }}>{fileName}</span>
-                      </li>
-                    ))}
-                  </>
-                )}
+                {detailPopUpData?.InvoiceFile &&
+                  detailPopUpData?.InvoiceFile.length > 0 && (
+                    <>
+                      <h6 className="mb-0">Invoice Files</h6>
+                      {detailPopUpData?.InvoiceFile?.map((fileName, index) => (
+                        <li
+                          key={index}
+                          className="d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted"
+                        >
+                          {index + 1}. FileName
+                          <span style={{ marginRight: "15px" }}>
+                            {fileName}
+                          </span>
+                        </li>
+                      ))}
+                    </>
+                  )}
                 <h6 className="mt-4 mb-0">Details</h6>
                 <li className="d-flex align-items-center justify-content-between py-3 border-bottom fs-small text-muted">
                   Category

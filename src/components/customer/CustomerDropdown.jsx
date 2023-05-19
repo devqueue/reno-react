@@ -38,7 +38,6 @@ const CustomerDropdown = () => {
     }
   }, [location]);
   // logging out
-  // logging out
   const logout = async () => {
     localStorage.removeItem("reno-customer-token");
     localStorage.removeItem("reno-customerId");

@@ -469,39 +469,67 @@ const NewApllication = () => {
             </h6>
 
             <div className="row finance-form mt-4">
-              <div className="col-12 form-group mb-4">
-                <label className="form-label text-muted fs-small">
-                  Customer ID Card/Iqama Number{" "}
-                </label>
-                <br />
-                {ifCustomerExists == false && (
-                  <span style={{ fontSize: "12px", color: "crimson" }}>
-                    if customer is not found on reno, customer then will receive
-                    email for this quote
-                  </span>
-                )}
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Enter your ID Card/Iqama Number"
-                  value={quoteDate?.IDCardNo}
-                  onChange={(e) =>
-                    setQuoteData({ ...quoteDate, IDCardNo: e.target.value })
-                  }
-                  onBlur={(e) => checkCustomer(e.target.value)}
-                  autofocus={true}
-                  required
-                />
+              <div className="row">
+                <div className="col-12 form-group mb-4 col-lg-10">
+                  <label className="form-label text-muted fs-small">
+                    Customer ID Card/Iqama Number{" "}
+                  </label>
+                  <br />
+                  {ifCustomerExists == false && (
+                    <span style={{ fontSize: "12px", color: "crimson" }}>
+                      if customer is not found on reno, customer then will
+                      receive email for this quote
+                    </span>
+                  )}
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter your ID Card/Iqama Number"
+                    value={quoteDate?.IDCardNo}
+                    onChange={(e) =>
+                      setQuoteData({ ...quoteDate, IDCardNo: e.target.value })
+                    }
+                    onBlur={(e) => checkCustomer(e.target.value)}
+                    autofocus={true}
+                    required
+                  />
+                  {ifCustomerExists == true ? (
+                    <span style={{ fontSize: "12px", color: "#00b894" }}>
+                      Customer Found On Reno
+                    </span>
+                  ) : (
+                    <span style={{ fontSize: "12px", color: "crimson" }}>
+                      Customer Not Found On Reno
+                    </span>
+                  )}
+                </div>
                 {ifCustomerExists == true ? (
-                  <span style={{ fontSize: "12px", color: "#00b894" }}>
-                    Customer Found On Reno
-                  </span>
+                  <div className="col-12 form-group mb-4 col-lg-2 mt-2">
+                    <label className="form-label text-muted fs-small"></label>
+
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-sm w-100"
+                      onClick={(e) => checkCustomer()}
+                    >
+                      Find
+                    </button>
+                  </div>
                 ) : (
-                  <span style={{ fontSize: "12px", color: "crimson" }}>
-                    Customer Not Found On Reno
-                  </span>
+                  <div className="col-12 form-group mb-4 col-lg-2 mt-4 pt-2">
+                    <label className="form-label text-muted fs-small"></label>
+
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-sm w-100"
+                      onClick={(e) => checkCustomer()}
+                    >
+                      Find
+                    </button>
+                  </div>
                 )}
               </div>
+
               <div className="col-12 form-group mb-4">
                 <label className="form-label text-muted fs-small">
                   Phone Number

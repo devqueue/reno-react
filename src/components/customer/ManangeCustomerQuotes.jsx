@@ -20,18 +20,19 @@ const ManangeCustomerQuotes = () => {
 
   //getting all data
   useEffect(() => {
-    const getAllRecord = async () => {
-      setIsFetching(true);
-      const { data } = await getAllQuotesOfCustomer();
-      if (data?.success === true) {
-        setAllData(data?.AllQuotes);
-      } else {
-        toast.error(data?.message);
-      }
-      setIsFetching(false);
-    };
     getAllRecord();
   }, []);
+
+  const getAllRecord = async () => {
+    setIsFetching(true);
+    const { data } = await getAllQuotesOfCustomer();
+    if (data?.success === true) {
+      setAllData(data?.AllQuotes);
+    } else {
+      toast.error(data?.message);
+    }
+    setIsFetching(false);
+  };
 
   //=================Card Form State and Validations =================
   //=======Credit Card No Added by Alex
@@ -228,7 +229,7 @@ const ManangeCustomerQuotes = () => {
       setExpiryDate("");
       setSelectedId("");
       await delay(2000);
-      window.location.reload();
+      getAllRecord();
     } else {
       toast.error(data?.message);
     }
@@ -549,6 +550,7 @@ const ManangeCustomerQuotes = () => {
                 className="btn btn-success mt-4 w-100"
                 style={{ height: "50px", borderRadius: "6px" }}
                 onClick={makeMyPayment}
+                data-bs-dismiss="modal"
               >
                 Pay Now
               </button>

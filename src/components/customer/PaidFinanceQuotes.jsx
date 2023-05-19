@@ -637,7 +637,7 @@ const PaidFinanceQuotes = () => {
                     <h6>Month</h6>
                   </div>
                   <div className="col-sm-4">
-                    <h6>24 Aug 2022</h6>
+                    <h6>Payments</h6>
                   </div>
                 </div>
                 {allPaid?.length > 0 ? (
